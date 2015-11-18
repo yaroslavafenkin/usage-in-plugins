@@ -43,7 +43,7 @@
 	<build>
 		<plugins>
 			<plugin>
-				<!-- Use "mvn exec:java" -->
+				<!-- Use "mvn clean compile exec:java" -->
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>exec-maven-plugin</artifactId>
 				<version>1.4.0</version>

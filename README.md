@@ -2,9 +2,15 @@ Finds and reports usage of deprecated Jenkins api in plugins (except api used in
 
 Checkout and run with "mvn exec:java".
 
-Note: it is quite long to download all the plugins the first time (1100+ plugins, 1.8 GB).
+Note: it is quite long to download all the plugins the first time (1.8 GB).
 
-See an [example of output](https://github.com/evernat/deprecated-usage-in-plugins/blob/master/Output_example.txt).
+Results in summary:
+* 1125 plugins
+* 435 plugins using a deprecated Jenkins api
+* 19 deprecated classes, 166 deprecated methods and 12 deprecated fields used are in plugins
+* 29 deprecated and public Jenkins classes, 312 deprecated methods, 58 deprecated fields are not used in the latest published plugins
+
+See details and deprecated usage for each plugin in this [example of output](https://github.com/evernat/deprecated-usage-in-plugins/blob/master/Output_example.txt).
 
 License MIT
 

@@ -1,9 +1,6 @@
 package org.jenkinsci.deprecatedusage;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,14 +15,15 @@ public class Main {
 
         log("Analyzing deprecated api in Jenkins");
         final File coreFile = updateCenter.getCore().getFile();
-        final DeprecatedApi deprecatedApi = findDeprecatedApis(coreFile);
+        final DeprecatedApi deprecatedApi = new DeprecatedApi();
+        deprecatedApi.analyze(coreFile);
 
         Log.print("Analyzing deprecated usage in plugins ");
         int i = 0;
         final Map<String, DeprecatedUsage> deprecatedUsageByPlugin = new HashMap<>();
         for (final JenkinsFile plugin : updateCenter.getPlugins()) {
-            final DeprecatedUsage deprecatedUsage = findDeprecatedUsage(plugin.getFile(),
-                    deprecatedApi);
+            final DeprecatedUsage deprecatedUsage = new DeprecatedUsage(deprecatedApi);
+            deprecatedUsage.analyze(plugin.getFile());
             if (deprecatedUsage.hasDeprecatedUsage()) {
                 final String pluginKey = plugin.getName() + '-' + plugin.getVersion();
                 deprecatedUsageByPlugin.put(pluginKey, deprecatedUsage);
@@ -40,59 +38,6 @@ public class Main {
         new Reports(deprecatedApi, deprecatedUsageByPlugin).report();
 
         log("duration : " + (System.currentTimeMillis() - start) + " ms");
-    }
-
-    private static DeprecatedApi findDeprecatedApis(File coreFile) throws IOException {
-        final DeprecatedApi deprecatedApi = new DeprecatedApi();
-        final WarReader warReader = new WarReader(coreFile);
-        try {
-            String fileName = warReader.nextClass();
-            while (fileName != null) {
-                deprecatedApi.analyze(warReader.getInputStream());
-                fileName = warReader.nextClass();
-            }
-        } finally {
-            warReader.close();
-        }
-        return deprecatedApi;
-    }
-
-    private static DeprecatedUsage findDeprecatedUsage(File pluginFile, DeprecatedApi deprecatedApi)
-            throws IOException {
-        final DeprecatedUsage deprecatedUsage = new DeprecatedUsage(deprecatedApi);
-
-        // do not analyse WEB-INF/lib/*jar in plugins,
-        // because it would cause too many false positives in dependent libraries
-        // final WarReader warReader = new WarReader(pluginFile);
-        // try {
-        // String fileName = warReader.nextClass();
-        // while (fileName != null) {
-        // try {
-        // deprecatedUsage.analyze(warReader.getInputStream());
-        // } catch (final Exception e) {
-        // // ignore ArrayIndexOutOfBoundsException: 48188 for
-        // // com/ibm/icu/impl/data/LocaleElements_zh__PINYIN.class
-        // continue;
-        // }
-        // fileName = warReader.nextClass();
-        // }
-        // } finally {
-        // warReader.close();
-        // }
-
-        final InputStream input = new FileInputStream(pluginFile);
-        final JarReader jarReader = new JarReader(input);
-        try {
-            String fileName = jarReader.nextClass();
-            while (fileName != null) {
-                deprecatedUsage.analyze(jarReader.getInputStream());
-                fileName = jarReader.nextClass();
-            }
-        } finally {
-            jarReader.close();
-            input.close();
-        }
-        return deprecatedUsage;
     }
 
     private static void log(String message) {

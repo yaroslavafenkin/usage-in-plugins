@@ -62,7 +62,6 @@ public class Reports {
         log(deprecatedClassesUsed.size() + " deprecated classes used in plugins");
         log(deprecatedMethodsUsed.size() + " deprecated methods used in plugins");
         log(deprecatedFieldsUsed.size() + " deprecated fields used in plugins");
-        log("TODO deprecated methods of interfaces and superclasses are missing");
         // TODO print deprecated api not used in plugins
     }
 

@@ -1,8 +1,14 @@
 package org.jenkinsci.deprecatedusage;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.objectweb.asm.ClassReader;
@@ -16,16 +22,58 @@ public class DeprecatedUsage {
     private final Set<String> classes = new LinkedHashSet<>();
     private final Set<String> methods = new LinkedHashSet<>();
     private final Set<String> fields = new LinkedHashSet<>();
+    private final ClassVisitor indexerClassVisitor = new IndexerClassVisitor();
     private final ClassVisitor classVisitor = new CallersClassVisitor();
+    private final Map<String, List<String>> superClassAndInterfacesByClass = new HashMap<>();
 
     public DeprecatedUsage(DeprecatedApi deprecatedApi) {
         super();
         this.deprecatedApi = deprecatedApi;
     }
 
-    public void analyze(InputStream input) throws IOException {
+    public void analyze(File pluginFile) throws IOException {
+        analyzeWithClassVisitor(pluginFile, indexerClassVisitor);
+        analyzeWithClassVisitor(pluginFile, classVisitor);
+    }
+
+    public void analyzeWithClassVisitor(File pluginFile, ClassVisitor aClassVisitor)
+            throws IOException {
+        // do not analyse WEB-INF/lib/*jar in plugins,
+        // because it would cause too many false positives in dependent libraries
+        // final WarReader warReader = new WarReader(pluginFile);
+        // try {
+        // String fileName = warReader.nextClass();
+        // while (fileName != null) {
+        // try {
+        // analyze(warReader.getInputStream(), aClassVisitor);
+        // } catch (final Exception e) {
+        // // ignore ArrayIndexOutOfBoundsException: 48188 for
+        // // com/ibm/icu/impl/data/LocaleElements_zh__PINYIN.class
+        // continue;
+        // }
+        // fileName = warReader.nextClass();
+        // }
+        // } finally {
+        // warReader.close();
+        // }
+
+        final InputStream input = new FileInputStream(pluginFile);
+        final JarReader jarReader = new JarReader(input);
+        try {
+            String fileName = jarReader.nextClass();
+            while (fileName != null) {
+                analyze(jarReader.getInputStream(), aClassVisitor);
+                fileName = jarReader.nextClass();
+            }
+        } finally {
+            jarReader.close();
+            input.close();
+        }
+    }
+
+    private void analyze(InputStream input, ClassVisitor aClassVisitor) throws IOException {
         final ClassReader classReader = new ClassReader(input);
-        classReader.accept(classVisitor, ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
+        classReader.accept(aClassVisitor, ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
     }
 
     public Set<String> getClasses() {
@@ -54,6 +102,13 @@ public class DeprecatedUsage {
                 if (deprecatedApi.getMethods().contains(method)) {
                     methods.add(method);
                 }
+                final List<String> superClassAndInterfaces = superClassAndInterfacesByClass
+                        .get(className);
+                if (superClassAndInterfaces != null) {
+                    for (final String superClassOrInterface : superClassAndInterfaces) {
+                        methodCalled(superClassOrInterface, name, desc);
+                    }
+                }
             }
         }
     }
@@ -68,6 +123,13 @@ public class DeprecatedUsage {
                 if (deprecatedApi.getFields().contains(field)) {
                     fields.add(field);
                 }
+                final List<String> superClassAndInterfaces = superClassAndInterfacesByClass
+                        .get(className);
+                if (superClassAndInterfaces != null) {
+                    for (final String superClassOrInterface : superClassAndInterfaces) {
+                        fieldCalled(superClassOrInterface, name, desc);
+                    }
+                }
             }
         }
     }
@@ -75,6 +137,35 @@ public class DeprecatedUsage {
     private static boolean isJavaClass(String asmClassName) {
         // if starts with java/ or javax/, then it's a class of core java
         return asmClassName.startsWith("java/") || asmClassName.startsWith("javax/");
+    }
+
+    /**
+     * Implements ASM ClassVisitor.
+     */
+    private class IndexerClassVisitor extends ClassVisitor {
+        IndexerClassVisitor() {
+            super(Opcodes.ASM5);
+        }
+
+        @Override
+        public void visit(int version, int access, String name, String signature, String superName,
+                String[] interfaces) {
+            // log(name + " extends " + superName + " {");
+            final List<String> superClassAndInterfaces = new ArrayList<>();
+            if (!isJavaClass(superName)) {
+                superClassAndInterfaces.add(superName);
+            }
+            if (interfaces != null) {
+                for (final String anInterface : interfaces) {
+                    if (!isJavaClass(anInterface)) {
+                        superClassAndInterfaces.add(anInterface);
+                    }
+                }
+            }
+            if (!superClassAndInterfaces.isEmpty()) {
+                superClassAndInterfacesByClass.put(name, superClassAndInterfaces);
+            }
+        }
     }
 
     /**

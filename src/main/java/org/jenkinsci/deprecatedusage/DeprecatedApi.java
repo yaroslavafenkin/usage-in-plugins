@@ -1,5 +1,6 @@
 package org.jenkinsci.deprecatedusage;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.LinkedHashSet;
@@ -29,7 +30,20 @@ public class DeprecatedApi {
         // it is ignored since it would only clutter reports
     }
 
-    public void analyze(InputStream input) throws IOException {
+    public void analyze(File coreFile) throws IOException {
+        final WarReader warReader = new WarReader(coreFile);
+        try {
+            String fileName = warReader.nextClass();
+            while (fileName != null) {
+                analyze(warReader.getInputStream());
+                fileName = warReader.nextClass();
+            }
+        } finally {
+            warReader.close();
+        }
+    }
+
+    private void analyze(InputStream input) throws IOException {
         final ClassReader classReader = new ClassReader(input);
         classReader.accept(classVisitor, ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG
                 | ClassReader.SKIP_FRAMES);

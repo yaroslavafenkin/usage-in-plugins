@@ -62,11 +62,7 @@ public class DeprecatedApi {
     }
 
     /**
-     * Implements ASM ClassVisitor. <br/>
-     * Note: if a deprecated class (or interface) has a subclass, the subclass is considered
-     * deprecated only if it is deprecated itself. <br/>
-     * It is the same for deprecated methods and overrided methods in subclasses. <br/>
-     * (Otherwise, it would be possible to register all super-classes and interfaces.)
+     * Implements ASM ClassVisitor.
      */
     private class CalledClassVisitor extends ClassVisitor {
         private static final int OPCODE_PUBLIC = Opcodes.ACC_PUBLIC | Opcodes.ACC_PROTECTED;

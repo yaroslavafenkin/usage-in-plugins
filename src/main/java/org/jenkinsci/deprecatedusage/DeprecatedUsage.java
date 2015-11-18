@@ -17,6 +17,7 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 
 public class DeprecatedUsage {
+    private final String pluginKey;
     private final DeprecatedApi deprecatedApi;
 
     private final Set<String> classes = new LinkedHashSet<>();
@@ -26,8 +27,9 @@ public class DeprecatedUsage {
     private final ClassVisitor classVisitor = new CallersClassVisitor();
     private final Map<String, List<String>> superClassAndInterfacesByClass = new HashMap<>();
 
-    public DeprecatedUsage(DeprecatedApi deprecatedApi) {
+    public DeprecatedUsage(String pluginKey, DeprecatedApi deprecatedApi) {
         super();
+        this.pluginKey = pluginKey;
         this.deprecatedApi = deprecatedApi;
     }
 
@@ -74,6 +76,10 @@ public class DeprecatedUsage {
     private void analyze(InputStream input, ClassVisitor aClassVisitor) throws IOException {
         final ClassReader classReader = new ClassReader(input);
         classReader.accept(aClassVisitor, ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
+    }
+
+    public String getPluginKey() {
+        return pluginKey;
     }
 
     public Set<String> getClasses() {

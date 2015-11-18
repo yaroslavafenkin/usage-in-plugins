@@ -5,14 +5,11 @@ import java.io.InputStream;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import org.objectweb.asm.AnnotationVisitor;
-import org.objectweb.asm.Attribute;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.TypePath;
 
 public class DeprecatedApi {
     private static final char SEPARATOR = '.';
@@ -104,42 +101,6 @@ public class DeprecatedApi {
             if (currentClass != null && isDeprecated(access) && isPublic(access)) {
                 fields.add(getFieldKey(currentClass, name, desc));
             }
-            return null;
-        }
-
-        @Override
-        public void visitSource(String source, String debug) {
-            // nothing
-        }
-
-        @Override
-        public void visitOuterClass(String owner, String name, String desc) {
-            // nothing
-        }
-
-        @Override
-        public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
-            return null;
-        }
-
-        @Override
-        public void visitAttribute(Attribute attr) {
-            // nothing
-        }
-
-        @Override
-        public void visitInnerClass(String name, String outerName, String innerName, int access) {
-            // nothing
-        }
-
-        @Override
-        public void visitEnd() {
-            // log("}");
-        }
-
-        @Override
-        public AnnotationVisitor visitTypeAnnotation(int typeRef, TypePath typePath, String desc,
-                boolean visible) {
             return null;
         }
     }

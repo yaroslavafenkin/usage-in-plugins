@@ -34,6 +34,7 @@ public class Main {
         new Reports(deprecatedApi, deprecatedUsageByPlugin).report();
 
         log("duration : " + (System.currentTimeMillis() - start) + " ms");
+        Log.closeLog();
     }
 
     private static Map<String, DeprecatedUsage> analyzeDeprecatedUsage(List<JenkinsFile> plugins,

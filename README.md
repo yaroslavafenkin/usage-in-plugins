@@ -1,4 +1,4 @@
-Finds and reports usage of deprecated Jenkins api in plugins (except api used in jelly and groovy files)
+**Finds and reports usage of deprecated Jenkins api in plugins (except api used in jelly and groovy files)**
 
 Checkout and run with "mvn exec:java".
 

@@ -16,6 +16,6 @@ See also:
 * [Jenkins policy for API deprecation](https://issues.jenkins-ci.org/browse/JENKINS-31035)
 * The old [Plugin compat tester](https://github.com/jenkinsci/plugin-compat-tester) and its [disabled job](https://ci.jenkins-ci.org/job/plugin-compat-tester/)
 
-License MIT
+[License MIT](https://github.com/evernat/deprecated-usage-in-plugins/blob/master/LICENSE.txt)
 
 Author Emeric Vernat

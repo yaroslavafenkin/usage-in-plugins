@@ -4,7 +4,7 @@ Checkout and run with "mvn exec:java".
 
 Note: it is quite long to download all the plugins the first time (1.8 GB).
 
-Results in summary:
+Current results in summary:
 * 1125 plugins
 * 435 plugins using a deprecated Jenkins api
 * 19 deprecated classes, 166 deprecated methods and 12 deprecated fields are used in plugins

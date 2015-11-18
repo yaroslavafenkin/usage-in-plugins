@@ -1,5 +1,6 @@
 package org.jenkinsci.deprecatedusage;
 
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -55,6 +56,25 @@ public class Reports {
                 + new TreeSet<String>(deprecatedUsageByPlugin.keySet()));
         log("");
 
+        final Set<String> deprecatedClassesNotUsed = filterOnJenkins(deprecatedApi.getClasses());
+        final Set<String> deprecatedMethodsNotUsed = filterOnJenkins(deprecatedApi.getMethods());
+        final Set<String> deprecatedFieldsNotUsed = filterOnJenkins(deprecatedApi.getFields());
+        deprecatedClassesNotUsed.removeAll(deprecatedClassesUsed);
+        deprecatedMethodsNotUsed.removeAll(deprecatedMethodsUsed);
+        deprecatedFieldsNotUsed.removeAll(deprecatedFieldsUsed);
+        log("deprecated and public Jenkins classes not used in latest published plugins : "
+                + format(deprecatedClassesNotUsed));
+        log("");
+        log("deprecated and public Jenkins methods not used in latest published plugins : "
+                + format(deprecatedMethodsNotUsed));
+        log("");
+        log("deprecated and public Jenkins fields not used in latest published plugins : "
+                + format(deprecatedFieldsNotUsed));
+        log("");
+        log("plugins using a deprecated api : "
+                + new TreeSet<String>(deprecatedUsageByPlugin.keySet()));
+        log("");
+
         log(deprecatedApi.getClasses().size() + " deprecated and public classes in jenkins.war");
         log(deprecatedApi.getMethods().size() + " deprecated and public methods in jenkins.war");
         log(deprecatedApi.getFields().size() + " deprecated and public fields in jenkins.war");
@@ -62,12 +82,29 @@ public class Reports {
         log(deprecatedClassesUsed.size() + " deprecated classes used in plugins");
         log(deprecatedMethodsUsed.size() + " deprecated methods used in plugins");
         log(deprecatedFieldsUsed.size() + " deprecated fields used in plugins");
-        // TODO print deprecated api not used in plugins
+        log(deprecatedClassesNotUsed.size()
+                + " deprecated and public Jenkins classes not used in latest published plugins");
+        log(deprecatedMethodsNotUsed.size()
+                + " deprecated and public Jenkins methods not used in latest published plugins");
+        log(deprecatedFieldsNotUsed.size()
+                + " deprecated and public Jenkins fields not used in latest published plugins");
     }
 
     private static String format(Set<String> classesOrFieldsOrMethods) {
         // replace "org/mypackage/Myclass" by "org.mypackage.Myclass"
         return classesOrFieldsOrMethods.toString().replace('/', '.');
+    }
+
+    private static Set<String> filterOnJenkins(Set<String> classesOrFieldsOrMethods) {
+        final Set<String> filtered = new LinkedHashSet<>();
+        for (final String classOrFieldOrMethod : classesOrFieldsOrMethods) {
+            if (classOrFieldOrMethod.startsWith("jenkins/")
+                    || classOrFieldOrMethod.startsWith("hudson/")
+                    || classOrFieldOrMethod.startsWith("org/kohsuke/")) {
+                filtered.add(classOrFieldOrMethod);
+            }
+        }
+        return filtered;
     }
 
     private static void log(String message) {

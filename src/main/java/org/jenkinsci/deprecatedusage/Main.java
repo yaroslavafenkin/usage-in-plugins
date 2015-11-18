@@ -60,6 +60,26 @@ public class Main {
     private static DeprecatedUsage findDeprecatedUsage(File pluginFile, DeprecatedApi deprecatedApi)
             throws IOException {
         final DeprecatedUsage deprecatedUsage = new DeprecatedUsage(deprecatedApi);
+
+        // do not analyse WEB-INF/lib/*jar in plugins,
+        // because it would cause too many false positives in dependent libraries
+        // final WarReader warReader = new WarReader(pluginFile);
+        // try {
+        // String fileName = warReader.nextClass();
+        // while (fileName != null) {
+        // try {
+        // deprecatedUsage.analyze(warReader.getInputStream());
+        // } catch (final Exception e) {
+        // // ignore ArrayIndexOutOfBoundsException: 48188 for
+        // // com/ibm/icu/impl/data/LocaleElements_zh__PINYIN.class
+        // continue;
+        // }
+        // fileName = warReader.nextClass();
+        // }
+        // } finally {
+        // warReader.close();
+        // }
+
         final InputStream input = new FileInputStream(pluginFile);
         final JarReader jarReader = new JarReader(input);
         try {

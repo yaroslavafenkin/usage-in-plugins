@@ -15,8 +15,6 @@ public class Main {
         log("Downloaded update-center.json");
         updateCenter.download();
         log("All files are up to date (" + updateCenter.getPlugins().size() + " plugins)");
-        // TODO delete old version in JenkinsFile.download()
-        log("TODO delete old versions");
 
         log("Analyzing deprecated api in Jenkins");
         final File coreFile = updateCenter.getCore().getFile();

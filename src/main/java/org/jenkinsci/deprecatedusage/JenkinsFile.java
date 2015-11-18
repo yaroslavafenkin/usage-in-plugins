@@ -35,6 +35,7 @@ public class JenkinsFile {
     private final String version;
     private final URL url;
     private final File file;
+    private final File versionsRootDirectory;
     private Future<?> downloadFuture;
 
     public JenkinsFile(String name, String version, String url) throws MalformedURLException {
@@ -43,7 +44,8 @@ public class JenkinsFile {
         this.version = version;
         this.url = new URL(url);
         final String fileName = url.substring(url.lastIndexOf('/'));
-        this.file = new File(WORK_DIRECTORY, name + '/' + version + '/' + fileName);
+        this.versionsRootDirectory = new File(WORK_DIRECTORY, name);
+        this.file = new File(versionsRootDirectory, version + '/' + fileName);
     }
 
     public String getName() {
@@ -75,17 +77,29 @@ public class JenkinsFile {
                     } finally {
                         output.close();
                     }
-                    // write target file only if complete
+                    versionsRootDirectory.mkdirs();
+                    // delete previous version
+                    deleteRecursive(versionsRootDirectory);
                     file.getParentFile().mkdirs();
+                    // write target file only if complete
                     Files.move(tempFile.toPath(), file.toPath(), StandardCopyOption.ATOMIC_MOVE);
                     Log.log("Downloaded " + file.getName() + ", " + file.length() / 1024 + " Kb");
-                    // TODO delete old versions
                 } finally {
                     tempFile.delete();
                 }
                 return null;
             }
         });
+    }
+
+    private static boolean deleteRecursive(File path) {
+        boolean ret = true;
+        if (path.isDirectory()) {
+            for (File f : path.listFiles()) {
+                ret = ret && deleteRecursive(f);
+            }
+        }
+        return ret && path.delete();
     }
 
     public void waitDownload() throws Exception {

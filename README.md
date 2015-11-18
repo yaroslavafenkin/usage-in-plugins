@@ -1,6 +1,6 @@
 **Finds and reports usage of deprecated Jenkins api in plugins** (except api used in jelly and groovy files and in WEB-INF/lib/*.jar)
 
-Checkout and run with "mvn exec:java".
+Checkout and run with "mvn clean compile exec:java".
 
 Note: it is quite long to download all the plugins the first time (1.8 GB).
 

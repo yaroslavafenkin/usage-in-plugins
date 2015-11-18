@@ -52,9 +52,6 @@ public class Reports {
         log("");
         log("deprecated fields used in plugins : " + format(deprecatedFieldsUsed));
         log("");
-        log("plugins using a deprecated api : "
-                + new TreeSet<String>(deprecatedUsageByPlugin.keySet()));
-        log("");
 
         final Set<String> deprecatedClassesNotUsed = filterOnJenkins(deprecatedApi.getClasses());
         final Set<String> deprecatedMethodsNotUsed = filterOnJenkins(deprecatedApi.getMethods());
@@ -71,6 +68,7 @@ public class Reports {
         log("deprecated and public Jenkins fields not used in latest published plugins : "
                 + format(deprecatedFieldsNotUsed));
         log("");
+
         log("plugins using a deprecated api : "
                 + new TreeSet<String>(deprecatedUsageByPlugin.keySet()));
         log("");

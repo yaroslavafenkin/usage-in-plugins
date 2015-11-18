@@ -27,9 +27,8 @@ public class Main {
         deprecatedApi.analyze(coreFile);
 
         Log.log("Analyzing deprecated usage in plugins");
-        final List<JenkinsFile> plugins = updateCenter.getPlugins();
         final Map<String, DeprecatedUsage> deprecatedUsageByPlugin = analyzeDeprecatedUsage(
-                plugins, deprecatedApi);
+                updateCenter.getPlugins(), deprecatedApi);
 
         new Reports(deprecatedApi, deprecatedUsageByPlugin).report();
 

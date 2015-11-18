@@ -1008,4 +1008,4 @@ plugins using a deprecated api : [AdaptivePlugin-0.1, BlameSubversion-1.200, Jir
 29 deprecated and public Jenkins classes not used in latest published plugins
 312 deprecated and public Jenkins methods not used in latest published plugins
 58 deprecated and public Jenkins fields not used in latest published plugins
-duration : 54270 ms
+duration : 29681 ms

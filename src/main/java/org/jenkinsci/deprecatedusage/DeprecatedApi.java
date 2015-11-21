@@ -3,7 +3,9 @@ package org.jenkinsci.deprecatedusage;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.objectweb.asm.ClassReader;
@@ -14,6 +16,17 @@ import org.objectweb.asm.Opcodes;
 
 public class DeprecatedApi {
     private static final char SEPARATOR = '.';
+
+    // some plugins such as job-dsl has following code without using deprecated :
+    // for (Cloud cloud : Jenkins.getInstance().clouds) { }
+    // where the type of jenkins.clouds is of type hudson.model.Hudson.CloudList and deprecated
+    // https://github.com/jenkinsci/job-dsl-plugin/blob/job-dsl-1.40/job-dsl-plugin/src/main/groovy/javaposse/jobdsl/plugin/JenkinsJobManagement.java#L359
+    // but code is compiled using deprecated as :
+    // for (Iterator<Cloud> iter = Jenkins.getInstance().clouds.iterator(); iter.hasNext(); ) {
+    // Cloud cloud = iter.next(); }
+    // so deprecation of Hudson$CloudList is ignored
+    private static final List<String> IGNORED_DEPRECATED_CLASSES = Arrays
+            .asList("hudson/model/Hudson$CloudList");
 
     private final Set<String> classes = new LinkedHashSet<>();
     private final Set<String> methods = new LinkedHashSet<>();
@@ -41,6 +54,7 @@ public class DeprecatedApi {
         } finally {
             warReader.close();
         }
+        classes.removeAll(IGNORED_DEPRECATED_CLASSES);
     }
 
     private void analyze(InputStream input) throws IOException {

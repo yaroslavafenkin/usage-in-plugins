@@ -115,4 +115,9 @@ public class JenkinsFile {
             }
         }
     }
+
+    @Override
+    public String toString() {
+        return file.getName();
+    }
 }

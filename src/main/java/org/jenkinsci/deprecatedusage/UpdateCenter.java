@@ -6,6 +6,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -34,6 +36,13 @@ public class UpdateCenter {
             final JenkinsFile plugin = parse(jsonPlugin);
             plugins.add(plugin);
         }
+        final Comparator<JenkinsFile> comparator = new Comparator<JenkinsFile>() {
+            @Override
+            public int compare(JenkinsFile o1, JenkinsFile o2) {
+                return o1.getName().compareToIgnoreCase(o2.getName());
+            }
+        };
+        Collections.sort(plugins, comparator);
     }
 
     private String getUpdateCenterJson() throws IOException, MalformedURLException {

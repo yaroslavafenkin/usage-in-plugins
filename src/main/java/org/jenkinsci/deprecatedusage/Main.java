@@ -3,7 +3,7 @@ package org.jenkinsci.deprecatedusage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -56,7 +56,7 @@ public class Main {
             futures.add(executorService.submit(task));
         }
 
-        final Map<String, DeprecatedUsage> deprecatedUsageByPlugin = new HashMap<>();
+        final Map<String, DeprecatedUsage> deprecatedUsageByPlugin = new LinkedHashMap<>();
         int i = 0;
         for (final Future<DeprecatedUsage> future : futures) {
             final DeprecatedUsage deprecatedUsage = future.get();

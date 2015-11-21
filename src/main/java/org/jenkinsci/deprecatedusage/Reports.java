@@ -1,6 +1,8 @@
 package org.jenkinsci.deprecatedusage;
 
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -26,32 +28,13 @@ public class Reports {
         final Set<String> deprecatedClassesUsed = new TreeSet<String>();
         final Set<String> deprecatedMethodsUsed = new TreeSet<String>();
         final Set<String> deprecatedFieldsUsed = new TreeSet<String>();
-        for (final Map.Entry<String, DeprecatedUsage> entry : deprecatedUsageByPlugin.entrySet()) {
-            final String plugin = entry.getKey();
-            final DeprecatedUsage deprecatedUsage = entry.getValue();
+        for (final DeprecatedUsage deprecatedUsage : deprecatedUsageByPlugin.values()) {
             deprecatedClassesUsed.addAll(deprecatedUsage.getClasses());
             deprecatedMethodsUsed.addAll(deprecatedUsage.getMethods());
             deprecatedFieldsUsed.addAll(deprecatedUsage.getFields());
-
-            log("deprecated api used in plugin " + plugin + " :");
-            if (!deprecatedUsage.getClasses().isEmpty()) {
-                log("   classes : " + format(deprecatedUsage.getClasses()));
-            }
-            if (!deprecatedUsage.getMethods().isEmpty()) {
-                log("   methods : " + format(deprecatedUsage.getMethods()));
-            }
-            if (!deprecatedUsage.getFields().isEmpty()) {
-                log("   fields : " + format(deprecatedUsage.getFields()));
-            }
         }
-        log("");
-
-        log("deprecated classes used in plugins : " + format(deprecatedClassesUsed));
-        log("");
-        log("deprecated methods used in plugins : " + format(deprecatedMethodsUsed));
-        log("");
-        log("deprecated fields used in plugins : " + format(deprecatedFieldsUsed));
-        log("");
+        logDeprecatedApiUsedInPlugins(deprecatedClassesUsed, deprecatedMethodsUsed,
+                deprecatedFieldsUsed);
 
         final Set<String> deprecatedClassesNotUsed = filterOnJenkins(deprecatedApi.getClasses());
         final Set<String> deprecatedMethodsNotUsed = filterOnJenkins(deprecatedApi.getMethods());
@@ -68,6 +51,9 @@ public class Reports {
         log("deprecated and public Jenkins fields not used in latest published plugins : "
                 + format(deprecatedFieldsNotUsed));
         log("");
+
+        logPluginsByDeprecatedApi(deprecatedClassesUsed, deprecatedMethodsUsed,
+                deprecatedFieldsUsed);
 
         log("plugins using a deprecated api : "
                 + new TreeSet<String>(deprecatedUsageByPlugin.keySet()));
@@ -86,6 +72,65 @@ public class Reports {
                 + " deprecated and public Jenkins methods not used in latest published plugins");
         log(deprecatedFieldsNotUsed.size()
                 + " deprecated and public Jenkins fields not used in latest published plugins");
+    }
+
+    private void logDeprecatedApiUsedInPlugins(Set<String> deprecatedClassesUsed,
+            Set<String> deprecatedMethodsUsed, Set<String> deprecatedFieldsUsed) {
+        for (final DeprecatedUsage deprecatedUsage : deprecatedUsageByPlugin.values()) {
+            log("deprecated api used in plugin " + deprecatedUsage.getPluginKey() + " :");
+            if (!deprecatedUsage.getClasses().isEmpty()) {
+                log("   classes : " + format(deprecatedUsage.getClasses()));
+            }
+            if (!deprecatedUsage.getMethods().isEmpty()) {
+                log("   methods : " + format(deprecatedUsage.getMethods()));
+            }
+            if (!deprecatedUsage.getFields().isEmpty()) {
+                log("   fields : " + format(deprecatedUsage.getFields()));
+            }
+        }
+        log("");
+
+        log("deprecated classes used in plugins : " + format(deprecatedClassesUsed));
+        log("");
+        log("deprecated methods used in plugins : " + format(deprecatedMethodsUsed));
+        log("");
+        log("deprecated fields used in plugins : " + format(deprecatedFieldsUsed));
+        log("");
+    }
+
+    private void logPluginsByDeprecatedApi(Set<String> deprecatedClassesUsed,
+            Set<String> deprecatedMethodsUsed, Set<String> deprecatedFieldsUsed) {
+        for (final String deprecatedClass : deprecatedClassesUsed) {
+            final List<String> plugins = new ArrayList<>();
+            for (final DeprecatedUsage deprecatedUsage : deprecatedUsageByPlugin.values()) {
+                if (deprecatedUsage.getClasses().contains(deprecatedClass)) {
+                    plugins.add(deprecatedUsage.getPluginKey());
+                }
+            }
+            log("plugins using deprecated " + deprecatedClass + " :");
+            log("   " + plugins);
+        }
+        for (final String deprecatedMethod : deprecatedMethodsUsed) {
+            final List<String> plugins = new ArrayList<>();
+            for (final DeprecatedUsage deprecatedUsage : deprecatedUsageByPlugin.values()) {
+                if (deprecatedUsage.getMethods().contains(deprecatedMethod)) {
+                    plugins.add(deprecatedUsage.getPluginKey());
+                }
+            }
+            log("plugins using deprecated " + deprecatedMethod + " :");
+            log("   " + plugins);
+        }
+        for (final String deprecatedField : deprecatedFieldsUsed) {
+            final List<String> plugins = new ArrayList<>();
+            for (final DeprecatedUsage deprecatedUsage : deprecatedUsageByPlugin.values()) {
+                if (deprecatedUsage.getFields().contains(deprecatedField)) {
+                    plugins.add(deprecatedUsage.getPluginKey());
+                }
+            }
+            log("plugins using deprecated " + deprecatedField + " :");
+            log("   " + plugins);
+        }
+        log("");
     }
 
     private static String format(Set<String> classesOrFieldsOrMethods) {

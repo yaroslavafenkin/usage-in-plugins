@@ -60,6 +60,7 @@ public final class Log {
         try {
             FILE_WRITER.append("</body></html>");
             FILE_WRITER.close();
+            System.out.println("Output written to " + HTML_FILE.getPath());
         } catch (final IOException e) {
             return;
         }

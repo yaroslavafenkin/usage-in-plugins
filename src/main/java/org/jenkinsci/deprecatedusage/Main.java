@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 public class Main {
     public static void main(String[] args) throws Exception {
         final long start = System.currentTimeMillis();
-        log("** Finds and reports usage of deprecated Jenkins api in plugins (except api used in jelly and groovy files) **");
+        log("** Finds and reports usage of deprecated Jenkins api in plugins (except api used in jelly and groovy files and in WEB-INF/lib/*.jar) **");
         final UpdateCenter updateCenter = new UpdateCenter();
         log("Downloaded update-center.json");
         updateCenter.download();

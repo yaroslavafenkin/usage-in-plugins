@@ -107,7 +107,7 @@ public class Reports {
                     plugins.add(deprecatedUsage.getPluginKey());
                 }
             }
-            log("plugins using deprecated " + deprecatedClass + " :");
+            log("plugins using deprecated " + format(deprecatedClass) + " :");
             log("   " + plugins);
         }
         for (final String deprecatedMethod : deprecatedMethodsUsed) {
@@ -117,7 +117,7 @@ public class Reports {
                     plugins.add(deprecatedUsage.getPluginKey());
                 }
             }
-            log("plugins using deprecated " + deprecatedMethod + " :");
+            log("plugins using deprecated " + format(deprecatedMethod) + " :");
             log("   " + plugins);
         }
         for (final String deprecatedField : deprecatedFieldsUsed) {
@@ -127,7 +127,7 @@ public class Reports {
                     plugins.add(deprecatedUsage.getPluginKey());
                 }
             }
-            log("plugins using deprecated " + deprecatedField + " :");
+            log("plugins using deprecated " + format(deprecatedField) + " :");
             log("   " + plugins);
         }
         log("");
@@ -136,6 +136,11 @@ public class Reports {
     private static String format(Set<String> classesOrFieldsOrMethods) {
         // replace "org/mypackage/Myclass" by "org.mypackage.Myclass"
         return classesOrFieldsOrMethods.toString().replace('/', '.');
+    }
+
+    private static String format(String classOrFieldOrMethod) {
+        // replace "org/mypackage/Myclass" by "org.mypackage.Myclass"
+        return classOrFieldOrMethod.replace('/', '.');
     }
 
     private static Set<String> filterOnJenkins(Set<String> classesOrFieldsOrMethods) {

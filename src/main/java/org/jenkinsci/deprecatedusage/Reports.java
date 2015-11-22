@@ -18,7 +18,7 @@ public class Reports {
     }
 
     public void report() {
-        log("ignored deprecated api : " + DeprecatedApi.IGNORED_DEPRECATED_CLASSES);
+        log("ignored deprecated api : " + format(DeprecatedApi.IGNORED_DEPRECATED_CLASSES));
         log("ignored plugins : " + DeprecatedUsage.IGNORED_PLUGINS);
         log("");
         log("deprecated classes in jenkins.war : " + format(deprecatedApi.getClasses()));

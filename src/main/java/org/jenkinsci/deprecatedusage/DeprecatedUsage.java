@@ -21,7 +21,8 @@ import org.objectweb.asm.Opcodes;
 public class DeprecatedUsage {
     // python-wrapper has wrappers for all extension points and descriptors,
     // they are just wrappers and not real usage
-    public static final Set<String> IGNORED_PLUGINS = new HashSet<>(Arrays.asList("python-wrapper.hpi"));
+    public static final Set<String> IGNORED_PLUGINS = new HashSet<>(
+            Arrays.asList("python-wrapper.hpi"));
 
     private final String pluginKey;
     private final DeprecatedApi deprecatedApi;

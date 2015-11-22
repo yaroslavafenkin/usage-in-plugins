@@ -68,8 +68,8 @@ public class Main {
                 Log.print(".");
             }
         }
-        executorService.awaitTermination(1, TimeUnit.SECONDS);
         executorService.shutdown();
+        executorService.awaitTermination(1, TimeUnit.SECONDS);
         log("");
         log("");
         return deprecatedUsageByPlugin;

@@ -2,7 +2,9 @@ package org.jenkinsci.deprecatedusage;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +35,7 @@ public class Main {
 
         new Reports(deprecatedApi, deprecatedUsageByPlugin).report();
 
-        log("duration : " + (System.currentTimeMillis() - start) + " ms");
+        log("duration : " + (System.currentTimeMillis() - start) + " ms at " + DateFormat.getDateTimeInstance().format(new Date()));
         Log.closeLog();
     }
 

@@ -1,7 +1,7 @@
-** Finds and reports usage of deprecated Jenkins api in plugins (except api used in jelly and groovy files) **
+** Finds and reports usage of deprecated Jenkins api in plugins (except api used in jelly and groovy files and in WEB-INF/lib/*.jar) **
 Downloaded update-center.json
 Downloaded tinfoil-scan.hpi, 1335 Kb
-All files are up to date (1125 plugins)
+All files are up to date (1123 plugins)
 Analyzing deprecated api in Jenkins
 Analyzing deprecated usage in plugins
 ........................................................
@@ -982,395 +982,395 @@ deprecated and public Jenkins methods not used in latest published plugins : [or
 
 deprecated and public Jenkins fields not used in latest published plugins : [org.kohsuke.stapler.MetaClass.clazz, org.kohsuke.stapler.jelly.JellyViewScript.from, jenkins.model.Jenkins.slaves, jenkins.model.Jenkins.overallNodeProvisioner, jenkins.model.Jenkins.FLYWEIGHT_SUPPORT, jenkins.model.Jenkins.CONCURRENT_BUILD, hudson.model.LoadBalancer.DEFAULT, hudson.model.UpdateCenter.neverUpdate, hudson.model.RunMap.COMPARATOR, hudson.model.View.LIST, hudson.model.OverallLoadStatistics.totalQueueLength, hudson.model.PageDecorator.ALL, hudson.model.listeners.RunListener.LISTENERS, hudson.model.ManagementLink.LIST, hudson.model.LoadStatistics.totalExecutors, hudson.model.Items.LIST, hudson.model.AbstractProject.BUILD_NOW_TEXT, hudson.model.Jobs.PROPERTIES, hudson.model.UserProperties.LIST, hudson.model.ChoiceParameterDefinition.CHOICES_DELIMETER, hudson.model.ParameterDefinition.LIST, hudson.PluginManager.context, hudson.scm.RepositoryBrowsers.LIST, hudson.scm.SCMS.SCMS, hudson.node_monitors.NodeMonitor.LIST, hudson.views.ListViewColumn.LIST, hudson.triggers.SCMTrigger$BuildAction.build, hudson.triggers.Triggers.TRIGGERS, hudson.tasks.Maven.DESCRIPTOR, hudson.tasks.UserNameResolver.LIST, hudson.cli.BuildCommand.retryCnt, hudson.util.IOUtils.DIR_SEPARATOR_UNIX, hudson.util.IOUtils.DIR_SEPARATOR_WINDOWS, hudson.util.IOUtils.DIR_SEPARATOR, hudson.util.IOUtils.LINE_SEPARATOR_UNIX, hudson.util.IOUtils.LINE_SEPARATOR_WINDOWS, hudson.util.IOUtils.LINE_SEPARATOR, hudson.util.AWTProblem.cause, hudson.util.ChartUtil.awtProblem, hudson.util.NoTempDir.exception, hudson.util.JenkinsReloadFailed.cause, hudson.util.HudsonFailedToLoad.exception, hudson.util.InsufficientPermissionDetected.exception, hudson.ExtensionList.hudson, hudson.security.Permission.HUDSON_PERMISSIONS, hudson.security.Permission.HUDSON_ADMINISTER, hudson.security.Permission.FULL_CONTROL, hudson.security.SecurityRealm.LIST, hudson.security.AuthorizationStrategy.LIST, hudson.security.HudsonFilter.AUTHENTICATION_MANAGER, hudson.security.HudsonFilter.USER_DETAILS_SERVICE_PROXY, hudson.security.HudsonFilter.REMEMBER_ME_SERVICES_PROXY, hudson.slaves.RetentionStrategy.LIST, hudson.slaves.ComputerLauncher.LIST, hudson.slaves.Cloud.ALL, hudson.slaves.NodeDescriptor.ALL, hudson.remoting.Engine.listener, hudson.remoting.Engine.GREETING_SUCCESS]
 
-plugins using deprecated com/thoughtworks/xstream/converters/reflection/Sun14ReflectionProvider :
+plugins using deprecated com.thoughtworks.xstream.converters.reflection.Sun14ReflectionProvider :
    [project-inheritance-1.5.3]
-plugins using deprecated com/trilead/ssh2/DebugLogger :
+plugins using deprecated com.trilead.ssh2.DebugLogger :
    [BlameSubversion-1.200, subversion-2.5.4, svn-release-mgr-1.2]
-plugins using deprecated hudson/Proc$RemoteProc :
+plugins using deprecated hudson.Proc$RemoteProc :
    [perforce-1.3.35]
-plugins using deprecated hudson/model/AbstractBuild$AbstractRunner :
+plugins using deprecated hudson.model.AbstractBuild$AbstractRunner :
    [build-flow-plugin-0.18, ivy-1.25.1]
-plugins using deprecated hudson/model/BuildAuthorizationToken :
+plugins using deprecated hudson.model.BuildAuthorizationToken :
    [project-inheritance-1.5.3]
-plugins using deprecated hudson/model/Cause$LegacyCodeCause :
+plugins using deprecated hudson.model.Cause$LegacyCodeCause :
    [preSCMbuildstep-0.3]
-plugins using deprecated hudson/model/Cause$UserCause :
+plugins using deprecated hudson.model.Cause$UserCause :
    [batch-task-1.17, build-cause-run-condition-0.1, build-user-vars-plugin-1.4, bulk-builder-1.5, global-build-stats-1.3, ivy-1.25.1, loadimpact-plugin-1.62, matrix-reloaded-1.1.3, release-2.5.4, started-by-envvar-1.0, svn-release-mgr-1.2, teamconcert-git-1.0.10]
-plugins using deprecated hudson/model/DependecyDeclarer :
+plugins using deprecated hudson.model.DependecyDeclarer :
    [buckminster-1.1.1, downstream-ext-1.8, flexible-publish-0.15.2, ivy-1.25.1, join-1.16]
-plugins using deprecated hudson/model/Hudson$MasterComputer :
+plugins using deprecated hudson.model.Hudson$MasterComputer :
    [copy-to-slave-1.4.4, qc-1.2.1]
-plugins using deprecated hudson/model/Run$Runner :
+plugins using deprecated hudson.model.Run$Runner :
    [ivy-1.25.1]
-plugins using deprecated hudson/model/RunAction :
+plugins using deprecated hudson.model.RunAction :
    [s3-0.8, windows-azure-storage-0.3.1]
-plugins using deprecated hudson/model/SCMedItem :
+plugins using deprecated hudson.model.SCMedItem :
    [build-flow-plugin-0.18, ivy-1.25.1, jobgenerator-1.22, mailcommander-1.0.0, view-job-filters-1.27]
-plugins using deprecated hudson/model/TransientBuildActionFactory :
+plugins using deprecated hudson.model.TransientBuildActionFactory :
    [artifact-diff-plugin-1.3, buildgraph-view-1.1.1, delete-log-plugin-1.0, embeddable-build-status-1.8, job-direct-mail-1.5, python-wrapper-1.0.3, rebuild-1.25, remote-terminal-access-1.6]
-plugins using deprecated hudson/org/apache/tools/tar/TarInputStream :
+plugins using deprecated hudson.org.apache.tools.tar.TarInputStream :
    [copy-to-slave-1.4.4]
-plugins using deprecated hudson/tasks/BuildStepCompatibilityLayer :
+plugins using deprecated hudson.tasks.BuildStepCompatibilityLayer :
    [associated-files-0.2.1, groovy-remote-0.2]
-plugins using deprecated hudson/util/FormFieldValidator :
+plugins using deprecated hudson.util.FormFieldValidator :
    [perfpublisher-8.02, svn-release-mgr-1.2, vmware-0.8]
-plugins using deprecated hudson/util/IOException2 :
+plugins using deprecated hudson.util.IOException2 :
    [accurev-0.6.35, BlameSubversion-1.200, build-publisher-1.21, build-timeout-1.15.1, clover-4.4.0, cobertura-1.9.7, collabnet-1.1.10, copy-to-slave-1.4.4, copyartifact-1.37, cppncss-1.1, cvs-2.12, cygpath-1.5, emma-1.29, hadoop-1.4, ios-device-connector-1.2, javancss-1.1, javatest-report-1.6, jenkins-reviewbot-2.4.6, nunit-0.17, patch-parameter-1.2, perfectomobile-2.41.0.1, recipe-1.2, remote-terminal-access-1.6, rubyMetrics-1.6.3, selenium-2.4.1, seleniumhq-0.4, subversion-2.5.4, svn-release-mgr-1.2, synergy-1.7, violations-0.7.11, visualworks-store-1.1.1, vss-1.9]
-plugins using deprecated org/kohsuke/stapler/framework/io/IOException2 :
+plugins using deprecated org.kohsuke.stapler.framework.io.IOException2 :
    [active-directory-1.41, appio-1.3, artifactory-2.4.4, googlecode-1.7, script-scm-1.17]
-plugins using deprecated com/google/common/collect/Iterables.reverse(Ljava/util/List;)Ljava/lang/Iterable; :
+plugins using deprecated com.google.common.collect.Iterables.reverse(Ljava.util.List;)Ljava.lang.Iterable; :
    [neoload-jenkins-plugin-1.0.1]
-plugins using deprecated com/google/common/collect/MapMaker.expiration(JLjava/util/concurrent/TimeUnit;)Lcom/google/common/collect/MapMaker; :
+plugins using deprecated com.google.common.collect.MapMaker.expiration(JLjava.util.concurrent.TimeUnit;)Lcom.google.common.collect.MapMaker; :
    [cloudbees-registration-3.14]
-plugins using deprecated com/thoughtworks/xstream/core/JVM.<init>()V :
+plugins using deprecated com.thoughtworks.xstream.core.JVM.<init>()V :
    [matrix-auth-1.2]
-plugins using deprecated com/thoughtworks/xstream/core/JVM.bestReflectionProvider()Lcom/thoughtworks/xstream/converters/reflection/ReflectionProvider; :
+plugins using deprecated com.thoughtworks.xstream.core.JVM.bestReflectionProvider()Lcom.thoughtworks.xstream.converters.reflection.ReflectionProvider; :
    [matrix-auth-1.2]
-plugins using deprecated groovy/lang/GroovyClassLoader.defineClass(Ljava/lang/String;[BLjava/security/ProtectionDomain;)Ljava/lang/Class; :
+plugins using deprecated groovy.lang.GroovyClassLoader.defineClass(Ljava.lang.String;[BLjava.security.ProtectionDomain;)Ljava.lang.Class; :
    [groovy-remote-0.2]
-plugins using deprecated groovy/lang/GroovyClassLoader.defineClass(Lorg/codehaus/groovy/ast/ClassNode;Ljava/lang/String;)Ljava/lang/Class; :
+plugins using deprecated groovy.lang.GroovyClassLoader.defineClass(Lorg.codehaus.groovy.ast.ClassNode;Ljava.lang.String;)Ljava.lang.Class; :
    [groovy-remote-0.2]
-plugins using deprecated groovy/lang/GroovyClassLoader.expandClassPath(Ljava/util/List;Ljava/lang/String;Ljava/lang/String;Z)V :
+plugins using deprecated groovy.lang.GroovyClassLoader.expandClassPath(Ljava.util.List;Ljava.lang.String;Ljava.lang.String;Z)V :
    [groovy-remote-0.2]
-plugins using deprecated groovy/lang/GroovyClassLoader.parseClass(Ljava/io/InputStream;)Ljava/lang/Class; :
+plugins using deprecated groovy.lang.GroovyClassLoader.parseClass(Ljava.io.InputStream;)Ljava.lang.Class; :
    [groovy-remote-0.2, jigomerge-0.8]
-plugins using deprecated groovy/lang/GroovyClassLoader.parseClass(Ljava/io/InputStream;Ljava/lang/String;)Ljava/lang/Class; :
+plugins using deprecated groovy.lang.GroovyClassLoader.parseClass(Ljava.io.InputStream;Ljava.lang.String;)Ljava.lang.Class; :
    [groovy-remote-0.2]
-plugins using deprecated hudson/DescriptorExtensionList.createDescriptorList(Lhudson/model/Hudson;Ljava/lang/Class;)Lhudson/DescriptorExtensionList; :
+plugins using deprecated hudson.DescriptorExtensionList.createDescriptorList(Lhudson.model.Hudson;Ljava.lang.Class;)Lhudson.DescriptorExtensionList; :
    [buildcontext-capture-0.6, shared-objects-0.44]
-plugins using deprecated hudson/ExtensionFinder._find(Ljava/lang/Class;Lhudson/model/Hudson;)Ljava/util/Collection; :
+plugins using deprecated hudson.ExtensionFinder._find(Ljava.lang.Class;Lhudson.model.Hudson;)Ljava.util.Collection; :
    [python-wrapper-1.0.3]
-plugins using deprecated hudson/ExtensionList.add(Ljava/lang/Object;)Z :
+plugins using deprecated hudson.ExtensionList.add(Ljava.lang.Object;)Z :
    [build-publisher-1.21, ldapemail-0.8, regexemail-0.3]
-plugins using deprecated hudson/FilePath.toString()Ljava/lang/String; :
+plugins using deprecated hudson.FilePath.toString()Ljava.lang.String; :
    [appthwack-1.9, build-environment-1.6, delphix-1.0.1, deploy-websphere-1.0, JiraTestResultReporter-1.0.4, jslint-0.8.2, maven-info-0.2.0, plasticscm-plugin-2.3, rubymotion-1.12, scp-1.8, sicci_for_xcode-0.0.8, tcl-0.4]
-plugins using deprecated hudson/FilePath.validateAntFileMask(Ljava/lang/String;)Ljava/lang/String; :
+plugins using deprecated hudson.FilePath.validateAntFileMask(Ljava.lang.String;)Ljava.lang.String; :
    [buckminster-1.1.1, clone-workspace-scm-0.6, confluence-publisher-1.8, rhnpush-plugin-0.4.1, rpmsign-plugin-0.4.6, s3-0.8, scp-1.8]
-plugins using deprecated hudson/Functions.isMustangOrAbove()Z :
+plugins using deprecated hudson.Functions.isMustangOrAbove()Z :
    [nodejs-0.2.1]
-plugins using deprecated hudson/Launcher.getComputer()Lhudson/model/Computer; :
+plugins using deprecated hudson.Launcher.getComputer()Lhudson.model.Computer; :
    [clearcase-1.6.2, custom-tools-plugin-0.4.4, nodejs-0.2.1]
-plugins using deprecated hudson/Launcher.launch([Ljava/lang/String;[Ljava/lang/String;Ljava/io/InputStream;Ljava/io/OutputStream;Lhudson/FilePath;)Lhudson/Proc; :
+plugins using deprecated hudson.Launcher.launch([Ljava.lang.String;[Ljava.lang.String;Ljava.io.InputStream;Ljava.io.OutputStream;Lhudson.FilePath;)Lhudson.Proc; :
    [clearcase-1.6.2]
-plugins using deprecated hudson/Launcher.launch([Ljava/lang/String;[Z[Ljava/lang/String;Ljava/io/InputStream;Ljava/io/OutputStream;Lhudson/FilePath;)Lhudson/Proc; :
+plugins using deprecated hudson.Launcher.launch([Ljava.lang.String;[Z[Ljava.lang.String;Ljava.io.InputStream;Ljava.io.OutputStream;Lhudson.FilePath;)Lhudson.Proc; :
    [custom-tools-plugin-0.4.4, nodejs-0.2.1]
-plugins using deprecated hudson/MarkupText.toString()Ljava/lang/String; :
+plugins using deprecated hudson.MarkupText.toString()Ljava.lang.String; :
    [svn-release-mgr-1.2]
-plugins using deprecated hudson/Plugin.configure(Lnet/sf/json/JSONObject;)V :
+plugins using deprecated hudson.Plugin.configure(Lnet.sf.json.JSONObject;)V :
    [groovy-events-listener-plugin-1.009, groovy-events-listener-plugin-master-1.007, groovy-remote-0.2]
-plugins using deprecated hudson/model/AbstractModelObject.requirePOST()V :
+plugins using deprecated hudson.model.AbstractModelObject.requirePOST()V :
    [BlameSubversion-1.200, subversion-2.5.4]
-plugins using deprecated hudson/model/AbstractProject.getWorkspace()Lhudson/FilePath; :
+plugins using deprecated hudson.model.AbstractProject.getWorkspace()Lhudson.FilePath; :
    [clearcase-release-0.3, collabnet-1.1.10, copy-to-slave-1.4.4, jdepend-1.2.4, pom2config-1.2, rad-builder-1.1.4, rubymotion-1.12, sbt-1.5, svn-release-mgr-1.2]
-plugins using deprecated hudson/model/AbstractProject.getWorkspaceResource()Lhudson/model/Resource; :
+plugins using deprecated hudson.model.AbstractProject.getWorkspaceResource()Lhudson.model.Resource; :
    [batch-task-1.17, ivy-1.25.1]
-plugins using deprecated hudson/model/BuildTimelineWidget.getLastBuild()Lhudson/model/Run; :
+plugins using deprecated hudson.model.BuildTimelineWidget.getLastBuild()Lhudson.model.Run; :
    [jqs-monitoring-1.4]
-plugins using deprecated hudson/model/Cause$UpstreamCause.<init>(Lhudson/model/AbstractBuild;)V :
+plugins using deprecated hudson.model.Cause$UpstreamCause.<init>(Lhudson.model.AbstractBuild;)V :
    [build-flow-plugin-0.18]
-plugins using deprecated hudson/model/Cause.onAddedTo(Lhudson/model/AbstractBuild;)V :
+plugins using deprecated hudson.model.Cause.onAddedTo(Lhudson.model.AbstractBuild;)V :
    [rundeck-3.5.1]
-plugins using deprecated hudson/model/CauseAction.getShortDescription()Ljava/lang/String; :
+plugins using deprecated hudson.model.CauseAction.getShortDescription()Ljava.lang.String; :
    [hipchat-0.2.0, kato-0.2.5]
-plugins using deprecated hudson/model/Computer.getEnvVars()Ljava/util/Map; :
+plugins using deprecated hudson.model.Computer.getEnvVars()Ljava.util.Map; :
    [build-environment-1.6]
-plugins using deprecated hudson/model/Descriptor.configure(Lorg/kohsuke/stapler/StaplerRequest;)Z :
+plugins using deprecated hudson.model.Descriptor.configure(Lorg.kohsuke.stapler.StaplerRequest;)Z :
    [associated-files-0.2.1, flow-1.3, groovy-events-listener-plugin-1.009, groovy-events-listener-plugin-master-1.007, groovy-remote-0.2, matrix-groovy-execution-strategy-1.0.3, python-wrapper-1.0.3, selenium-axis-0.0.6, vmware-0.8]
-plugins using deprecated hudson/model/Descriptor.find(Ljava/lang/String;)Lhudson/model/Descriptor; :
+plugins using deprecated hudson.model.Descriptor.find(Ljava.lang.String;)Lhudson.model.Descriptor; :
    [diskcheck-0.26]
-plugins using deprecated hudson/model/Descriptor.getCheckUrl(Ljava/lang/String;)Ljava/lang/String; :
+plugins using deprecated hudson.model.Descriptor.getCheckUrl(Ljava.lang.String;)Ljava.lang.String; :
    [associated-files-0.2.1, doclinks-0.6, flow-1.3, groovy-events-listener-plugin-1.009, groovy-events-listener-plugin-master-1.007, groovy-remote-0.2, matrix-groovy-execution-strategy-1.0.3, python-wrapper-1.0.3, selenium-axis-0.0.6]
-plugins using deprecated hudson/model/Descriptor.newInstance(Lorg/kohsuke/stapler/StaplerRequest;)Lhudson/model/Describable; :
+plugins using deprecated hudson.model.Descriptor.newInstance(Lorg.kohsuke.stapler.StaplerRequest;)Lhudson.model.Describable; :
    [associated-files-0.2.1, flow-1.3, groovy-events-listener-plugin-1.009, groovy-events-listener-plugin-master-1.007, groovy-remote-0.2, matrix-groovy-execution-strategy-1.0.3, python-wrapper-1.0.3, selenium-axis-0.0.6]
-plugins using deprecated hudson/model/Fingerprint.add(Lhudson/model/AbstractBuild;)V :
+plugins using deprecated hudson.model.Fingerprint.add(Lhudson.model.AbstractBuild;)V :
    [perfectomobile-2.41.0.1, s3-0.8]
-plugins using deprecated hudson/model/HealthReport.<init>(ILjava/lang/String;)V :
+plugins using deprecated hudson.model.HealthReport.<init>(ILjava.lang.String;)V :
    [cppcheck-1.21, cppncss-1.1, maven-release-cascade-1.3.2, monkit-plugin-1.0.0, nsiqcollector-1.3.3, perfpublisher-8.02]
-plugins using deprecated hudson/model/Hudson.getInstance()Lhudson/model/Hudson; :
+plugins using deprecated hudson.model.Hudson.getInstance()Lhudson.model.Hudson; :
    [accurev-0.6.35, active-directory-1.41, any-buildstep-0.1, artifactory-2.4.4, assembla-1.4, avatar-1.2, azure-slave-plugin-0.3.2, backup-1.6.1, bazaar-1.22, bitbucket-oauth-0.4, BlameSubversion-1.200, browser-axis-plugin-1.0, buckminster-1.1.1, bugzilla-1.5, build-alias-setter-0.3, build-cause-run-condition-0.1, build-failure-analyzer-1.13.1, build-keeper-plugin-1.3, build-line-1.0.4, build-metrics-1.0, build-publisher-1.21, build-with-parameters-1.3, buildcontext-capture-0.6, buildheroes-0.2, bulk-builder-1.5, campfire-2.7, clearcase-1.6.2, clearcase-release-0.3, clearcase-ucm-baseline-1.7.4, clone-workspace-scm-0.6, cloudbees-plugin-gateway-5.0, cloudbees-registration-3.14, cloudfoundry-1.5, clover-4.4.0, cobertura-1.9.7, collabnet-1.1.10, collabnet-automic-deploy-1.0.1, collabnet-uc4-deploy-1.0, collapsing-console-sections-1.4.1, concurrent-login-plugin-0.7, confluence-publisher-1.8, copy-data-to-workspace-plugin-1.0, copy-project-link-1.4, copy-to-slave-1.4.4, covcomplplot-1.1.1, coverity-1.6.0, createjobadvanced-1.8, crowd-1.2, crowd2-1.8, custom-tools-plugin-0.4.4, cvs-2.12, cygwin-process-killer-0.1, darcs-0.3.11, dashboard-view-2.9.6, dbCharts-0.5.2, delta-cloud-1.0.1, dependency-queue-plugin-1.1, depgraph-view-0.11, deploy-1.10, deployit-plugin-5.0.1, dimensionsscm-0.8.12, diskcheck-0.26, display-upstream-changes-0.1, distfork-1.3, distTest-1.0, doclinks-0.6, dos-trigger-1.23, downstream-buildview-1.9, downstream-ext-1.8, doxygen-0.18, drecycler-0.20, dumpinfo-buildwrapper-plugin-1.1, dynamicparameter-0.2.0, ec2-1.29, ec2-cloud-axis-1.2, eggplant-plugin-2.2, environment-dashboard-1.1.4, extended-choice-parameter-0.53, extensible-choice-parameter-1.3.2, externalresource-dispatcher-1.1.0, extra-tool-installers-0.3, fail-the-build-plugin-1.0, favorite-1.16, favorite-view-1.0, file-leak-detector-1.4, files-found-trigger-1.4, flashlog-plugin-1.0, flexible-publish-0.15.2, flow-1.3, fxcop-runner-1.1, gant-1.2, github-sqs-plugin-1.5, global-build-stats-1.3, global-variable-string-parameter-1.2, gnat-0.14, google-source-plugin-0.1, google-storage-plugin-0.9, googlecode-1.7, grails-1.7, greenballs-1.15, groovy-postbuild-2.2.2, growl-1.1, hadoop-1.4, hckrnews-1.1, heroku-jenkins-plugin-0.7.1-BETA, hgca-1.3, hockeyapp-1.2.0, hp-application-automation-tools-plugin-4.0, hudson-pview-plugin-1.8, icescrum-1.0.3, ivy-1.25.1, ivy-report-1.2, jbpm-embedded-plugin-0.2, jbpm-workflow-plugin-0.3, jenkinswalldisplay-0.6.30, job-exporter-0.4, job-import-plugin-1.2, jobrequeue-1.0, jobtemplates-1.0, join-1.16, jprt-1.1, jqs-monitoring-1.4, jswidgets-1.10, junit-attachments-1.3, jython-1.9, kato-0.2.5, klaros-testmanagement-1.5.1, kpp-management-plugin-1.0.0, label-verifier-1.1, labeled-test-groups-publisher-1.2.8, labmanager-0.2.8, LavaLampNotifier-1.4, ldapemail-0.8, lingr-plugin-0.1, list-command-0.2, locale-1.2, logaction-plugin-1.2, lotus-connections-plugin-1.25, m2-extra-steps-1.1.8, m2release-0.14.0, mailcommander-1.0.0, matrix-reloaded-1.1.3, matrixtieparent-1.2, maven-deployment-linker-1.5.1, maven-metadata-plugin-1.3.0, maven-release-cascade-1.3.2, maven-repo-cleaner-1.2, measurement-plots-0.1, metadata-1.1.0b, mongodb-1.3, monitoring-1.57.0, monkit-plugin-1.0.0, mstestrunner-1.2.0, multi-module-tests-publisher-1.41, myst-plugin-2.5.0.0, nant-1.4.3, ncover-0.3, nested-view-1.14, nodejs-0.2.1, nsiqcollector-1.3.3, oauth-credentials-0.3, offlineonfailure-plugin-1.0, openid-2.1.1, openshift-deployer-1.2.0, ownership-0.8, pegdown-formatter-1.3, perfectomobile-2.41.0.1, perforce-1.3.35, performance-1.13, periodicbackup-1.3, persistent-build-queue-plugin-0.1.1, persistent-parameter-1.1, persona-2.4, platformlabeler-1.1, poll-mailbox-trigger-plugin-1.019, pom2config-1.2, postbuildscript-0.17, prereq-buildstep-1.1, project-description-setter-1.1, project-health-report-1.2, project-inheritance-1.5.3, promoted-builds-simple-1.9, proxmox-0.2.1, publish-over-cifs-0.3, publish-over-ftp-1.11, publish-over-ssh-1.13, pwauth-0.4, pxe-1.5, qc-1.2.1, rad-builder-1.1.4, radiatorviewplugin-1.24, rake-1.8.0, random-string-parameter-1.0, rebuild-1.25, refit-0.3.1, regexemail-0.3, release-2.5.4, remote-terminal-access-1.6, robot-1.6.2, role-strategy-2.2.0, rrod-1.1.0, rundeck-3.5.1, s3-0.8, sametime-0.4, sasunit-plugin-1.024, scm-sync-configuration-0.0.8, scm2job-2.4, scons-0.4, scp-1.8, script-scm-1.17, scripted-cloud-plugin-0.12, scripttrigger-0.31, SCTMExecutor-1.5.1, selected-tests-executor-1.3.3, selection-tasks-plugin-1.0, selenium-2.4.1, sfee-1.0.4, shared-objects-0.44, shelve-project-plugin-1.5, sicci_for_xcode-0.0.8, sidebar-link-1.7, simpleclearcase-1.2.2, simpleupdatesite-1.1.2, skype-notifier-1.1.0, skytap-2.02, sladiator-notifier-1.0.4, slave-squatter-1.2, smartfrog-plugin-2.2.4, sounds-0.4.3, ssh-credentials-1.11, staf-0.1, startup-trigger-plugin-2.4, statusmonitor-1.3, storable-configs-plugin-1.0, subversion-2.5.4, suite-test-groups-publisher-1.13, svn-release-mgr-1.2, svn-revert-plugin-1.3, systemloadaverage-monitor-1.2, team-views-0.9.0, teamconcert-git-1.0.10, template-workflows-1.2, tepco-0.1, tepco-epuw-1.0, terminal-1.4, terminate-ssh-processes-plugin-1.0, testflight-1.3.9, testlink-3.11, testopia-1.3, thinBackup-1.7.4, throttle-concurrents-1.8.4, thucydides-0.1, tool-labels-plugin-3.0, tracking-git-1.0, tracking-svn-1.1, translation-1.12, tuxdroid-1.7, unity3d-plugin-1.3, unreliable-slave-plugin-1.2, URLSCM-1.6, validating-string-parameter-2.3, vault-scm-plugin-1.1.1, view-job-filters-1.27, virtualbox-0.7, vncrecorder-1.25, vs-code-metrics-1.7, vsphere-cloud-2.7, vstestrunner-1.0.4, was-builder-1.6.1, weblogic-deployer-plugin-3.3, websocket-1.0.6, whitesource-1.4, windows-exe-runner-1.2, ws-cleanup-0.28, xfpanel-2.0.1, xpath-config-viewer-1.1.1, xvfb-1.0.16, youtrack-plugin-0.6.6]
-plugins using deprecated hudson/model/Hudson.getSlaves()Ljava/util/List; :
+plugins using deprecated hudson.model.Hudson.getSlaves()Ljava.util.List; :
    [jqs-monitoring-1.4]
-plugins using deprecated hudson/model/Hudson.isWindows()Z :
+plugins using deprecated hudson.model.Hudson.isWindows()Z :
    [scripted-cloud-plugin-0.12, staf-0.1]
-plugins using deprecated hudson/model/Items.fromNameList(Ljava/lang/String;Ljava/lang/Class;)Ljava/util/List; :
+plugins using deprecated hudson.model.Items.fromNameList(Ljava.lang.String;Ljava.lang.Class;)Ljava.util.List; :
    [downstream-ext-1.8]
-plugins using deprecated hudson/model/Job.getBuildsByTimestamp(JJ)Lhudson/util/RunList; :
+plugins using deprecated hudson.model.Job.getBuildsByTimestamp(JJ)Lhudson.util.RunList; :
    [python-wrapper-1.0.3]
-plugins using deprecated hudson/model/Job.getLogRotator()Lhudson/tasks/LogRotator; :
+plugins using deprecated hudson.model.Job.getLogRotator()Lhudson.tasks.LogRotator; :
    [createjobadvanced-1.8, python-wrapper-1.0.3]
-plugins using deprecated hudson/model/Job.setLogRotator(Lhudson/tasks/LogRotator;)V :
+plugins using deprecated hudson.model.Job.setLogRotator(Lhudson.tasks.LogRotator;)V :
    [createjobadvanced-1.8, python-wrapper-1.0.3]
-plugins using deprecated hudson/model/JobProperty.getJobAction(Lhudson/model/Job;)Lhudson/model/Action; :
+plugins using deprecated hudson.model.JobProperty.getJobAction(Lhudson.model.Job;)Lhudson.model.Action; :
    [python-wrapper-1.0.3, svn-release-mgr-1.2]
-plugins using deprecated hudson/model/Node.canTake(Lhudson/model/Queue$Task;)Lhudson/model/queue/CauseOfBlockage; :
+plugins using deprecated hudson.model.Node.canTake(Lhudson.model.Queue$Task;)Lhudson.model.queue.CauseOfBlockage; :
    [python-wrapper-1.0.3]
-plugins using deprecated hudson/model/PageDecorator.<init>(Ljava/lang/Class;)V :
+plugins using deprecated hudson.model.PageDecorator.<init>(Ljava.lang.Class;)V :
    [cloudbees-plugin-gateway-5.0, cloudbees-registration-3.14, config-autorefresh-plugin-1.0, daily-quote-1.0, form-element-path-1.5, googleanalytics-1.3, jquery-1.11.2-0, jquery-ui-1.0.2, python-wrapper-1.0.3, scm-sync-configuration-0.0.8, send-stacktrace-to-eclipse-plugin-1.7, simple-theme-plugin-0.3, sounds-0.4.3, translation-1.12]
-plugins using deprecated hudson/model/ParameterValue.buildEnvVars(Lhudson/model/AbstractBuild;Lhudson/EnvVars;)V :
+plugins using deprecated hudson.model.ParameterValue.buildEnvVars(Lhudson.model.AbstractBuild;Lhudson.EnvVars;)V :
    [export-params-1.1, zmq-event-publisher-0.0.3]
-plugins using deprecated hudson/model/ParametersDefinitionProperty._doBuild(Lorg/kohsuke/stapler/StaplerRequest;Lorg/kohsuke/stapler/StaplerResponse;)V :
+plugins using deprecated hudson.model.ParametersDefinitionProperty._doBuild(Lorg.kohsuke.stapler.StaplerRequest;Lorg.kohsuke.stapler.StaplerResponse;)V :
    [async-job-1.3, project-inheritance-1.5.3]
-plugins using deprecated hudson/model/ParametersDefinitionProperty.getOwner()Lhudson/model/AbstractProject; :
+plugins using deprecated hudson.model.ParametersDefinitionProperty.getOwner()Lhudson.model.AbstractProject; :
    [bulk-builder-1.5, jobgenerator-1.22, project-inheritance-1.5.3]
-plugins using deprecated hudson/model/Queue.schedule(Lhudson/model/Queue$Task;ILjava/util/List;)Lhudson/model/Queue$WaitingItem; :
+plugins using deprecated hudson.model.Queue.schedule(Lhudson.model.Queue$Task;ILjava.util.List;)Lhudson.model.Queue$WaitingItem; :
    [project-inheritance-1.5.3, rebuild-1.25]
-plugins using deprecated hudson/model/Run$Artifact.getFile()Ljava/io/File; :
+plugins using deprecated hudson.model.Run$Artifact.getFile()Ljava.io.File; :
    [artifact-diff-plugin-1.3, http-post-1.2, neoload-jenkins-plugin-1.0.1, sfee-1.0.4, weblogic-deployer-plugin-3.3]
-plugins using deprecated hudson/model/Run.doProgressiveLog(Lorg/kohsuke/stapler/StaplerRequest;Lorg/kohsuke/stapler/StaplerResponse;)V :
+plugins using deprecated hudson.model.Run.doProgressiveLog(Lorg.kohsuke.stapler.StaplerRequest;Lorg.kohsuke.stapler.StaplerResponse;)V :
    [python-wrapper-1.0.3]
-plugins using deprecated hudson/model/Run.getAbsoluteUrl()Ljava/lang/String; :
+plugins using deprecated hudson.model.Run.getAbsoluteUrl()Ljava.lang.String; :
    [buildgraph-view-1.1.1]
-plugins using deprecated hudson/model/Run.getArtifactsDir()Ljava/io/File; :
+plugins using deprecated hudson.model.Run.getArtifactsDir()Ljava.io.File; :
    [artifact-diff-plugin-1.3, copyartifact-1.37, cucumber-perf-2.0.6, hp-application-automation-tools-plugin-4.0, perfectomobile-2.41.0.1, python-wrapper-1.0.3, webload-1.0]
-plugins using deprecated hudson/model/Run.getEnvVars()Ljava/util/Map; :
+plugins using deprecated hudson.model.Run.getEnvVars()Ljava.util.Map; :
    [python-wrapper-1.0.3]
-plugins using deprecated hudson/model/Run.getEnvironment()Lhudson/EnvVars; :
+plugins using deprecated hudson.model.Run.getEnvironment()Lhudson.EnvVars; :
    [python-wrapper-1.0.3]
-plugins using deprecated hudson/model/Run.getTransientActions()Ljava/util/List; :
+plugins using deprecated hudson.model.Run.getTransientActions()Ljava.util.List; :
    [python-wrapper-1.0.3]
-plugins using deprecated hudson/model/RunMap.<init>()V :
+plugins using deprecated hudson.model.RunMap.<init>()V :
    [async-job-1.3, view-job-filters-1.27]
-plugins using deprecated hudson/model/RunMap.load(Lhudson/model/Job;Lhudson/model/RunMap$Constructor;)V :
+plugins using deprecated hudson.model.RunMap.load(Lhudson.model.Job;Lhudson.model.RunMap$Constructor;)V :
    [async-job-1.3, external-monitor-job-1.4]
-plugins using deprecated hudson/model/RunParameterDefinition.<init>(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V :
+plugins using deprecated hudson.model.RunParameterDefinition.<init>(Ljava.lang.String;Ljava.lang.String;Ljava.lang.String;)V :
    [storable-configs-plugin-1.0]
-plugins using deprecated hudson/model/StreamBuildListener.<init>(Ljava/io/PrintStream;)V :
+plugins using deprecated hudson.model.StreamBuildListener.<init>(Ljava.io.PrintStream;)V :
    [ivy-1.25.1]
-plugins using deprecated hudson/model/TaskThread$ListenerAndText.forFile(Ljava/io/File;)Lhudson/model/TaskThread$ListenerAndText; :
+plugins using deprecated hudson.model.TaskThread$ListenerAndText.forFile(Ljava.io.File;)Lhudson.model.TaskThread$ListenerAndText; :
    [sfee-1.0.4]
-plugins using deprecated hudson/model/TaskThread$ListenerAndText.forMemory()Lhudson/model/TaskThread$ListenerAndText; :
+plugins using deprecated hudson.model.TaskThread$ListenerAndText.forMemory()Lhudson.model.TaskThread$ListenerAndText; :
    [bazaar-1.22, BlameSubversion-1.200, clearcase-release-0.3, cvs-2.12, svn-release-mgr-1.2]
-plugins using deprecated hudson/model/TopLevelItemDescriptor.newInstance(Ljava/lang/String;)Lhudson/model/TopLevelItem; :
+plugins using deprecated hudson.model.TopLevelItemDescriptor.newInstance(Ljava.lang.String;)Lhudson.model.TopLevelItem; :
    [python-wrapper-1.0.3]
-plugins using deprecated hudson/model/TopLevelItemDescriptor.newInstance(Lorg/kohsuke/stapler/StaplerRequest;)Lhudson/model/TopLevelItem; :
+plugins using deprecated hudson.model.TopLevelItemDescriptor.newInstance(Lorg.kohsuke.stapler.StaplerRequest;)Lhudson.model.TopLevelItem; :
    [python-wrapper-1.0.3]
-plugins using deprecated hudson/model/UpdateCenter$UpdateCenterConfiguration.getConnectionCheckUrl()Ljava/lang/String; :
+plugins using deprecated hudson.model.UpdateCenter$UpdateCenterConfiguration.getConnectionCheckUrl()Ljava.lang.String; :
    [python-wrapper-1.0.3]
-plugins using deprecated hudson/model/UpdateCenter$UpdateCenterConfiguration.getPluginRepositoryBaseUrl()Ljava/lang/String; :
+plugins using deprecated hudson.model.UpdateCenter$UpdateCenterConfiguration.getPluginRepositoryBaseUrl()Ljava.lang.String; :
    [python-wrapper-1.0.3]
-plugins using deprecated hudson/model/UpdateCenter$UpdateCenterConfiguration.getUpdateCenterUrl()Ljava/lang/String; :
+plugins using deprecated hudson.model.UpdateCenter$UpdateCenterConfiguration.getUpdateCenterUrl()Ljava.lang.String; :
    [python-wrapper-1.0.3]
-plugins using deprecated hudson/model/User.get(Ljava/lang/String;Z)Lhudson/model/User; :
+plugins using deprecated hudson.model.User.get(Ljava.lang.String;Z)Lhudson.model.User; :
    [bazaar-1.22, dimensionsscm-0.8.12, gcm-notification-1.0]
-plugins using deprecated hudson/model/View.hasPeople()Z :
+plugins using deprecated hudson.model.View.hasPeople()Z :
    [python-wrapper-1.0.3]
-plugins using deprecated hudson/model/View.onJobRenamed(Lhudson/model/Item;Ljava/lang/String;Ljava/lang/String;)V :
+plugins using deprecated hudson.model.View.onJobRenamed(Lhudson.model.Item;Ljava.lang.String;Ljava.lang.String;)V :
    [nested-view-1.14]
-plugins using deprecated hudson/model/listeners/ItemListener.register()V :
+plugins using deprecated hudson.model.listeners.ItemListener.register()V :
    [python-wrapper-1.0.3]
-plugins using deprecated hudson/model/listeners/RunListener.register()V :
+plugins using deprecated hudson.model.listeners.RunListener.register()V :
    [associated-files-0.2.1, python-wrapper-1.0.3]
-plugins using deprecated hudson/model/listeners/SCMListener.onChangeLogParsed(Lhudson/model/AbstractBuild;Lhudson/model/BuildListener;Lhudson/scm/ChangeLogSet;)V :
+plugins using deprecated hudson.model.listeners.SCMListener.onChangeLogParsed(Lhudson.model.AbstractBuild;Lhudson.model.BuildListener;Lhudson.scm.ChangeLogSet;)V :
    [assembla-1.4, python-wrapper-1.0.3]
-plugins using deprecated hudson/model/listeners/SCMListener.register()V :
+plugins using deprecated hudson.model.listeners.SCMListener.register()V :
    [assembla-1.4, bazaar-1.22, google-source-plugin-0.1, youtrack-plugin-0.6.6]
-plugins using deprecated hudson/model/listeners/SCMListener.unregister()Z :
+plugins using deprecated hudson.model.listeners.SCMListener.unregister()Z :
    [assembla-1.4, youtrack-plugin-0.6.6]
-plugins using deprecated hudson/model/listeners/SaveableListener.register()V :
+plugins using deprecated hudson.model.listeners.SaveableListener.register()V :
    [python-wrapper-1.0.3]
-plugins using deprecated hudson/model/queue/LoadPredictor.predict(Lhudson/model/Computer;JJ)Ljava/lang/Iterable; :
+plugins using deprecated hudson.model.queue.LoadPredictor.predict(Lhudson.model.Computer;JJ)Ljava.lang.Iterable; :
    [python-wrapper-1.0.3]
-plugins using deprecated hudson/model/queue/QueueTaskDispatcher.canTake(Lhudson/model/Node;Lhudson/model/Queue$Task;)Lhudson/model/queue/CauseOfBlockage; :
+plugins using deprecated hudson.model.queue.QueueTaskDispatcher.canTake(Lhudson.model.Node;Lhudson.model.Queue$Task;)Lhudson.model.queue.CauseOfBlockage; :
    [python-wrapper-1.0.3]
-plugins using deprecated hudson/node_monitors/AbstractNodeMonitorDescriptor.<init>()V :
+plugins using deprecated hudson.node_monitors.AbstractNodeMonitorDescriptor.<init>()V :
    [ownership-0.8, python-wrapper-1.0.3, systemloadaverage-monitor-1.2, versioncolumn-0.2, writable-filesystem-monitor-0.1]
-plugins using deprecated hudson/node_monitors/AbstractNodeMonitorDescriptor.<init>(J)V :
+plugins using deprecated hudson.node_monitors.AbstractNodeMonitorDescriptor.<init>(J)V :
    [python-wrapper-1.0.3]
-plugins using deprecated hudson/node_monitors/AbstractNodeMonitorDescriptor.<init>(Ljava/lang/Class;)V :
+plugins using deprecated hudson.node_monitors.AbstractNodeMonitorDescriptor.<init>(Ljava.lang.Class;)V :
    [network-monitor-1.1, python-wrapper-1.0.3]
-plugins using deprecated hudson/node_monitors/AbstractNodeMonitorDescriptor.<init>(Ljava/lang/Class;J)V :
+plugins using deprecated hudson.node_monitors.AbstractNodeMonitorDescriptor.<init>(Ljava.lang.Class;J)V :
    [python-wrapper-1.0.3]
-plugins using deprecated hudson/node_monitors/AbstractNodeMonitorDescriptor.markOffline(Lhudson/model/Computer;)Z :
+plugins using deprecated hudson.node_monitors.AbstractNodeMonitorDescriptor.markOffline(Lhudson.model.Computer;)Z :
    [python-wrapper-1.0.3]
-plugins using deprecated hudson/os/PosixAPI.get()Lorg/jruby/ext/posix/POSIX; :
+plugins using deprecated hudson.os.PosixAPI.get()Lorg.jruby.ext.posix.POSIX; :
    [file-leak-detector-1.4, maven-repo-cleaner-1.2, nodejs-0.2.1, sicci_for_xcode-0.0.8]
-plugins using deprecated hudson/remoting/RemoteInputStream.<init>(Ljava/io/InputStream;)V :
+plugins using deprecated hudson.remoting.RemoteInputStream.<init>(Ljava.io.InputStream;)V :
    [perforce-1.3.35, pxe-1.5, remote-terminal-access-1.6, selenium-2.4.1]
-plugins using deprecated hudson/remoting/SocketInputStream.<init>(Ljava/net/Socket;)V :
+plugins using deprecated hudson.remoting.SocketInputStream.<init>(Ljava.net.Socket;)V :
    [selenium-2.4.1, slave-proxy-1.1]
-plugins using deprecated hudson/remoting/SocketOutputStream.<init>(Ljava/net/Socket;)V :
+plugins using deprecated hudson.remoting.SocketOutputStream.<init>(Ljava.net.Socket;)V :
    [selenium-2.4.1, slave-proxy-1.1]
-plugins using deprecated hudson/remoting/Which.jarURL(Ljava/lang/Class;)Ljava/net/URL; :
+plugins using deprecated hudson.remoting.Which.jarURL(Ljava.lang.Class;)Ljava.net.URL; :
    [BlameSubversion-1.200, svn-release-mgr-1.2]
-plugins using deprecated hudson/scheduler/CronTab.<init>(Ljava/lang/String;I)V :
+plugins using deprecated hudson.scheduler.CronTab.<init>(Ljava.lang.String;I)V :
    [slave-squatter-1.2]
-plugins using deprecated hudson/scm/AbstractScmTagAction.<init>(Lhudson/model/AbstractBuild;)V :
+plugins using deprecated hudson.scm.AbstractScmTagAction.<init>(Lhudson.model.AbstractBuild;)V :
    [bazaar-1.22, BlameSubversion-1.200, cvs-2.12, perforce-1.3.35]
-plugins using deprecated hudson/scm/AbstractScmTagAction.getBuild()Lhudson/model/AbstractBuild; :
+plugins using deprecated hudson.scm.AbstractScmTagAction.getBuild()Lhudson.model.AbstractBuild; :
    [bazaar-1.22, BlameSubversion-1.200, cvs-2.12, perforce-1.3.35, subversion-2.5.4]
-plugins using deprecated hudson/scm/ChangeLogAnnotator.annotate(Lhudson/model/AbstractBuild;Lhudson/scm/ChangeLogSet$Entry;Lhudson/MarkupText;)V :
+plugins using deprecated hudson.scm.ChangeLogAnnotator.annotate(Lhudson.model.AbstractBuild;Lhudson.scm.ChangeLogSet$Entry;Lhudson.MarkupText;)V :
    [svn-release-mgr-1.2, visualworks-store-1.1.1]
-plugins using deprecated hudson/scm/ChangeLogParser.parse(Lhudson/model/AbstractBuild;Ljava/io/File;)Lhudson/scm/ChangeLogSet; :
+plugins using deprecated hudson.scm.ChangeLogParser.parse(Lhudson.model.AbstractBuild;Ljava.io.File;)Lhudson.scm.ChangeLogSet; :
    [changelog-history-1.3]
-plugins using deprecated hudson/scm/ChangeLogSet.<init>(Lhudson/model/AbstractBuild;)V :
+plugins using deprecated hudson.scm.ChangeLogSet.<init>(Lhudson.model.AbstractBuild;)V :
    [accurev-0.6.35, bazaar-1.22, BlameSubversion-1.200, clearcase-1.6.2, cmvc-0.4, collabnet-1.1.10, config-rotator-1.3.1, cvs-2.12, darcs-0.3.11, dimensionsscm-0.8.12, filesystem_scm-1.20, ivy-1.25.1, pending-changes-0.3.0, perforce-1.3.35, plasticscm-plugin-2.3, pvcs_scm-1.1, script-scm-1.17, simpleclearcase-1.2.2, starteam-0.6.13, Surround-SCM-plugin-1.7, svn-release-mgr-1.2, synergy-1.7, tfs-4.0.0, unity-asset-server-1.1.1, vault-scm-plugin-1.1.1, visualworks-store-1.1.1, vss-1.9]
-plugins using deprecated hudson/scm/ChangeLogSet.createEmpty(Lhudson/model/AbstractBuild;)Lhudson/scm/ChangeLogSet; :
+plugins using deprecated hudson.scm.ChangeLogSet.createEmpty(Lhudson.model.AbstractBuild;)Lhudson.scm.ChangeLogSet; :
    [ivy-1.25.1]
-plugins using deprecated hudson/scm/SCM._calcRevisionsFromBuild(Lhudson/model/AbstractBuild;Lhudson/Launcher;Lhudson/model/TaskListener;)Lhudson/scm/SCMRevisionState; :
+plugins using deprecated hudson.scm.SCM._calcRevisionsFromBuild(Lhudson.model.AbstractBuild;Lhudson.Launcher;Lhudson.model.TaskListener;)Lhudson.scm.SCMRevisionState; :
    [python-wrapper-1.0.3]
-plugins using deprecated hudson/scm/SCM.calcRevisionsFromBuild(Lhudson/model/AbstractBuild;Lhudson/Launcher;Lhudson/model/TaskListener;)Lhudson/scm/SCMRevisionState; :
+plugins using deprecated hudson.scm.SCM.calcRevisionsFromBuild(Lhudson.model.AbstractBuild;Lhudson.Launcher;Lhudson.model.TaskListener;)Lhudson.scm.SCMRevisionState; :
    [clearcase-1.6.2, darcs-0.3.11, googlecode-1.7, perforce-1.3.35]
-plugins using deprecated hudson/scm/SCM.checkout(Lhudson/model/AbstractBuild;Lhudson/Launcher;Lhudson/FilePath;Lhudson/model/BuildListener;Ljava/io/File;)Z :
+plugins using deprecated hudson.scm.SCM.checkout(Lhudson.model.AbstractBuild;Lhudson.Launcher;Lhudson.FilePath;Lhudson.model.BuildListener;Ljava.io.File;)Z :
    [googlecode-1.7]
-plugins using deprecated hudson/scm/SCM.createEmptyChangeLog(Ljava/io/File;Lhudson/model/BuildListener;Ljava/lang/String;)Z :
+plugins using deprecated hudson.scm.SCM.createEmptyChangeLog(Ljava.io.File;Lhudson.model.BuildListener;Ljava.lang.String;)Z :
    [bazaar-1.22, BlameSubversion-1.200, clearcase-1.6.2, clone-workspace-scm-0.6, cvs-2.12, darcs-0.3.11, perforce-1.3.35, svn-release-mgr-1.2, URLSCM-1.6, visualworks-store-1.1.1]
-plugins using deprecated hudson/scm/SCM.getModuleRoot(Lhudson/FilePath;)Lhudson/FilePath; :
+plugins using deprecated hudson.scm.SCM.getModuleRoot(Lhudson.FilePath;)Lhudson.FilePath; :
    [BlameSubversion-1.200, googlecode-1.7, python-wrapper-1.0.3, subversion-2.5.4, svn-release-mgr-1.2]
-plugins using deprecated hudson/scm/SCM.getModuleRoots(Lhudson/FilePath;)[Lhudson/FilePath; :
+plugins using deprecated hudson.scm.SCM.getModuleRoots(Lhudson.FilePath;)[Lhudson.FilePath; :
    [googlecode-1.7, python-wrapper-1.0.3, subversion-2.5.4]
-plugins using deprecated hudson/scm/SCM.pollChanges(Lhudson/model/AbstractProject;Lhudson/Launcher;Lhudson/FilePath;Lhudson/model/TaskListener;)Z :
+plugins using deprecated hudson.scm.SCM.pollChanges(Lhudson.model.AbstractProject;Lhudson.Launcher;Lhudson.FilePath;Lhudson.model.TaskListener;)Z :
    [googlecode-1.7, python-wrapper-1.0.3, tfs-4.0.0]
-plugins using deprecated hudson/scm/SCM.processWorkspaceBeforeDeletion(Lhudson/model/AbstractProject;Lhudson/FilePath;Lhudson/model/Node;)Z :
+plugins using deprecated hudson.scm.SCM.processWorkspaceBeforeDeletion(Lhudson.model.AbstractProject;Lhudson.FilePath;Lhudson.model.Node;)Z :
    [python-wrapper-1.0.3]
-plugins using deprecated hudson/scm/SCMDescriptor.isApplicable(Lhudson/model/AbstractProject;)Z :
+plugins using deprecated hudson.scm.SCMDescriptor.isApplicable(Lhudson.model.AbstractProject;)Z :
    [python-wrapper-1.0.3]
-plugins using deprecated hudson/security/Permission.<init>(Lhudson/security/PermissionGroup;Ljava/lang/String;Lorg/jvnet/localizer/Localizable;Lhudson/security/Permission;)V :
+plugins using deprecated hudson.security.Permission.<init>(Lhudson.security.PermissionGroup;Ljava.lang.String;Lorg.jvnet.localizer.Localizable;Lhudson.security.Permission;)V :
    [build-failure-analyzer-1.13.1, externalresource-dispatcher-1.1.0, ios-device-connector-1.2, m2release-0.14.0, metadata-1.1.0b, sfee-1.0.4]
-plugins using deprecated hudson/slaves/ComputerLauncher.afterDisconnect(Lhudson/slaves/SlaveComputer;Lhudson/util/StreamTaskListener;)V :
+plugins using deprecated hudson.slaves.ComputerLauncher.afterDisconnect(Lhudson.slaves.SlaveComputer;Lhudson.util.StreamTaskListener;)V :
    [python-wrapper-1.0.3]
-plugins using deprecated hudson/slaves/ComputerLauncher.beforeDisconnect(Lhudson/slaves/SlaveComputer;Lhudson/util/StreamTaskListener;)V :
+plugins using deprecated hudson.slaves.ComputerLauncher.beforeDisconnect(Lhudson.slaves.SlaveComputer;Lhudson.util.StreamTaskListener;)V :
    [python-wrapper-1.0.3]
-plugins using deprecated hudson/slaves/ComputerLauncher.launch(Lhudson/slaves/SlaveComputer;Lhudson/util/StreamTaskListener;)V :
+plugins using deprecated hudson.slaves.ComputerLauncher.launch(Lhudson.slaves.SlaveComputer;Lhudson.util.StreamTaskListener;)V :
    [python-wrapper-1.0.3]
-plugins using deprecated hudson/slaves/ComputerListener.onOffline(Lhudson/model/Computer;)V :
+plugins using deprecated hudson.slaves.ComputerListener.onOffline(Lhudson.model.Computer;)V :
    [monitoring-1.57.0, python-wrapper-1.0.3]
-plugins using deprecated hudson/slaves/ComputerListener.onOnline(Lhudson/model/Computer;)V :
+plugins using deprecated hudson.slaves.ComputerListener.onOnline(Lhudson.model.Computer;)V :
    [python-wrapper-1.0.3]
-plugins using deprecated hudson/slaves/ComputerListener.register()V :
+plugins using deprecated hudson.slaves.ComputerListener.register()V :
    [jqs-monitoring-1.4, monitoring-1.57.0]
-plugins using deprecated hudson/slaves/NodeProperty.canTake(Lhudson/model/Queue$Task;)Lhudson/model/queue/CauseOfBlockage; :
+plugins using deprecated hudson.slaves.NodeProperty.canTake(Lhudson.model.Queue$Task;)Lhudson.model.queue.CauseOfBlockage; :
    [python-wrapper-1.0.3]
-plugins using deprecated hudson/tasks/ArtifactArchiver.<init>(Ljava/lang/String;Ljava/lang/String;Z)V :
+plugins using deprecated hudson.tasks.ArtifactArchiver.<init>(Ljava.lang.String;Ljava.lang.String;Z)V :
    [buckminster-1.1.1, mock-load-builder-1.0]
-plugins using deprecated hudson/tasks/ArtifactArchiver.isLatestOnly()Z :
+plugins using deprecated hudson.tasks.ArtifactArchiver.isLatestOnly()Z :
    [build-publisher-1.21]
-plugins using deprecated hudson/tasks/BuildTrigger.getChildProjects()Ljava/util/List; :
+plugins using deprecated hudson.tasks.BuildTrigger.getChildProjects()Ljava.util.List; :
    [preSCMbuildstep-0.3]
-plugins using deprecated hudson/tasks/BuildTrigger.onJobRenamed(Ljava/lang/String;Ljava/lang/String;)Z :
+plugins using deprecated hudson.tasks.BuildTrigger.onJobRenamed(Ljava.lang.String;Ljava.lang.String;)Z :
    [join-1.16]
-plugins using deprecated hudson/tasks/BuildWrapper.getProjectAction(Lhudson/model/AbstractProject;)Lhudson/model/Action; :
+plugins using deprecated hudson.tasks.BuildWrapper.getProjectAction(Lhudson.model.AbstractProject;)Lhudson.model.Action; :
    [artifactory-2.4.4, python-wrapper-1.0.3]
-plugins using deprecated hudson/tasks/BuildWrapper.setUp(Lhudson/model/Build;Lhudson/Launcher;Lhudson/model/BuildListener;)Lhudson/tasks/BuildWrapper$Environment; :
+plugins using deprecated hudson.tasks.BuildWrapper.setUp(Lhudson.model.Build;Lhudson.Launcher;Lhudson.model.BuildListener;)Lhudson.tasks.BuildWrapper$Environment; :
    [copy-data-to-workspace-plugin-1.0, copy-to-slave-1.4.4, seleniumrc-plugin-1.0]
-plugins using deprecated hudson/tasks/Fingerprinter$FingerprintAction.<init>(Lhudson/model/AbstractBuild;Ljava/util/Map;)V :
+plugins using deprecated hudson.tasks.Fingerprinter$FingerprintAction.<init>(Lhudson.model.AbstractBuild;Ljava.util.Map;)V :
    [perfectomobile-2.41.0.1, s3-0.8]
-plugins using deprecated hudson/tasks/Fingerprinter.<init>(Ljava/lang/String;Z)V :
+plugins using deprecated hudson.tasks.Fingerprinter.<init>(Ljava.lang.String;Z)V :
    [create-fingerprint-1.2, mock-load-builder-1.0]
-plugins using deprecated hudson/tasks/Publisher.<init>()V :
+plugins using deprecated hudson.tasks.Publisher.<init>()V :
    [chatwork-1.0.4, curseforge-publisher-1.0, deploygate-plugin-1.2, mailcommander-1.0.0, nexus-task-runner-0.9.2, nopmdverifytrac-0.9, perfpublisher-8.02, redmine-0.15, stepcounter-1.3.2]
-plugins using deprecated hudson/tasks/Publisher.getProjectAction(Lhudson/model/Project;)Lhudson/model/Action; :
+plugins using deprecated hudson.tasks.Publisher.getProjectAction(Lhudson.model.Project;)Lhudson.model.Action; :
    [associated-files-0.2.1]
-plugins using deprecated hudson/tasks/Publisher.prebuild(Lhudson/model/Build;Lhudson/model/BuildListener;)Z :
+plugins using deprecated hudson.tasks.Publisher.prebuild(Lhudson.model.Build;Lhudson.model.BuildListener;)Z :
    [associated-files-0.2.1]
-plugins using deprecated hudson/tools/ToolInstallation.<init>(Ljava/lang/String;Ljava/lang/String;)V :
+plugins using deprecated hudson.tools.ToolInstallation.<init>(Ljava.lang.String;Ljava.lang.String;)V :
    [doxygen-0.18, fxcop-runner-1.1, python-wrapper-1.0.3, qc-1.2.1, rad-builder-1.1.4, sasunit-plugin-1.024, vs-code-metrics-1.7, vstestrunner-1.0.4]
-plugins using deprecated hudson/triggers/Trigger.getProjectAction()Lhudson/model/Action; :
+plugins using deprecated hudson.triggers.Trigger.getProjectAction()Lhudson.model.Action; :
    [python-wrapper-1.0.3]
-plugins using deprecated hudson/util/ChartUtil$NumberOnlyBuildLabel.<init>(Lhudson/model/AbstractBuild;)V :
+plugins using deprecated hudson.util.ChartUtil$NumberOnlyBuildLabel.<init>(Lhudson.model.AbstractBuild;)V :
    [appthwack-1.9, aws-device-farm-1.11, caliper-ci-2.3, cccc-0.6, clover-4.4.0, cobertura-1.9.7, codecover-1.1, codedx-2.0, cppcheck-1.21, cppncss-1.1, dynatrace-dashboard-1.0.5, emma-1.29, fortify360-3.81, grinder-1.4, jacoco-1.0.19, javancss-1.1, klocwork-1.18, monkit-plugin-1.0.0, nsiqcollector-1.3.3, performance-1.13, perfpublisher-8.02, robot-1.6.2, rubyMetrics-1.6.3, seleniumhq-0.4, sloccount-1.21, sourcemonitor-0.2, stepcounter-1.3.2, testabilityexplorer-0.4, testlink-3.11, testopia-1.3, valgrind-0.25, violations-0.7.11, vs-code-metrics-1.7]
-plugins using deprecated hudson/util/ChartUtil.generateClickableMap(Lorg/kohsuke/stapler/StaplerRequest;Lorg/kohsuke/stapler/StaplerResponse;Lorg/jfree/chart/JFreeChart;II)V :
+plugins using deprecated hudson.util.ChartUtil.generateClickableMap(Lorg.kohsuke.stapler.StaplerRequest;Lorg.kohsuke.stapler.StaplerResponse;Lorg.jfree.chart.JFreeChart;II)V :
    [global-build-stats-1.3, perfpublisher-8.02, sloccount-1.21, sourcemonitor-0.2]
-plugins using deprecated hudson/util/ChartUtil.generateGraph(Lorg/kohsuke/stapler/StaplerRequest;Lorg/kohsuke/stapler/StaplerResponse;Lorg/jfree/chart/JFreeChart;II)V :
+plugins using deprecated hudson.util.ChartUtil.generateGraph(Lorg.kohsuke.stapler.StaplerRequest;Lorg.kohsuke.stapler.StaplerResponse;Lorg.jfree.chart.JFreeChart;II)V :
    [cobertura-1.9.7, codedx-2.0, cppncss-1.1, dbCharts-0.5.2, fortify360-3.81, global-build-stats-1.3, grinder-1.4, japex-1.7, monkit-plugin-1.0.0, performance-1.13, perfpublisher-8.02, pitmutation-1.0-13, plot-1.9, rubyMetrics-1.6.3, sloccount-1.21, sourcemonitor-0.2, testabilityexplorer-0.4, violations-0.7.11]
-plugins using deprecated hudson/util/ChartUtil.generateGraph(Lorg/kohsuke/stapler/StaplerRequest;Lorg/kohsuke/stapler/StaplerResponse;Lorg/jfree/chart/JFreeChart;Lhudson/util/Area;)V :
+plugins using deprecated hudson.util.ChartUtil.generateGraph(Lorg.kohsuke.stapler.StaplerRequest;Lorg.kohsuke.stapler.StaplerResponse;Lorg.jfree.chart.JFreeChart;Lhudson.util.Area;)V :
    [seleniumhq-0.4]
-plugins using deprecated hudson/util/IOUtils.closeQuietly(Ljava/io/InputStream;)V :
+plugins using deprecated hudson.util.IOUtils.closeQuietly(Ljava.io.InputStream;)V :
    [credentials-1.24, embeddable-build-status-1.8, ws-cleanup-0.28]
-plugins using deprecated hudson/util/IOUtils.closeQuietly(Ljava/io/OutputStream;)V :
+plugins using deprecated hudson.util.IOUtils.closeQuietly(Ljava.io.OutputStream;)V :
    [darcs-0.3.11]
-plugins using deprecated hudson/util/IOUtils.closeQuietly(Ljava/io/Reader;)V :
+plugins using deprecated hudson.util.IOUtils.closeQuietly(Ljava.io.Reader;)V :
    [cpptest-0.14, groovy-postbuild-2.2.2, plasticscm-plugin-2.3, utplsql-0.6.1]
-plugins using deprecated hudson/util/IOUtils.closeQuietly(Ljava/io/Writer;)V :
+plugins using deprecated hudson.util.IOUtils.closeQuietly(Ljava.io.Writer;)V :
    [utplsql-0.6.1]
-plugins using deprecated hudson/util/IOUtils.copy(Ljava/io/InputStream;Ljava/io/OutputStream;)I :
+plugins using deprecated hudson.util.IOUtils.copy(Ljava.io.InputStream;Ljava.io.OutputStream;)I :
    [aws-codepipeline-0.10, maven-deployment-linker-1.5.1]
-plugins using deprecated hudson/util/IOUtils.copy(Ljava/io/InputStream;Ljava/io/Writer;)V :
+plugins using deprecated hudson.util.IOUtils.copy(Ljava.io.InputStream;Ljava.io.Writer;)V :
    [cygwin-process-killer-0.1]
-plugins using deprecated hudson/util/IOUtils.toByteArray(Ljava/io/InputStream;)[B :
+plugins using deprecated hudson.util.IOUtils.toByteArray(Ljava.io.InputStream;)[B :
    [aws-device-farm-1.11, credentials-1.24, embeddable-build-status-1.8, recipe-1.2, xcode-plugin-1.4.9]
-plugins using deprecated hudson/util/IOUtils.toInputStream(Ljava/lang/String;)Ljava/io/InputStream; :
+plugins using deprecated hudson.util.IOUtils.toInputStream(Ljava.lang.String;)Ljava.io.InputStream; :
    [hp-application-automation-tools-plugin-4.0]
-plugins using deprecated hudson/util/IOUtils.toString(Ljava/io/InputStream;)Ljava/lang/String; :
+plugins using deprecated hudson.util.IOUtils.toString(Ljava.io.InputStream;)Ljava.lang.String; :
    [coverity-1.6.0, icescrum-1.0.3, metadata-1.1.0b, scripttrigger-0.31]
-plugins using deprecated hudson/util/IOUtils.toString(Ljava/io/InputStream;Ljava/lang/String;)Ljava/lang/String; :
+plugins using deprecated hudson.util.IOUtils.toString(Ljava.io.InputStream;Ljava.lang.String;)Ljava.lang.String; :
    [cloudbees-plugin-gateway-5.0, hp-application-automation-tools-plugin-4.0, selected-tests-executor-1.3.3]
-plugins using deprecated hudson/util/IOUtils.toString(Ljava/io/Reader;)Ljava/lang/String; :
+plugins using deprecated hudson.util.IOUtils.toString(Ljava.io.Reader;)Ljava.lang.String; :
    [chef-tracking-1.0, teamconcert-git-1.0.10, xpdev-1.0]
-plugins using deprecated hudson/util/RunList.get(I)Lhudson/model/Run; :
+plugins using deprecated hudson.util.RunList.get(I)Lhudson.model.Run; :
    [job-direct-mail-1.5]
-plugins using deprecated hudson/util/RunList.size()I :
+plugins using deprecated hudson.util.RunList.size()I :
    [dashboard-view-2.9.6, job-direct-mail-1.5, jswidgets-1.10, mttr-1.1, project-health-report-1.2, search-all-results-plugin-1.0, testlink-3.11, testopia-1.3]
-plugins using deprecated hudson/util/Secret.toString()Ljava/lang/String; :
+plugins using deprecated hudson.util.Secret.toString()Ljava.lang.String; :
    [BlameSubversion-1.200, ec2-cloud-axis-1.2, pxe-1.5, was-builder-1.6.1]
-plugins using deprecated hudson/util/StreamTaskListener.<init>(Ljava/io/PrintStream;)V :
+plugins using deprecated hudson.util.StreamTaskListener.<init>(Ljava.io.PrintStream;)V :
    [azure-slave-plugin-0.3.2, hadoop-1.4, perforce-1.3.35]
-plugins using deprecated hudson/util/XStream2.toXML(Ljava/lang/Object;Ljava/io/OutputStream;)V :
+plugins using deprecated hudson.util.XStream2.toXML(Ljava.lang.Object;Ljava.io.OutputStream;)V :
    [filesystem_scm-1.20, recipe-1.2, unity-asset-server-1.1.1]
-plugins using deprecated hudson/views/ListViewColumn.shownByDefault()Z :
+plugins using deprecated hudson.views.ListViewColumn.shownByDefault()Z :
    [python-wrapper-1.0.3]
-plugins using deprecated jenkins/model/Jenkins.getProjects()Ljava/util/List; :
+plugins using deprecated jenkins.model.Jenkins.getProjects()Ljava.util.List; :
    [build-line-1.0.4]
-plugins using deprecated jenkins/model/Jenkins.getSecretKey()Ljava/lang/String; :
+plugins using deprecated jenkins.model.Jenkins.getSecretKey()Ljava.lang.String; :
    [hp-operations-orchestration-automation-execution-plugin-2.0.0]
-plugins using deprecated net/sf/json/JSONArray.toList(Lnet/sf/json/JSONArray;Ljava/lang/Class;)Ljava/util/List; :
+plugins using deprecated net.sf.json.JSONArray.toList(Lnet.sf.json.JSONArray;Ljava.lang.Class;)Ljava.util.List; :
    [recipe-1.2]
-plugins using deprecated org/acegisecurity/providers/AbstractAuthenticationToken.<init>()V :
+plugins using deprecated org.acegisecurity.providers.AbstractAuthenticationToken.<init>()V :
    [bitbucket-oauth-0.4]
-plugins using deprecated org/apache/commons/httpclient/methods/StringRequestEntity.<init>(Ljava/lang/String;)V :
+plugins using deprecated org.apache.commons.httpclient.methods.StringRequestEntity.<init>(Ljava.lang.String;)V :
    [buildheroes-0.2]
-plugins using deprecated org/apache/commons/httpclient/protocol/Protocol.<init>(Ljava/lang/String;Lorg/apache/commons/httpclient/protocol/SecureProtocolSocketFactory;I)V :
+plugins using deprecated org.apache.commons.httpclient.protocol.Protocol.<init>(Ljava.lang.String;Lorg.apache.commons.httpclient.protocol.SecureProtocolSocketFactory;I)V :
    [redmine-0.15, rqm-plugin-2.8, vessel-1.0.1]
-plugins using deprecated org/apache/commons/io/filefilter/FileFilterUtils.andFileFilter(Lorg/apache/commons/io/filefilter/IOFileFilter;Lorg/apache/commons/io/filefilter/IOFileFilter;)Lorg/apache/commons/io/filefilter/IOFileFilter; :
+plugins using deprecated org.apache.commons.io.filefilter.FileFilterUtils.andFileFilter(Lorg.apache.commons.io.filefilter.IOFileFilter;Lorg.apache.commons.io.filefilter.IOFileFilter;)Lorg.apache.commons.io.filefilter.IOFileFilter; :
    [backup-1.6.1]
-plugins using deprecated org/apache/commons/io/filefilter/FileFilterUtils.orFileFilter(Lorg/apache/commons/io/filefilter/IOFileFilter;Lorg/apache/commons/io/filefilter/IOFileFilter;)Lorg/apache/commons/io/filefilter/IOFileFilter; :
+plugins using deprecated org.apache.commons.io.filefilter.FileFilterUtils.orFileFilter(Lorg.apache.commons.io.filefilter.IOFileFilter;Lorg.apache.commons.io.filefilter.IOFileFilter;)Lorg.apache.commons.io.filefilter.IOFileFilter; :
    [backup-1.6.1]
-plugins using deprecated org/jfree/chart/renderer/category/AbstractCategoryItemRenderer.setItemURLGenerator(Lorg/jfree/chart/urls/CategoryURLGenerator;)V :
+plugins using deprecated org.jfree.chart.renderer.category.AbstractCategoryItemRenderer.setItemURLGenerator(Lorg.jfree.chart.urls.CategoryURLGenerator;)V :
    [plot-1.9]
-plugins using deprecated org/jfree/chart/renderer/category/AbstractCategoryItemRenderer.setToolTipGenerator(Lorg/jfree/chart/labels/CategoryToolTipGenerator;)V :
+plugins using deprecated org.jfree.chart.renderer.category.AbstractCategoryItemRenderer.setToolTipGenerator(Lorg.jfree.chart.labels.CategoryToolTipGenerator;)V :
    [plot-1.9]
-plugins using deprecated org/jfree/chart/renderer/category/LineAndShapeRenderer.setShapesVisible(Z)V :
+plugins using deprecated org.jfree.chart.renderer.category.LineAndShapeRenderer.setShapesVisible(Z)V :
    [plot-1.9]
-plugins using deprecated org/kohsuke/args4j/CmdLineException.<init>(Ljava/lang/String;)V :
+plugins using deprecated org.kohsuke.args4j.CmdLineException.<init>(Ljava.lang.String;)V :
    [remote-terminal-access-1.6]
-plugins using deprecated org/kohsuke/args4j/CmdLineException.<init>(Ljava/lang/String;Ljava/lang/Throwable;)V :
+plugins using deprecated org.kohsuke.args4j.CmdLineException.<init>(Ljava.lang.String;Ljava.lang.Throwable;)V :
    [remote-terminal-access-1.6]
-plugins using deprecated org/kohsuke/args4j/CmdLineException.<init>(Lorg/kohsuke/args4j/CmdLineParser;Ljava/lang/String;)V :
+plugins using deprecated org.kohsuke.args4j.CmdLineException.<init>(Lorg.kohsuke.args4j.CmdLineParser;Ljava.lang.String;)V :
    [clearcase-release-0.3, distfork-1.3, externalresource-dispatcher-1.1.0, metadata-1.1.0b]
-plugins using deprecated org/kohsuke/stapler/StaplerRequest.bindParameters(Ljava/lang/Class;Ljava/lang/String;)Ljava/lang/Object; :
+plugins using deprecated org.kohsuke.stapler.StaplerRequest.bindParameters(Ljava.lang.Class;Ljava.lang.String;)Ljava.lang.Object; :
    [assembla-1.4, clover-4.4.0, darcs-0.3.11, gem-publisher-1.0, ion-deployer-plugin-0.9, kagemai-1.3, perforce-1.3.35, polarion-1.3, publish-over-cifs-0.3, publish-over-ftp-1.11, publish-over-ssh-1.13, rake-1.8.0, rubyMetrics-1.6.3, seleniumhq-0.4, serenity-1.0, sfee-1.0.4, starteam-0.6.13, viewVC-1.7, WebSVN2-0.9, youtrack-plugin-0.6.6]
-plugins using deprecated org/kohsuke/stapler/StaplerRequest.bindParameters(Ljava/lang/Class;Ljava/lang/String;I)Ljava/lang/Object; :
+plugins using deprecated org.kohsuke.stapler.StaplerRequest.bindParameters(Ljava.lang.Class;Ljava.lang.String;I)Ljava.lang.Object; :
    [AdaptivePlugin-0.1]
-plugins using deprecated org/kohsuke/stapler/StaplerRequest.bindParameters(Ljava/lang/Object;Ljava/lang/String;)V :
+plugins using deprecated org.kohsuke.stapler.StaplerRequest.bindParameters(Ljava.lang.Object;Ljava.lang.String;)V :
    [AdaptivePlugin-0.1, artifactory-2.4.4, build-publisher-1.21, clover-4.4.0, cobertura-1.9.7, codecover-1.1, dimensionsscm-0.8.12, emma-1.29, ftppublisher-1.2, growl-1.1, japex-1.7, lingr-plugin-0.1, locks-and-latches-0.6, monkit-plugin-1.0.0, pitmutation-1.0-13, seleniumhq-0.4, serenity-1.0, speaks-0.1.1, svnpublisher-0.1, twitter-0.7, violations-0.7.11, vmware-0.8]
-plugins using deprecated org/kohsuke/stapler/StaplerRequest.bindParametersToList(Ljava/lang/Class;Ljava/lang/String;)Ljava/util/List; :
+plugins using deprecated org.kohsuke.stapler.StaplerRequest.bindParametersToList(Ljava.lang.Class;Ljava.lang.String;)Ljava.util.List; :
    [assembla-1.4, batch-task-1.17, build-line-1.0.4, bumblebee-4.0.0, cobertura-1.9.7, cvs-2.12, ftppublisher-1.2, gant-1.2, gnat-0.14, hp-application-automation-tools-plugin-4.0, ion-deployer-plugin-0.9, jython-1.9, kagemai-1.3, klocwork-1.18, locks-and-latches-0.6, monkit-plugin-1.0.0, port-allocator-1.8, postbuild-task-1.8, rake-1.8.0, rubyMetrics-1.6.3, s3-0.8, scp-1.8, ssh-2.4, testflight-1.3.9, testlink-3.11, testopia-1.3, visualworks-store-1.1.1, vmware-0.8, weibo-1.0.1, windows-azure-storage-0.3.1, xcode-plugin-1.4.9, youtrack-plugin-0.6.6]
-plugins using deprecated org/kohsuke/stapler/StaplerResponse.serveFile(Lorg/kohsuke/stapler/StaplerRequest;Ljava/io/InputStream;JILjava/lang/String;)V :
+plugins using deprecated org.kohsuke.stapler.StaplerResponse.serveFile(Lorg.kohsuke.stapler.StaplerRequest;Ljava.io.InputStream;JILjava.lang.String;)V :
    [project-inheritance-1.5.3]
-plugins using deprecated org/kohsuke/stapler/StaplerResponse.serveFile(Lorg/kohsuke/stapler/StaplerRequest;Ljava/io/InputStream;JJILjava/lang/String;)V :
+plugins using deprecated org.kohsuke.stapler.StaplerResponse.serveFile(Lorg.kohsuke.stapler.StaplerRequest;Ljava.io.InputStream;JJILjava.lang.String;)V :
    [custom-job-icon-0.2, pxe-1.5]
-plugins using deprecated hudson/model/AbstractProject.ABORT :
+plugins using deprecated hudson.model.AbstractProject.ABORT :
    [async-job-1.3, batch-task-1.17, collabnet-1.1.10, distfork-1.3, remote-terminal-access-1.6]
-plugins using deprecated hudson/model/PeriodicWork.logger :
+plugins using deprecated hudson.model.PeriodicWork.logger :
    [github-sqs-plugin-1.5, thinBackup-1.7.4]
-plugins using deprecated hudson/scm/AbstractScmTagAction.build :
+plugins using deprecated hudson.scm.AbstractScmTagAction.build :
    [bazaar-1.22, cvs-2.12, perforce-1.3.35]
-plugins using deprecated hudson/scm/ChangeLogAnnotator.annotators :
+plugins using deprecated hudson.scm.ChangeLogAnnotator.annotators :
    [svn-release-mgr-1.2]
-plugins using deprecated hudson/scm/ChangeLogSet.build :
+plugins using deprecated hudson.scm.ChangeLogSet.build :
    [all-changes-1.3, backlog-1.11, BlameSubversion-1.200, changelog-history-1.3, cvs-2.12, svn-release-mgr-1.2, synergy-1.7, tfs-4.0.0, trac-1.13, visualworks-store-1.1.1]
-plugins using deprecated hudson/tasks/ArtifactArchiver.DESCRIPTOR :
+plugins using deprecated hudson.tasks.ArtifactArchiver.DESCRIPTOR :
    [buckminster-1.1.1]
-plugins using deprecated hudson/tasks/BuildStep.BUILDERS :
+plugins using deprecated hudson.tasks.BuildStep.BUILDERS :
    [Schmant-1.1.4]
-plugins using deprecated hudson/tasks/BuildStep.PUBLISHERS :
+plugins using deprecated hudson.tasks.BuildStep.PUBLISHERS :
    [perfpublisher-8.02]
-plugins using deprecated hudson/tasks/BuildWrappers.WRAPPERS :
+plugins using deprecated hudson.tasks.BuildWrappers.WRAPPERS :
    [vmware-0.8]
-plugins using deprecated hudson/triggers/Trigger.timer :
+plugins using deprecated hudson.triggers.Trigger.timer :
    [build-timeout-1.15.1, cloudbees-plugin-gateway-5.0, externalresource-dispatcher-1.1.0, logfilesizechecker-1.2, thinBackup-1.7.4]
-plugins using deprecated hudson/util/ChartUtil$NumberOnlyBuildLabel.build :
+plugins using deprecated hudson.util.ChartUtil$NumberOnlyBuildLabel.build :
    [cccc-0.6, codedx-2.0, cppcheck-1.21, klocwork-1.18, seleniumhq-0.4, sloccount-1.21, sourcemonitor-0.2, stepcounter-1.3.2, testlink-3.11, testopia-1.3]
-plugins using deprecated jenkins/model/Jenkins$MasterComputer.localChannel :
+plugins using deprecated jenkins.model.Jenkins$MasterComputer.localChannel :
    [cloudfoundry-1.5]
 
 plugins using a deprecated api : [AdaptivePlugin-0.1, BlameSubversion-1.200, JiraTestResultReporter-1.0.4, LavaLampNotifier-1.4, SCTMExecutor-1.5.1, Schmant-1.1.4, Surround-SCM-plugin-1.7, URLSCM-1.6, WebSVN2-0.9, accurev-0.6.35, active-directory-1.41, all-changes-1.3, any-buildstep-0.1, appio-1.3, appthwack-1.9, artifact-diff-plugin-1.3, artifactory-2.4.4, assembla-1.4, associated-files-0.2.1, async-job-1.3, avatar-1.2, aws-codepipeline-0.10, aws-device-farm-1.11, azure-slave-plugin-0.3.2, backlog-1.11, backup-1.6.1, batch-task-1.17, bazaar-1.22, bitbucket-oauth-0.4, browser-axis-plugin-1.0, buckminster-1.1.1, bugzilla-1.5, build-alias-setter-0.3, build-cause-run-condition-0.1, build-environment-1.6, build-failure-analyzer-1.13.1, build-flow-plugin-0.18, build-keeper-plugin-1.3, build-line-1.0.4, build-metrics-1.0, build-publisher-1.21, build-timeout-1.15.1, build-user-vars-plugin-1.4, build-with-parameters-1.3, buildcontext-capture-0.6, buildgraph-view-1.1.1, buildheroes-0.2, bulk-builder-1.5, bumblebee-4.0.0, caliper-ci-2.3, campfire-2.7, cccc-0.6, changelog-history-1.3, chatwork-1.0.4, chef-tracking-1.0, clearcase-1.6.2, clearcase-release-0.3, clearcase-ucm-baseline-1.7.4, clone-workspace-scm-0.6, cloudbees-plugin-gateway-5.0, cloudbees-registration-3.14, cloudfoundry-1.5, clover-4.4.0, cmvc-0.4, cobertura-1.9.7, codecover-1.1, codedx-2.0, collabnet-1.1.10, collabnet-automic-deploy-1.0.1, collabnet-uc4-deploy-1.0, collapsing-console-sections-1.4.1, concurrent-login-plugin-0.7, config-autorefresh-plugin-1.0, config-rotator-1.3.1, confluence-publisher-1.8, copy-data-to-workspace-plugin-1.0, copy-project-link-1.4, copy-to-slave-1.4.4, copyartifact-1.37, covcomplplot-1.1.1, coverity-1.6.0, cppcheck-1.21, cppncss-1.1, cpptest-0.14, create-fingerprint-1.2, createjobadvanced-1.8, credentials-1.24, crowd-1.2, crowd2-1.8, cucumber-perf-2.0.6, curseforge-publisher-1.0, custom-job-icon-0.2, custom-tools-plugin-0.4.4, cvs-2.12, cygpath-1.5, cygwin-process-killer-0.1, daily-quote-1.0, darcs-0.3.11, dashboard-view-2.9.6, dbCharts-0.5.2, delete-log-plugin-1.0, delphix-1.0.1, delta-cloud-1.0.1, dependency-queue-plugin-1.1, depgraph-view-0.11, deploy-1.10, deploy-websphere-1.0, deploygate-plugin-1.2, deployit-plugin-5.0.1, dimensionsscm-0.8.12, diskcheck-0.26, display-upstream-changes-0.1, distTest-1.0, distfork-1.3, doclinks-0.6, dos-trigger-1.23, downstream-buildview-1.9, downstream-ext-1.8, doxygen-0.18, drecycler-0.20, dumpinfo-buildwrapper-plugin-1.1, dynamicparameter-0.2.0, dynatrace-dashboard-1.0.5, ec2-1.29, ec2-cloud-axis-1.2, eggplant-plugin-2.2, embeddable-build-status-1.8, emma-1.29, environment-dashboard-1.1.4, export-params-1.1, extended-choice-parameter-0.53, extensible-choice-parameter-1.3.2, external-monitor-job-1.4, externalresource-dispatcher-1.1.0, extra-tool-installers-0.3, fail-the-build-plugin-1.0, favorite-1.16, favorite-view-1.0, file-leak-detector-1.4, files-found-trigger-1.4, filesystem_scm-1.20, flashlog-plugin-1.0, flexible-publish-0.15.2, flow-1.3, form-element-path-1.5, fortify360-3.81, ftppublisher-1.2, fxcop-runner-1.1, gant-1.2, gcm-notification-1.0, gem-publisher-1.0, github-sqs-plugin-1.5, global-build-stats-1.3, global-variable-string-parameter-1.2, gnat-0.14, google-source-plugin-0.1, google-storage-plugin-0.9, googleanalytics-1.3, googlecode-1.7, grails-1.7, greenballs-1.15, grinder-1.4, groovy-events-listener-plugin-1.009, groovy-events-listener-plugin-master-1.007, groovy-postbuild-2.2.2, groovy-remote-0.2, growl-1.1, hadoop-1.4, hckrnews-1.1, heroku-jenkins-plugin-0.7.1-BETA, hgca-1.3, hipchat-0.2.0, hockeyapp-1.2.0, hp-application-automation-tools-plugin-4.0, hp-operations-orchestration-automation-execution-plugin-2.0.0, http-post-1.2, hudson-pview-plugin-1.8, icescrum-1.0.3, ion-deployer-plugin-0.9, ios-device-connector-1.2, ivy-1.25.1, ivy-report-1.2, jacoco-1.0.19, japex-1.7, javancss-1.1, javatest-report-1.6, jbpm-embedded-plugin-0.2, jbpm-workflow-plugin-0.3, jdepend-1.2.4, jenkins-reviewbot-2.4.6, jenkinswalldisplay-0.6.30, jigomerge-0.8, job-direct-mail-1.5, job-exporter-0.4, job-import-plugin-1.2, jobgenerator-1.22, jobrequeue-1.0, jobtemplates-1.0, join-1.16, jprt-1.1, jqs-monitoring-1.4, jquery-1.11.2-0, jquery-ui-1.0.2, jslint-0.8.2, jswidgets-1.10, junit-attachments-1.3, jython-1.9, kagemai-1.3, kato-0.2.5, klaros-testmanagement-1.5.1, klocwork-1.18, kpp-management-plugin-1.0.0, label-verifier-1.1, labeled-test-groups-publisher-1.2.8, labmanager-0.2.8, ldapemail-0.8, lingr-plugin-0.1, list-command-0.2, loadimpact-plugin-1.62, locale-1.2, locks-and-latches-0.6, logaction-plugin-1.2, logfilesizechecker-1.2, lotus-connections-plugin-1.25, m2-extra-steps-1.1.8, m2release-0.14.0, mailcommander-1.0.0, matrix-auth-1.2, matrix-groovy-execution-strategy-1.0.3, matrix-reloaded-1.1.3, matrixtieparent-1.2, maven-deployment-linker-1.5.1, maven-info-0.2.0, maven-metadata-plugin-1.3.0, maven-release-cascade-1.3.2, maven-repo-cleaner-1.2, measurement-plots-0.1, metadata-1.1.0b, mock-load-builder-1.0, mongodb-1.3, monitoring-1.57.0, monkit-plugin-1.0.0, mstestrunner-1.2.0, mttr-1.1, multi-module-tests-publisher-1.41, myst-plugin-2.5.0.0, nant-1.4.3, ncover-0.3, neoload-jenkins-plugin-1.0.1, nested-view-1.14, network-monitor-1.1, nexus-task-runner-0.9.2, nodejs-0.2.1, nopmdverifytrac-0.9, nsiqcollector-1.3.3, nunit-0.17, oauth-credentials-0.3, offlineonfailure-plugin-1.0, openid-2.1.1, openshift-deployer-1.2.0, ownership-0.8, patch-parameter-1.2, pegdown-formatter-1.3, pending-changes-0.3.0, perfectomobile-2.41.0.1, perforce-1.3.35, performance-1.13, perfpublisher-8.02, periodicbackup-1.3, persistent-build-queue-plugin-0.1.1, persistent-parameter-1.1, persona-2.4, pitmutation-1.0-13, plasticscm-plugin-2.3, platformlabeler-1.1, plot-1.9, polarion-1.3, poll-mailbox-trigger-plugin-1.019, pom2config-1.2, port-allocator-1.8, postbuild-task-1.8, postbuildscript-0.17, preSCMbuildstep-0.3, prereq-buildstep-1.1, project-description-setter-1.1, project-health-report-1.2, project-inheritance-1.5.3, promoted-builds-simple-1.9, proxmox-0.2.1, publish-over-cifs-0.3, publish-over-ftp-1.11, publish-over-ssh-1.13, pvcs_scm-1.1, pwauth-0.4, pxe-1.5, python-wrapper-1.0.3, qc-1.2.1, rad-builder-1.1.4, radiatorviewplugin-1.24, rake-1.8.0, random-string-parameter-1.0, rebuild-1.25, recipe-1.2, redmine-0.15, refit-0.3.1, regexemail-0.3, release-2.5.4, remote-terminal-access-1.6, rhnpush-plugin-0.4.1, robot-1.6.2, role-strategy-2.2.0, rpmsign-plugin-0.4.6, rqm-plugin-2.8, rrod-1.1.0, rubyMetrics-1.6.3, rubymotion-1.12, rundeck-3.5.1, s3-0.8, sametime-0.4, sasunit-plugin-1.024, sbt-1.5, scm-sync-configuration-0.0.8, scm2job-2.4, scons-0.4, scp-1.8, script-scm-1.17, scripted-cloud-plugin-0.12, scripttrigger-0.31, search-all-results-plugin-1.0, selected-tests-executor-1.3.3, selection-tasks-plugin-1.0, selenium-2.4.1, selenium-axis-0.0.6, seleniumhq-0.4, seleniumrc-plugin-1.0, send-stacktrace-to-eclipse-plugin-1.7, serenity-1.0, sfee-1.0.4, shared-objects-0.44, shelve-project-plugin-1.5, sicci_for_xcode-0.0.8, sidebar-link-1.7, simple-theme-plugin-0.3, simpleclearcase-1.2.2, simpleupdatesite-1.1.2, skype-notifier-1.1.0, skytap-2.02, sladiator-notifier-1.0.4, slave-proxy-1.1, slave-squatter-1.2, sloccount-1.21, smartfrog-plugin-2.2.4, sounds-0.4.3, sourcemonitor-0.2, speaks-0.1.1, ssh-2.4, ssh-credentials-1.11, staf-0.1, starteam-0.6.13, started-by-envvar-1.0, startup-trigger-plugin-2.4, statusmonitor-1.3, stepcounter-1.3.2, storable-configs-plugin-1.0, subversion-2.5.4, suite-test-groups-publisher-1.13, svn-release-mgr-1.2, svn-revert-plugin-1.3, svnpublisher-0.1, synergy-1.7, systemloadaverage-monitor-1.2, tcl-0.4, team-views-0.9.0, teamconcert-git-1.0.10, template-workflows-1.2, tepco-0.1, tepco-epuw-1.0, terminal-1.4, terminate-ssh-processes-plugin-1.0, testabilityexplorer-0.4, testflight-1.3.9, testlink-3.11, testopia-1.3, tfs-4.0.0, thinBackup-1.7.4, throttle-concurrents-1.8.4, thucydides-0.1, tool-labels-plugin-3.0, trac-1.13, tracking-git-1.0, tracking-svn-1.1, translation-1.12, tuxdroid-1.7, twitter-0.7, unity-asset-server-1.1.1, unity3d-plugin-1.3, unreliable-slave-plugin-1.2, utplsql-0.6.1, valgrind-0.25, validating-string-parameter-2.3, vault-scm-plugin-1.1.1, versioncolumn-0.2, vessel-1.0.1, view-job-filters-1.27, viewVC-1.7, violations-0.7.11, virtualbox-0.7, visualworks-store-1.1.1, vmware-0.8, vncrecorder-1.25, vs-code-metrics-1.7, vsphere-cloud-2.7, vss-1.9, vstestrunner-1.0.4, was-builder-1.6.1, webload-1.0, weblogic-deployer-plugin-3.3, websocket-1.0.6, weibo-1.0.1, whitesource-1.4, windows-azure-storage-0.3.1, windows-exe-runner-1.2, writable-filesystem-monitor-0.1, ws-cleanup-0.28, xcode-plugin-1.4.9, xfpanel-2.0.1, xpath-config-viewer-1.1.1, xpdev-1.0, xvfb-1.0.16, youtrack-plugin-0.6.6, zmq-event-publisher-0.0.3]

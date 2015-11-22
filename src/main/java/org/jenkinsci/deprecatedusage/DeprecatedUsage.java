@@ -5,7 +5,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +19,10 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 
 public class DeprecatedUsage {
+    // python-wrapper has wrappers for all extension points and descriptors,
+    // they are just wrappers and not real usage
+    public static final Set<String> IGNORED_PLUGINS = new HashSet<>(Arrays.asList("python-wrapper"));
+
     private final String pluginKey;
     private final DeprecatedApi deprecatedApi;
 
@@ -34,6 +40,9 @@ public class DeprecatedUsage {
     }
 
     public void analyze(File pluginFile) throws IOException {
+        if (IGNORED_PLUGINS.contains(pluginFile.getName())) {
+            return;
+        }
         analyzeWithClassVisitor(pluginFile, indexerClassVisitor);
         analyzeWithClassVisitor(pluginFile, classVisitor);
     }

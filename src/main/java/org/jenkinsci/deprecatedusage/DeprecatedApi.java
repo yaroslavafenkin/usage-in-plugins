@@ -4,8 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.objectweb.asm.ClassReader;
@@ -15,8 +15,6 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 
 public class DeprecatedApi {
-    private static final char SEPARATOR = '.';
-
     // some plugins such as job-dsl has following code without using deprecated :
     // for (Cloud cloud : Jenkins.getInstance().clouds) { }
     // where the type of jenkins.clouds is of type hudson.model.Hudson.CloudList and deprecated
@@ -25,8 +23,10 @@ public class DeprecatedApi {
     // for (Iterator<Cloud> iter = Jenkins.getInstance().clouds.iterator(); iter.hasNext(); ) {
     // Cloud cloud = iter.next(); }
     // so deprecation of Hudson$CloudList is ignored
-    private static final List<String> IGNORED_DEPRECATED_CLASSES = Arrays
-            .asList("hudson/model/Hudson$CloudList");
+    public static final Set<String> IGNORED_DEPRECATED_CLASSES = new HashSet<>(
+            Arrays.asList("hudson/model/Hudson$CloudList"));
+
+    private static final char SEPARATOR = '.';
 
     private final Set<String> classes = new LinkedHashSet<>();
     private final Set<String> methods = new LinkedHashSet<>();

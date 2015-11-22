@@ -24,6 +24,7 @@ public class DeprecatedUsage {
     public static final Set<String> IGNORED_PLUGINS = new HashSet<>(
             Arrays.asList("python-wrapper.hpi"));
 
+    private final String pluginName;
     private final String pluginKey;
     private final DeprecatedApi deprecatedApi;
 
@@ -34,9 +35,10 @@ public class DeprecatedUsage {
     private final ClassVisitor classVisitor = new CallersClassVisitor();
     private final Map<String, List<String>> superClassAndInterfacesByClass = new HashMap<>();
 
-    public DeprecatedUsage(String pluginKey, DeprecatedApi deprecatedApi) {
+    public DeprecatedUsage(String pluginName, String pluginVersion, DeprecatedApi deprecatedApi) {
         super();
-        this.pluginKey = pluginKey;
+        this.pluginName = pluginName;
+        this.pluginKey = pluginName + '-' + pluginVersion;
         this.deprecatedApi = deprecatedApi;
     }
 
@@ -86,6 +88,10 @@ public class DeprecatedUsage {
     private void analyze(InputStream input, ClassVisitor aClassVisitor) throws IOException {
         final ClassReader classReader = new ClassReader(input);
         classReader.accept(aClassVisitor, ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
+    }
+
+    public String getPluginName() {
+        return pluginName;
     }
 
     public String getPluginKey() {

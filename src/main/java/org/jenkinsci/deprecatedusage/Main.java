@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 public class Main {
     public static void main(String[] args) throws Exception {
         final long start = System.currentTimeMillis();
-        log("** Finds and reports usage of deprecated Jenkins api in plugins (except api used in jelly and groovy files and in WEB-INF/lib/*.jar) **");
+        log("<h2> Finds and reports usage of deprecated Jenkins api in plugins </h2> (except api used in jelly and groovy files and in WEB-INF/lib/*.jar)");
         final UpdateCenter updateCenter = new UpdateCenter();
         log("Downloaded update-center.json");
         updateCenter.download();
@@ -35,7 +35,8 @@ public class Main {
 
         new Reports(deprecatedApi, deprecatedUsageByPlugin).report();
 
-        log("duration : " + (System.currentTimeMillis() - start) + " ms at " + DateFormat.getDateTimeInstance().format(new Date()));
+        log("duration : " + (System.currentTimeMillis() - start) + " ms at "
+                + DateFormat.getDateTimeInstance().format(new Date()));
         Log.closeLog();
     }
 
@@ -48,9 +49,8 @@ public class Main {
             final Callable<DeprecatedUsage> task = new Callable<DeprecatedUsage>() {
                 @Override
                 public DeprecatedUsage call() throws IOException {
-                    final String pluginKey = plugin.getName() + '-' + plugin.getVersion();
-                    final DeprecatedUsage deprecatedUsage = new DeprecatedUsage(pluginKey,
-                            deprecatedApi);
+                    final DeprecatedUsage deprecatedUsage = new DeprecatedUsage(plugin.getName(),
+                            plugin.getVersion(), deprecatedApi);
                     deprecatedUsage.analyze(plugin.getFile());
                     return deprecatedUsage;
                 }

@@ -7,7 +7,7 @@ import java.io.Writer;
 
 public final class Log {
     // relative to user dir
-    private static final File LOG_FILE = new File("target/output.log");
+    private static final File HTML_FILE = new File("target/output.html");
     private static final Writer FILE_WRITER = openFileWriter();
 
     private Log() {
@@ -16,9 +16,14 @@ public final class Log {
 
     private static Writer openFileWriter() {
         try {
-            return new FileWriter(LOG_FILE);
+            final Writer writer = new FileWriter(HTML_FILE);
+            writer.append("<html><head>");
+            writer.append("<title>Usage of deprecated Jenkins api in plugins</title>");
+            writer.append("<style>body { font-family: Arial, Helvetica, sans-serif; font-size: 12px; }</style>");
+            writer.append("</head><body>");
+            return writer;
         } catch (final IOException e) {
-            System.out.println("Unable to open " + LOG_FILE + " to write logs");
+            System.out.println("Unable to open " + HTML_FILE + " to write output");
             return null;
         }
     }
@@ -29,6 +34,7 @@ public final class Log {
         if (FILE_WRITER != null) {
             try {
                 FILE_WRITER.write(message);
+                FILE_WRITER.write("<br/>");
                 FILE_WRITER.write('\n');
                 FILE_WRITER.flush();
             } catch (final IOException e) {
@@ -52,6 +58,7 @@ public final class Log {
 
     public static void closeLog() {
         try {
+            FILE_WRITER.append("</body></html>");
             FILE_WRITER.close();
         } catch (final IOException e) {
             return;

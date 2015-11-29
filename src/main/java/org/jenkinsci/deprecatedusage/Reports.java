@@ -26,7 +26,7 @@ public class Reports {
                 + format(deprecatedApi.getClasses()) + "</pre>");
         println();
         log("<b> deprecated methods in jenkins.war : </b><pre>"
-                + format(deprecatedApi.getMethods()) + "</pre>");
+                + formatMethods(deprecatedApi.getMethods()) + "</pre>");
         println();
         log("<b> deprecated fields in jenkins.war : </b><pre>" + format(deprecatedApi.getFields())
                 + "</pre>");
@@ -54,7 +54,7 @@ public class Reports {
                 + format(deprecatedClassesNotUsed) + "</pre>");
         println();
         log("<b> deprecated and public Jenkins methods not used in latest published plugins : </b><pre> "
-                + format(deprecatedMethodsNotUsed) + "</pre>");
+                + formatMethods(deprecatedMethodsNotUsed) + "</pre>");
         println();
         log("<b> deprecated and public Jenkins fields not used in latest published plugins : </b><pre> "
                 + format(deprecatedFieldsNotUsed) + "</pre>");
@@ -95,7 +95,7 @@ public class Reports {
                 log("   classes : " + format(deprecatedUsage.getClasses()));
             }
             if (!deprecatedUsage.getMethods().isEmpty()) {
-                log("   methods : " + format(deprecatedUsage.getMethods()));
+                log("   methods : " + formatMethods(deprecatedUsage.getMethods()));
             }
             if (!deprecatedUsage.getFields().isEmpty()) {
                 log("   fields : " + format(deprecatedUsage.getFields()));
@@ -107,8 +107,8 @@ public class Reports {
         log("<b> deprecated classes used in plugins : </b><pre> " + format(deprecatedClassesUsed)
                 + "</pre>");
         println();
-        log("<b> deprecated methods used in plugins : </b><pre> " + format(deprecatedMethodsUsed)
-                + "</pre>");
+        log("<b> deprecated methods used in plugins : </b><pre> "
+                + formatMethods(deprecatedMethodsUsed) + "</pre>");
         println();
         log("<b> deprecated fields used in plugins : </b><pre> " + format(deprecatedFieldsUsed)
                 + "</pre>");
@@ -134,7 +134,7 @@ public class Reports {
                     plugins.add(deprecatedUsage.getPluginKey());
                 }
             }
-            log("plugins using deprecated <b> " + format(deprecatedMethod) + " : </b>");
+            log("plugins using deprecated <b> " + formatMethods(deprecatedMethod) + " : </b>");
             log("   " + plugins);
         }
         for (final String deprecatedField : deprecatedFieldsUsed) {
@@ -150,9 +150,17 @@ public class Reports {
         log("");
     }
 
+    private static String formatMethods(Set<String> methods) {
+        return formatMethods(methods.toString());
+    }
+
+    private static String formatMethods(String methods) {
+        return format(methods.replace("java/lang/", "").replace(")V", ")").replace(")L", ") ")
+                .replace("(L", "(").replace(";L", ";").replace(";)", ")").replace(".<init>", ""));
+    }
+
     private static String format(Set<String> classesOrFieldsOrMethods) {
-        // replace "org/mypackage/Myclass" by "org.mypackage.Myclass"
-        return classesOrFieldsOrMethods.toString().replace('/', '.');
+        return format(classesOrFieldsOrMethods.toString());
     }
 
     private static String format(String classOrFieldOrMethod) {

@@ -17,13 +17,14 @@ import org.json.JSONObject;
 import org.xml.sax.SAXException;
 
 public class UpdateCenter {
-    private static final String UPDATE_CENTER_URL = "http://updates.jenkins-ci.org/update-center.json";
-
+    private final URL updateCenterUrl;
     private final JenkinsFile core;
     private final List<JenkinsFile> plugins = new ArrayList<>();
 
-    public UpdateCenter() throws IOException, ParserConfigurationException, SAXException {
+    public UpdateCenter(URL updateCenterUrl) throws IOException, ParserConfigurationException,
+            SAXException {
         super();
+        this.updateCenterUrl = updateCenterUrl;
         final String string = getUpdateCenterJson();
 
         final JSONObject jsonRoot = new JSONObject(string);
@@ -46,7 +47,7 @@ public class UpdateCenter {
     }
 
     private String getUpdateCenterJson() throws IOException, MalformedURLException {
-        final byte[] updateCenterData = new HttpGet(new URL(UPDATE_CENTER_URL)).read();
+        final byte[] updateCenterData = new HttpGet(updateCenterUrl).read();
         final String string = new String(updateCenterData, StandardCharsets.UTF_8).replace(
                 "updateCenter.post(", "");
         return string;

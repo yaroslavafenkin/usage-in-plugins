@@ -2,6 +2,7 @@ package org.jenkinsci.deprecatedusage;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -16,10 +17,14 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 public class Main {
+    private static final String UPDATE_CENTER_URL =
+    // "http://updates.jenkins-ci.org/experimental/update-center.json";
+    "http://updates.jenkins-ci.org/update-center.json";
+
     public static void main(String[] args) throws Exception {
         final long start = System.currentTimeMillis();
         log("<h2> Finds and reports usage of deprecated Jenkins api in plugins </h2> (except api used in jelly and groovy files and in WEB-INF/lib/*.jar)");
-        final UpdateCenter updateCenter = new UpdateCenter();
+        final UpdateCenter updateCenter = new UpdateCenter(new URL(UPDATE_CENTER_URL));
         log("Downloaded update-center.json");
         updateCenter.download();
         log("All files are up to date (" + updateCenter.getPlugins().size() + " plugins)");

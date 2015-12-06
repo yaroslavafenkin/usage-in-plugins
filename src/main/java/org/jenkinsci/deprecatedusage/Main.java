@@ -38,7 +38,7 @@ public class Main {
         final Map<String, DeprecatedUsage> deprecatedUsageByPlugin = analyzeDeprecatedUsage(
                 updateCenter.getPlugins(), deprecatedApi);
 
-        new Reports(deprecatedApi, deprecatedUsageByPlugin).report();
+        new Reports(updateCenter, deprecatedApi, deprecatedUsageByPlugin).report();
 
         log("duration : " + (System.currentTimeMillis() - start) + " ms at "
                 + DateFormat.getDateTimeInstance().format(new Date()));

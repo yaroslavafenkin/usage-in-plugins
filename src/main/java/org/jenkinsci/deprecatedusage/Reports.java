@@ -8,11 +8,14 @@ import java.util.Set;
 import java.util.TreeSet;
 
 public class Reports {
+    private final UpdateCenter updateCenter;
     private final DeprecatedApi deprecatedApi;
     private final Map<String, DeprecatedUsage> deprecatedUsageByPlugin;
 
-    public Reports(DeprecatedApi deprecatedApi, Map<String, DeprecatedUsage> deprecatedUsageByPlugin) {
+    public Reports(UpdateCenter updateCenter, DeprecatedApi deprecatedApi,
+            Map<String, DeprecatedUsage> deprecatedUsageByPlugin) {
         super();
+        this.updateCenter = updateCenter;
         this.deprecatedApi = deprecatedApi;
         this.deprecatedUsageByPlugin = deprecatedUsageByPlugin;
     }
@@ -72,6 +75,7 @@ public class Reports {
         log(deprecatedApi.getClasses().size() + " deprecated and public classes in jenkins.war");
         log(deprecatedApi.getMethods().size() + " deprecated and public methods in jenkins.war");
         log(deprecatedApi.getFields().size() + " deprecated and public fields in jenkins.war");
+        log(updateCenter.getPlugins().size() + " published plugins");
         log(deprecatedUsageByPlugin.size() + " plugins using a deprecated api");
         log(deprecatedClassesUsed.size() + " deprecated classes used in plugins");
         log(deprecatedMethodsUsed.size() + " deprecated methods used in plugins");

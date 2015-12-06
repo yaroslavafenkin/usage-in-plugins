@@ -76,7 +76,7 @@ public class Main {
             }
         }
         executorService.shutdown();
-        executorService.awaitTermination(1, TimeUnit.SECONDS);
+        executorService.awaitTermination(5, TimeUnit.SECONDS);
         log("");
         log("");
         return deprecatedUsageByPlugin;

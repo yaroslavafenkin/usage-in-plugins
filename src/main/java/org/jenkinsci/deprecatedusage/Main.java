@@ -1,5 +1,6 @@
 package org.jenkinsci.deprecatedusage;
 
+import java.io.EOFException;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -56,7 +57,13 @@ public class Main {
                 public DeprecatedUsage call() throws IOException {
                     final DeprecatedUsage deprecatedUsage = new DeprecatedUsage(plugin.getName(),
                             plugin.getVersion(), deprecatedApi);
-                    deprecatedUsage.analyze(plugin.getFile());
+                    try {
+                        deprecatedUsage.analyze(plugin.getFile());
+                    } catch (final EOFException e) {
+                        Log.log("deleting " + plugin.getFile().getName()
+                                + " and skipping, because " + e.toString());
+                        plugin.getFile().delete();
+                    }
                     return deprecatedUsage;
                 }
             };

@@ -54,8 +54,14 @@ public class UpdateCenter {
     }
 
     private JenkinsFile parse(JSONObject jsonObject) throws MalformedURLException, JSONException {
+        final String wiki;
+        if (jsonObject.has("wiki")) {
+            wiki = jsonObject.getString("wiki");
+        } else {
+            wiki = null;
+        }
         return new JenkinsFile(jsonObject.getString("name"), jsonObject.getString("version"),
-                jsonObject.getString("url"));
+                jsonObject.getString("url"), wiki);
     }
 
     public void download() throws Exception {

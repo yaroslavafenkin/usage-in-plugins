@@ -91,9 +91,13 @@ public class Reports {
     private void logDeprecatedApiUsedInPlugins(Set<String> deprecatedClassesUsed,
             Set<String> deprecatedMethodsUsed, Set<String> deprecatedFieldsUsed) {
         print("<h3 id=deprecatedApiByPlugins>Deprecated api used by plugins</h3>");
+        println();
         for (final DeprecatedUsage deprecatedUsage : deprecatedUsageByPlugin.values()) {
-            print("<h3 id=" + deprecatedUsage.getPluginName() + ">deprecated api used in plugin "
-                    + deprecatedUsage.getPluginKey() + " :</h3>");
+            final String pluginWiki = getPluginWiki(deprecatedUsage.getPluginName());
+            print("<h3 id=" + deprecatedUsage.getPluginName()
+                    + "> deprecated api used in plugin <a href='" + pluginWiki + "'> ");
+            println();
+            print(deprecatedUsage.getPluginKey() + " </a>:</h3>");
             println();
             if (!deprecatedUsage.getClasses().isEmpty()) {
                 log("   classes : " + format(deprecatedUsage.getClasses()));
@@ -182,6 +186,15 @@ public class Reports {
             }
         }
         return filtered;
+    }
+
+    private String getPluginWiki(String pluginName) {
+        for (final JenkinsFile plugin : updateCenter.getPlugins()) {
+            if (pluginName.equals(plugin.getName())) {
+                return plugin.getWiki();
+            }
+        }
+        return null;
     }
 
     private static void println() {

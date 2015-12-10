@@ -34,15 +34,18 @@ public class JenkinsFile {
     private final String name;
     private final String version;
     private final URL url;
+    private final String wiki;
     private final File file;
     private final File versionsRootDirectory;
     private Future<?> downloadFuture;
 
-    public JenkinsFile(String name, String version, String url) throws MalformedURLException {
+    public JenkinsFile(String name, String version, String url, String wiki)
+            throws MalformedURLException {
         super();
         this.name = name;
         this.version = version;
         this.url = new URL(url);
+        this.wiki = wiki;
         final String fileName = url.substring(url.lastIndexOf('/'));
         this.versionsRootDirectory = new File(WORK_DIRECTORY, name);
         this.file = new File(versionsRootDirectory, version + '/' + fileName);
@@ -54,6 +57,10 @@ public class JenkinsFile {
 
     public String getVersion() {
         return version;
+    }
+
+    public String getWiki() {
+        return wiki;
     }
 
     public File getFile() {

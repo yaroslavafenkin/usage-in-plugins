@@ -1,7 +1,6 @@
 package org.jenkinsci.deprecatedusage;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -52,37 +51,31 @@ public class DeprecatedUsage {
 
     public void analyzeWithClassVisitor(File pluginFile, ClassVisitor aClassVisitor)
             throws IOException {
-        // do not analyse WEB-INF/lib/*jar in plugins,
-        // because it would cause too many false positives in dependent libraries
-        // final WarReader warReader = new WarReader(pluginFile);
-        // try {
-        // String fileName = warReader.nextClass();
-        // while (fileName != null) {
-        // try {
-        // analyze(warReader.getInputStream(), aClassVisitor);
-        // } catch (final Exception e) {
-        // // ignore ArrayIndexOutOfBoundsException: 48188 for
-        // // com/ibm/icu/impl/data/LocaleElements_zh__PINYIN.class
-        // continue;
-        // }
-        // fileName = warReader.nextClass();
-        // }
-        // } finally {
-        // warReader.close();
-        // }
-
-        final InputStream input = new FileInputStream(pluginFile);
-        final JarReader jarReader = new JarReader(input);
+        // recent plugins package their classes as a jar file with the same name as the war file in
+        // WEB-INF/lib/ while older plugins were packaging their classes in WEB-INF/classes/
+        final WarReader warReader = new WarReader(pluginFile, true);
         try {
-            String fileName = jarReader.nextClass();
+            String fileName = warReader.nextClass();
             while (fileName != null) {
-                analyze(jarReader.getInputStream(), aClassVisitor);
-                fileName = jarReader.nextClass();
+                analyze(warReader.getInputStream(), aClassVisitor);
+                fileName = warReader.nextClass();
             }
         } finally {
-            jarReader.close();
-            input.close();
+            warReader.close();
         }
+
+        // final InputStream input = new FileInputStream(pluginFile);
+        // final JarReader jarReader = new JarReader(input);
+        // try {
+        // String fileName = jarReader.nextClass();
+        // while (fileName != null) {
+        // analyze(jarReader.getInputStream(), aClassVisitor);
+        // fileName = jarReader.nextClass();
+        // }
+        // } finally {
+        // jarReader.close();
+        // input.close();
+        // }
     }
 
     private void analyze(InputStream input, ClassVisitor aClassVisitor) throws IOException {

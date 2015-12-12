@@ -9,15 +9,19 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 public class WarReader implements Closeable {
+    private final File warFile;
     private final ZipFile zipFile;
     private final Enumeration<? extends ZipEntry> entries;
+    private final boolean scanOnlyJarOfPlugin;
     private ZipEntry entry;
     private JarReader jarReader;
 
-    public WarReader(File warFile) throws IOException {
+    public WarReader(File warFile, boolean scanOnlyJarOfPlugin) throws IOException {
         super();
+        this.warFile = warFile;
         this.zipFile = new ZipFile(warFile);
         this.entries = zipFile.entries();
+        this.scanOnlyJarOfPlugin = scanOnlyJarOfPlugin;
     }
 
     public String nextClass() throws IOException {
@@ -34,8 +38,13 @@ public class WarReader implements Closeable {
             entry = entries.nextElement();
             final String fileName = entry.getName();
             if (fileName.startsWith("WEB-INF/lib/") && fileName.endsWith(".jar")) {
-                jarReader = new JarReader(zipFile.getInputStream(entry));
-                return this.nextClass();
+                final boolean shouldScanJar = !scanOnlyJarOfPlugin
+                        || warFile.getName().equals(
+                                fileName.replace("WEB-INF/lib/", "").replace(".jar", ".hpi"));
+                if (shouldScanJar) {
+                    jarReader = new JarReader(zipFile.getInputStream(entry));
+                    return this.nextClass();
+                }
             } else if (fileName.startsWith("WEB-INF/classes/") && fileName.endsWith(".class")) {
                 return fileName;
             }

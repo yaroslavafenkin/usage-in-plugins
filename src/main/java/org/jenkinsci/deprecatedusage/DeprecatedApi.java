@@ -44,7 +44,7 @@ public class DeprecatedApi {
     }
 
     public void analyze(File coreFile) throws IOException {
-        final WarReader warReader = new WarReader(coreFile);
+        final WarReader warReader = new WarReader(coreFile, false);
         try {
             String fileName = warReader.nextClass();
             while (fileName != null) {

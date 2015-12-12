@@ -4,9 +4,9 @@
 
 Current results in summary:
 * 1114 plugins
-* 415 plugins using a deprecated Jenkins api
-* 18 deprecated classes, 132 deprecated methods and 12 deprecated fields are used in plugins
-* 29 deprecated and public Jenkins classes, 345 deprecated methods, 58 deprecated fields are not used in the latest published plugins
+* 560 plugins using a deprecated Jenkins api
+* 20 deprecated classes, 170 deprecated methods and 12 deprecated fields are used in plugins
+* 28 deprecated and public Jenkins classes, 319 deprecated methods, 58 deprecated fields are not used in the latest published plugins
 
 See details and deprecated usage for each plugin in the [continuous integration](https://ci.jenkins-ci.org/view/Infrastructure/job/infra_deprecated-usage-in-plugins/ws/target/output.html) or in this [example of output](https://github.com/jenkins-infra/deprecated-usage-in-plugins/blob/master/Output_example.html).
 

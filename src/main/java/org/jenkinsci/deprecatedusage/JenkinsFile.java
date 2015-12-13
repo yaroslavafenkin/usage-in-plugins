@@ -72,10 +72,11 @@ public class JenkinsFile {
             // if file is already downloaded, do not download again
             return;
         }
+        final String tmpPrefix = getClass().getPackage().getName() + '-';
         downloadFuture = downloadExecutorService.submit(new Callable<Object>() {
             @Override
             public Object call() throws IOException {
-                final File tempFile = File.createTempFile("deprecated-usage-in-plugins-", ".tmp");
+                final File tempFile = File.createTempFile(tmpPrefix, ".tmp");
                 try {
                     final OutputStream output = new BufferedOutputStream(new FileOutputStream(
                             tempFile));

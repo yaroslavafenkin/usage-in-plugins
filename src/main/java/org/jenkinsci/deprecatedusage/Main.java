@@ -84,6 +84,8 @@ public class Main {
         }
         executorService.shutdown();
         executorService.awaitTermination(5, TimeUnit.SECONDS);
+        // wait for threads to stop
+        Thread.sleep(100);
         log("");
         log("");
         return deprecatedUsageByPlugin;

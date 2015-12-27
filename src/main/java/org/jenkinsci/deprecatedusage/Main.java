@@ -16,6 +16,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.zip.ZipException;
 
 public class Main {
     private static final String UPDATE_CENTER_URL =
@@ -63,6 +64,12 @@ public class Main {
                         Log.log("deleting " + plugin.getFile().getName()
                                 + " and skipping, because " + e.toString());
                         plugin.getFile().delete();
+                    } catch (final ZipException e) {
+                        Log.log("deleting " + plugin.getFile().getName()
+                                + " and skipping, because " + e.toString());
+                        plugin.getFile().delete();
+                    } catch (final Exception e) {
+                        Log.log(e.toString() + " on " + plugin.getFile().getName());
                     }
                     return deprecatedUsage;
                 }

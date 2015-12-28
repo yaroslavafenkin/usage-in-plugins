@@ -1,3 +1,5 @@
+// Jenkinsfile for Workflow plugin at https://ci.jenkins-ci.org/view/Infrastructure/job/infra_deprecated-usage-in-plugins/
+
 // Run on 'cabbage' node.
 node('cabbage') {
    // Get the maven tool.

@@ -1,6 +1,14 @@
 // Run on 'cabbage' node.
 node('cabbage') {
-   // java (jdk) and mvn are supposed to be in the path env of the node running the job
+   // Get the maven tool.
+   // ** NOTE: This 'maven3' maven tool must be configured
+   // **       in the global configuration.           
+   def mvnHome = tool 'maven3'
+
+   // Get the jdk tool.
+   // ** NOTE: This 'jdk7_80' jdk tool must be configured
+   // **       in the global configuration.           
+   env.JAVA_HOME = tool 'jdk7_80'
 
    // Mark the code build 'stage'....
    stage 'Build'

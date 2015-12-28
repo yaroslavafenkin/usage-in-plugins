@@ -60,11 +60,7 @@ public class Main {
                             plugin.getVersion(), deprecatedApi);
                     try {
                         deprecatedUsage.analyze(plugin.getFile());
-                    } catch (final EOFException e) {
-                        Log.log("deleting " + plugin.getFile().getName()
-                                + " and skipping, because " + e.toString());
-                        plugin.getFile().delete();
-                    } catch (final ZipException e) {
+                    } catch (final EOFException | ZipException e) {
                         Log.log("deleting " + plugin.getFile().getName()
                                 + " and skipping, because " + e.toString());
                         plugin.getFile().delete();

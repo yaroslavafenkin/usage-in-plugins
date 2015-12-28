@@ -66,6 +66,7 @@ public class Main {
                         plugin.getFile().delete();
                     } catch (final Exception e) {
                         Log.log(e.toString() + " on " + plugin.getFile().getName());
+                        e.printStackTrace();
                     }
                     return deprecatedUsage;
                 }

@@ -35,9 +35,9 @@ public class Reports {
                 + "</pre>");
         println();
 
-        final Set<String> deprecatedClassesUsed = new TreeSet<String>();
-        final Set<String> deprecatedMethodsUsed = new TreeSet<String>();
-        final Set<String> deprecatedFieldsUsed = new TreeSet<String>();
+        final Set<String> deprecatedClassesUsed = new TreeSet<>();
+        final Set<String> deprecatedMethodsUsed = new TreeSet<>();
+        final Set<String> deprecatedFieldsUsed = new TreeSet<>();
         for (final DeprecatedUsage deprecatedUsage : deprecatedUsageByPlugin.values()) {
             deprecatedClassesUsed.addAll(deprecatedUsage.getClasses());
             deprecatedMethodsUsed.addAll(deprecatedUsage.getMethods());
@@ -68,7 +68,7 @@ public class Reports {
                 deprecatedFieldsUsed);
 
         log("<h3 id=plugins>Plugins using a deprecated api</h3>");
-        log(new TreeSet<String>(deprecatedUsageByPlugin.keySet()).toString());
+        log(new TreeSet<>(deprecatedUsageByPlugin.keySet()).toString());
         println();
 
         log("<h3 id=summary>Summary</h3>");

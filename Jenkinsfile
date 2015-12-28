@@ -13,7 +13,7 @@ node('cabbage') {
    // Mark the code build 'stage'....
    stage 'Build'
    // Run the maven build
-   sh "mvn clean package exec:java"
+   sh "${mvnHome}/bin/mvn clean package exec:java"
 
    // Mark the archive 'stage'....
    stage 'Archive'

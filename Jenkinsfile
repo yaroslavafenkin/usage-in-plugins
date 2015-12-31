@@ -16,7 +16,7 @@ node('cabbage') {
 
       // Mark the checkout 'stage'....
       stage 'Checkout'
-      checkout scm
+      git branch: 'master', url: 'https://github.com/jenkins-infra/deprecated-usage-in-plugins.git'
 
       // Mark the code build 'stage'....
       stage 'Build'

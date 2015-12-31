@@ -25,8 +25,8 @@ public class Reports {
         log("ignored plugins : " + DeprecatedUsage.IGNORED_PLUGINS);
         log("");
         log("<h3 id=deprecatedApi>Deprecated api in jenkins.war</h3>");
-        log("<b> deprecated classes in jenkins.war : </b><pre>"
-                + format(deprecatedApi.getClasses()) + "</pre>");
+        log("<b> deprecated classes in jenkins.war : </b><pre>" + format(deprecatedApi.getClasses())
+                + "</pre>");
         println();
         log("<b> deprecated methods in jenkins.war : </b><pre>"
                 + formatMethods(deprecatedApi.getMethods()) + "</pre>");

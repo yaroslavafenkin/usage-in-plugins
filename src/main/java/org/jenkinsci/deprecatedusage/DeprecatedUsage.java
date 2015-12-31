@@ -214,7 +214,8 @@ public class DeprecatedUsage {
         }
 
         @Override
-        public void visitMethodInsn(int opcode, String owner, String name, String desc, boolean itf) {
+        public void visitMethodInsn(int opcode, String owner, String name, String desc,
+                boolean itf) {
             // log("\t" + owner + " " + name + " " + desc);
             methodCalled(owner, name, desc);
         }

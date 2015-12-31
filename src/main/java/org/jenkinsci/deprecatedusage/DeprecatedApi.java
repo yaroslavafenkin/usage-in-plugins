@@ -59,8 +59,8 @@ public class DeprecatedApi {
 
     private void analyze(InputStream input) throws IOException {
         final ClassReader classReader = new ClassReader(input);
-        classReader.accept(classVisitor, ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG
-                | ClassReader.SKIP_FRAMES);
+        classReader.accept(classVisitor,
+                ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
     }
 
     public Set<String> getClasses() {

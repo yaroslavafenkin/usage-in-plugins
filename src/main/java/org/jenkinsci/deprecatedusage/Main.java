@@ -49,8 +49,8 @@ public class Main {
 
     private static Map<String, DeprecatedUsage> analyzeDeprecatedUsage(List<JenkinsFile> plugins,
             final DeprecatedApi deprecatedApi) throws InterruptedException, ExecutionException {
-        final ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime()
-                .availableProcessors());
+        final ExecutorService executorService = Executors
+                .newFixedThreadPool(Runtime.getRuntime().availableProcessors());
         final List<Future<DeprecatedUsage>> futures = new ArrayList<>(plugins.size());
         for (final JenkinsFile plugin : plugins) {
             final Callable<DeprecatedUsage> task = new Callable<DeprecatedUsage>() {
@@ -61,8 +61,8 @@ public class Main {
                     try {
                         deprecatedUsage.analyze(plugin.getFile());
                     } catch (final EOFException | ZipException e) {
-                        Log.log("deleting " + plugin.getFile().getName()
-                                + " and skipping, because " + e.toString());
+                        Log.log("deleting " + plugin.getFile().getName() + " and skipping, because "
+                                + e.toString());
                         plugin.getFile().delete();
                     } catch (final Exception e) {
                         Log.log(e.toString() + " on " + plugin.getFile().getName());

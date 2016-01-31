@@ -1,4 +1,4 @@
-// Jenkinsfile for Workflow plugin at https://ci.jenkins-ci.org/view/Infrastructure/job/infra_deprecated-usage-in-plugins/
+// Jenkinsfile for Workflow plugin at https://ci.jenkins-ci.org/view/All/job/Reporting/job/infra_deprecated-usage-in-plugins/
 
 // Run on 'cabbage' node.
 node('cabbage') {

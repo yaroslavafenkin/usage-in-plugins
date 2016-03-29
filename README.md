@@ -1,6 +1,6 @@
 **Finds and reports usage of deprecated Jenkins api in plugins** (except api used in jelly and groovy files and in WEB-INF/lib/*.jar)
 
-[![Build Status](https://ci.jenkins-ci.org/buildStatus/icon?job=infra_deprecated-usage-in-plugins)](https://ci.jenkins-ci.org/view/All/job/Reporting/job/infra_deprecated-usage-in-plugins/)
+[![Build Status](https://ci.jenkins-ci.org/buildStatus/icon?job=Reporting/infra_deprecated-usage-in-plugins)](https://ci.jenkins-ci.org/view/All/job/Reporting/job/infra_deprecated-usage-in-plugins/)
 
 Current results in summary:
 * 1114 plugins

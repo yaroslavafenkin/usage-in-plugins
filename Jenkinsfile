@@ -1,29 +1,32 @@
-// Jenkinsfile for Workflow plugin at https://ci.jenkins-ci.org/view/All/job/Reporting/job/infra_deprecated-usage-in-plugins/
+pipeline {
+   agent {
+      label 'java'
+   }
 
-node('java') {
-   /* timeout 60 minutes */
-   timeout(60) {
-      // Get the maven tool.
-      // ** NOTE: This 'mvn' maven tool must be configured
-      // **       in the global configuration.           
-      def mvnHome = tool 'mvn'
+   triggers {
+      cron('H H * * *')
+   }
 
-      // Get the jdk tool.
-      // ** NOTE: This 'jdk8' jdk tool must be configured
-      // **       in the global configuration.           
-      env.JAVA_HOME = tool 'jdk8'
+   environment {
+      tool 'jdk8'
+      tool 'mvn'
+   }
 
-      // Mark the checkout 'stage'....
-      stage 'Checkout'
-      git branch: 'master', url: 'https://github.com/jenkins-infra/deprecated-usage-in-plugins.git'
+   options {
+      timeout(time: 1, unit: 'HOURS')
+   }
 
-      // Mark the code build 'stage'....
-      stage 'Build'
-      // Run the maven build
-      sh "${mvnHome}/bin/mvn clean package exec:java"
+   stages {
+      stage 'Checkout' {
+         git 'https://github.com/jenkins-infra/deprecated-usage-in-plugins.git'
+      }
 
-      // Mark the archive 'stage'....
-      stage 'Archive'
-      archive 'target/*.html'
+      stage 'Build' {
+         sh 'mvn clean package exec:java'
+      }
+
+      stage 'Archive' {
+         archive 'target/*.html'
+      }
    }
 }

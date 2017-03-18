@@ -18,15 +18,21 @@ pipeline {
 
    stages {
       stage ('Checkout') {
-         git 'https://github.com/jenkins-infra/deprecated-usage-in-plugins.git'
+         steps {
+            git 'https://github.com/jenkins-infra/deprecated-usage-in-plugins.git'
+         }
       }
 
       stage ('Build') {
-         sh 'mvn clean package exec:java'
+         steps {
+            sh 'mvn clean package exec:java'
+         }
       }
 
       stage ('Archive') {
-         archive 'target/*.html'
+         steps {
+            archive 'target/*.html'
+         }
       }
    }
 }

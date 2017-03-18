@@ -26,7 +26,7 @@ public class DeprecatedApi {
     public static final Set<String> IGNORED_DEPRECATED_CLASSES = new HashSet<>(
             Arrays.asList("hudson/model/Hudson$CloudList"));
 
-    private static final char SEPARATOR = '.';
+    private static final char SEPARATOR = '#';
 
     private final Set<String> classes = new LinkedHashSet<>();
     private final Set<String> methods = new LinkedHashSet<>();
@@ -64,7 +64,7 @@ public class DeprecatedApi {
     }
 
     public Set<String> getClasses() {
-        return classes;
+        return  classes;
     }
 
     public Set<String> getMethods() {

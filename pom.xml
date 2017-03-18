@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.jenkinsci</groupId>
 	<artifactId>deprecated-usage-in-plugins</artifactId>
-	<version>0.1</version>
+	<version>0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>Deprecated usage in plugins</name>
 	<description>Finds and reports usage of deprecated Jenkins api in plugins</description>
@@ -37,6 +37,21 @@
 			<artifactId>json</artifactId>
 			<version>20140107</version>
 			<!-- 20140107 is the last json.org release still compatible with java 1.7 -->
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.4</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.5</version>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
 		</dependency>
 	</dependencies>
 

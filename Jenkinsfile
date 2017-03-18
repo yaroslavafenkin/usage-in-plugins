@@ -8,8 +8,8 @@ pipeline {
    }
 
    tools {
-      tool 'jdk8'
-      tool 'mvn'
+      jdk 'jdk8'
+      maven 'mvn'
    }
 
    options {

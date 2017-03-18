@@ -7,7 +7,7 @@ pipeline {
       cron('H H * * *')
    }
 
-   environment {
+   tools {
       tool 'jdk8'
       tool 'mvn'
    }
@@ -17,15 +17,15 @@ pipeline {
    }
 
    stages {
-      stage 'Checkout' {
+      stage ('Checkout') {
          git 'https://github.com/jenkins-infra/deprecated-usage-in-plugins.git'
       }
 
-      stage 'Build' {
+      stage ('Build') {
          sh 'mvn clean package exec:java'
       }
 
-      stage 'Archive' {
+      stage ('Archive') {
          archive 'target/*.html'
       }
    }

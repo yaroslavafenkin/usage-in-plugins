@@ -31,7 +31,7 @@ pipeline {
 
       stage ('Archive') {
          steps {
-            archive 'target/*.html'
+            archive 'output/**'
          }
       }
    }

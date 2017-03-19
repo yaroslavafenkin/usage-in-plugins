@@ -19,7 +19,7 @@ pipeline {
    stages {
       stage ('Checkout') {
          steps {
-            git 'https://github.com/jenkins-infra/deprecated-usage-in-plugins.git'
+            checkout scm
          }
       }
 

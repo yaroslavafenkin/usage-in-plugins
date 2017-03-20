@@ -36,7 +36,7 @@ public class JenkinsFile {
     private final String version;
     private final URL url;
     private final String wiki;
-    private final File file;
+    private File file;
     private final File versionsRootDirectory;
     private Future<?> downloadFuture;
 
@@ -66,6 +66,10 @@ public class JenkinsFile {
 
     public File getFile() {
         return file;
+    }
+
+    public void setFile(File file) {
+        this.file = file;
     }
 
     public void startDownloadIfNotExists() {

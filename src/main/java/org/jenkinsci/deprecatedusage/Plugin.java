@@ -34,6 +34,10 @@ public class Plugin implements Comparable<Plugin> {
         return artifactId + ":" + version;
     }
 
+    public String getUrl() {
+        return "https://plugins.jenkins.io/" + artifactId;
+    }
+
     @Override
     public int compareTo(Plugin o) {
         int cmp = artifactId.compareToIgnoreCase(o.artifactId);

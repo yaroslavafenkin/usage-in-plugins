@@ -31,11 +31,14 @@ public class JavadocUtil {
 
         boolean isClass = !fullSignature.contains("#");
         boolean isField = !isClass && !fullSignature.contains("(");
-        boolean isMethod = !isClass && fullSignature.contains("(");
 
         if (isClass) {
             // transform package and class names, then return
             return JAVADOC_URL + fullSignature.replace("$", ".") + ".html";
+        }
+
+        if (isField) {
+            return JAVADOC_URL + fullSignature.replace("$", ".").replace("#", ".html#");
         }
 
         String packageName = "";
@@ -48,11 +51,6 @@ public class JavadocUtil {
             classMethodArgumentsAndReturn = fullSignature.substring(endOfPackage + 1);
         }
 
-        if (isField) {
-            String className = fullSignature.substring(0, fullSignature.indexOf("#"));
-            return JAVADOC_URL + fullSignature.replace("$", ".").replace("#", ".html#");
-        }
-        
         int returnValue = classMethodArgumentsAndReturn.indexOf(")") + 1;
         String classMethodAndArguments = classMethodArgumentsAndReturn.substring(0, returnValue);
 

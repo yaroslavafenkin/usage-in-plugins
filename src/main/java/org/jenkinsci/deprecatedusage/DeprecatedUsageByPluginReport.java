@@ -34,7 +34,7 @@ public class DeprecatedUsageByPluginReport extends Report {
             if (!usage.hasDeprecatedUsage()) {
                 continue;
             }
-            writer.append("<div class='plugin'><h2 id='" + usage.getPlugin().artifactId +"'>" + usage.getPlugin().toString() + "</h2>");
+            writer.append("<div class='plugin'><h2 id='" + usage.getPlugin().artifactId +"'><a href='" + usage.getPlugin().getUrl() + "'>" + usage.getPlugin().toString() + "</a></h2>");
 
             if (usage.getClasses().size() > 0) {
                 writer.append("<h3>Classes</h3><ul>");

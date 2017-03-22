@@ -11,6 +11,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
@@ -23,8 +24,7 @@ public class DeprecatedUsage {
     public static final Set<String> IGNORED_PLUGINS = new HashSet<>(
             Arrays.asList("python-wrapper.hpi"));
 
-    private final String pluginName;
-    private final String pluginKey;
+    private final Plugin plugin;
     private final DeprecatedApi deprecatedApi;
 
     private final Set<String> classes = new LinkedHashSet<>();
@@ -36,8 +36,7 @@ public class DeprecatedUsage {
 
     public DeprecatedUsage(String pluginName, String pluginVersion, DeprecatedApi deprecatedApi) {
         super();
-        this.pluginName = pluginName;
-        this.pluginKey = pluginName + '-' + pluginVersion;
+        this.plugin = new Plugin(pluginName, pluginVersion);
         this.deprecatedApi = deprecatedApi;
     }
 
@@ -83,24 +82,18 @@ public class DeprecatedUsage {
         classReader.accept(aClassVisitor, ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
     }
 
-    public String getPluginName() {
-        return pluginName;
-    }
-
-    public String getPluginKey() {
-        return pluginKey;
-    }
+    public Plugin getPlugin() { return plugin; }
 
     public Set<String> getClasses() {
-        return classes;
+        return new TreeSet<>(classes);
     }
 
     public Set<String> getMethods() {
-        return methods;
+        return new TreeSet<>(methods);
     }
 
     public Set<String> getFields() {
-        return fields;
+        return new TreeSet<>(fields);
     }
 
     public boolean hasDeprecatedUsage() {
@@ -110,6 +103,13 @@ public class DeprecatedUsage {
     void methodCalled(String className, String name, String desc) {
         // Calls to java and javax are ignored first
         if (!isJavaClass(className)) {
+            if (className.endsWith("DefaultTypeTransformation")) {
+                // various DefaultTypeTransformation#box signatures seem false positive in plugins written in Groovy
+                return;
+            }
+            if (!className.contains("jenkins") && !className.contains("hudson") && !className.contains("org/kohsuke")) {
+                return;
+            }
             if (deprecatedApi.getClasses().contains(className)) {
                 classes.add(className);
             } else {

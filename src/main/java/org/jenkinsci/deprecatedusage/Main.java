@@ -7,9 +7,7 @@ import java.net.URL;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -25,29 +23,35 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
         final long start = System.currentTimeMillis();
-        log("<h2> Finds and reports usage of deprecated Jenkins api in plugins </h2> (except api used in jelly and groovy files and in WEB-INF/lib/*.jar)");
         final UpdateCenter updateCenter = new UpdateCenter(new URL(UPDATE_CENTER_URL));
-        log("Downloaded update-center.json");
+        System.out.println("Downloaded update-center.json");
         updateCenter.download();
-        log("All files are up to date (" + updateCenter.getPlugins().size() + " plugins)");
+        System.out.println("All files are up to date (" + updateCenter.getPlugins().size() + " plugins)");
 
-        log("Analyzing deprecated api in Jenkins");
+        System.out.println("Analyzing deprecated api in Jenkins");
         final File coreFile = updateCenter.getCore().getFile();
         final DeprecatedApi deprecatedApi = new DeprecatedApi();
         deprecatedApi.analyze(coreFile);
 
-        Log.log("Analyzing deprecated usage in plugins");
-        final Map<String, DeprecatedUsage> deprecatedUsageByPlugin = analyzeDeprecatedUsage(
-                updateCenter.getPlugins(), deprecatedApi);
+        System.out.println("Analyzing deprecated usage in plugins");
+        final List<DeprecatedUsage> deprecatedUsages = analyzeDeprecatedUsage(updateCenter.getPlugins(), deprecatedApi);
 
-        new Reports(updateCenter, deprecatedApi, deprecatedUsageByPlugin).report();
+        Report[] reports = new Report[] {
+                new DeprecatedUsageByPluginReport(deprecatedApi, deprecatedUsages, new File("output"), "usage-by-plugin"),
+                new DeprecatedUnusedApiReport(deprecatedApi, deprecatedUsages, new File("output"), "deprecated-and-unused"),
+                new DeprecatedUsageByApiReport(deprecatedApi, deprecatedUsages, new File("output"), "usage-by-api")
+        };
 
-        log("duration : " + (System.currentTimeMillis() - start) + " ms at "
+        for (Report report : reports) {
+            report.generateJsonReport();
+            report.generateHtmlReport();
+        }
+
+        System.out.println("duration : " + (System.currentTimeMillis() - start) + " ms at "
                 + DateFormat.getDateTimeInstance().format(new Date()));
-        Log.closeLog();
     }
 
-    private static Map<String, DeprecatedUsage> analyzeDeprecatedUsage(List<JenkinsFile> plugins,
+    private static List<DeprecatedUsage> analyzeDeprecatedUsage(List<JenkinsFile> plugins,
             final DeprecatedApi deprecatedApi) throws InterruptedException, ExecutionException {
         final ExecutorService executorService = Executors
                 .newFixedThreadPool(Runtime.getRuntime().availableProcessors());
@@ -61,11 +65,11 @@ public class Main {
                     try {
                         deprecatedUsage.analyze(plugin.getFile());
                     } catch (final EOFException | ZipException e) {
-                        Log.log("deleting " + plugin.getFile().getName() + " and skipping, because "
+                        System.out.println("deleting " + plugin.getFile().getName() + " and skipping, because "
                                 + e.toString());
                         plugin.getFile().delete();
                     } catch (final Exception e) {
-                        Log.log(e.toString() + " on " + plugin.getFile().getName());
+                        System.out.println(e.toString() + " on " + plugin.getFile().getName());
                         e.printStackTrace();
                     }
                     return deprecatedUsage;
@@ -74,28 +78,26 @@ public class Main {
             futures.add(executorService.submit(task));
         }
 
-        final Map<String, DeprecatedUsage> deprecatedUsageByPlugin = new LinkedHashMap<>();
+        final List<DeprecatedUsage> deprecatedUsages = new ArrayList<>();
         int i = 0;
         for (final Future<DeprecatedUsage> future : futures) {
             final DeprecatedUsage deprecatedUsage = future.get();
-            if (deprecatedUsage.hasDeprecatedUsage()) {
-                deprecatedUsageByPlugin.put(deprecatedUsage.getPluginKey(), deprecatedUsage);
-            }
+            deprecatedUsages.add(deprecatedUsage);
             i++;
-            if (i % 20 == 0) {
-                Log.print(".");
+            if (i % 10 == 0) {
+                System.out.print(".");
+            }
+            if (i % 100 == 0) {
+                System.out.print(" ");
+            }
+            if (i % 500 == 0) {
+                System.out.print("\n");
             }
         }
         executorService.shutdown();
         executorService.awaitTermination(5, TimeUnit.SECONDS);
         // wait for threads to stop
         Thread.sleep(100);
-        log("");
-        log("");
-        return deprecatedUsageByPlugin;
-    }
-
-    private static void log(String message) {
-        Log.log(message);
+        return deprecatedUsages;
     }
 }

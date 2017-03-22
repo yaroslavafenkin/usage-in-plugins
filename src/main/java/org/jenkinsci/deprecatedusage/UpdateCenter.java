@@ -76,7 +76,7 @@ public class UpdateCenter {
             try {
                 plugin.waitDownload();
             } catch (final FileNotFoundException e) {
-                Log.log(e.toString());
+                System.err.println(e.toString());
                 plugins.remove(plugin);
             }
         }

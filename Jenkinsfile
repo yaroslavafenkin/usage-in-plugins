@@ -19,7 +19,7 @@ pipeline {
    stages {
       stage ('Checkout') {
          steps {
-            git 'https://github.com/jenkins-infra/deprecated-usage-in-plugins.git'
+            checkout scm
          }
       }
 
@@ -31,7 +31,7 @@ pipeline {
 
       stage ('Archive') {
          steps {
-            archive 'target/*.html'
+            archive 'output/**'
          }
       }
    }

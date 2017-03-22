@@ -3,3 +3,8 @@ target
 .classpath
 .settings
 work
+output
+
+# IntelliJ
+*.iml
+.idea/

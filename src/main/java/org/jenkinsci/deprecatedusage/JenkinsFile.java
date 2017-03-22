@@ -97,7 +97,7 @@ public class JenkinsFile {
                     } catch (final AtomicMoveNotSupportedException e) {
                         Files.move(tempFile.toPath(), file.toPath());
                     }
-                    Log.log("Downloaded " + file.getName() + ", " + file.length() / 1024 + " Kb");
+                    System.out.println("Downloaded " + file.getName() + ", " + file.length() / 1024 + " Kb");
                 } finally {
                     tempFile.delete();
                 }

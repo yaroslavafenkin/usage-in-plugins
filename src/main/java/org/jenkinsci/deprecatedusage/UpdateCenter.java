@@ -1,5 +1,6 @@
 package org.jenkinsci.deprecatedusage;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -29,7 +30,7 @@ public class UpdateCenter {
 
         final JSONObject jsonRoot = new JSONObject(string);
         final JSONObject jsonCore = jsonRoot.getJSONObject("core");
-        core = parse(jsonCore);
+        core = parseCore(jsonCore);
 
         final JSONObject jsonPlugins = jsonRoot.getJSONObject("plugins");
         for (final Object pluginId : jsonPlugins.keySet()) {
@@ -51,6 +52,12 @@ public class UpdateCenter {
         final String string = new String(updateCenterData, StandardCharsets.UTF_8)
                 .replace("updateCenter.post(", "");
         return string;
+    }
+
+    private JenkinsFile parseCore(JSONObject jsonObject) throws MalformedURLException, JSONException {
+        JenkinsFile core = parse(jsonObject);
+        core.setFile(new File(System.getProperty("coreFileOverride", core.getFile().toString())));
+        return core;
     }
 
     private JenkinsFile parse(JSONObject jsonObject) throws MalformedURLException, JSONException {

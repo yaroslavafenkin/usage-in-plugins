@@ -1,0 +1,18 @@
+= How to use this tool
+
+== Direct usage
+
+[source]
+mvn clean compile exec:java
+
+== Dockerfile
+
+A Dockerfile is provided for ease of running without necessary environment (JDK, Maven, etc.)
+
+Simply do:
+
+[source]
+----
+docker build -t jenkins/usage-in-plugins .
+docker run -v maven-repo:/root/.m2/repository -v downloaded-plugins:/project/work jenkins/usage-in-plugins
+----

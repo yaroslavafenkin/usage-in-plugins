@@ -1,9 +1,12 @@
 package org.jenkinsci.deprecatedusage;
 
+import org.apache.commons.io.FileUtils;
+
 import java.io.EOFException;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -31,6 +34,7 @@ public class Main {
         System.out.println("Analyzing deprecated api in Jenkins");
         final File coreFile = updateCenter.getCore().getFile();
         final DeprecatedApi deprecatedApi = new DeprecatedApi();
+        addClassesToAnalyze(deprecatedApi);
         deprecatedApi.analyze(coreFile);
 
         System.out.println("Analyzing deprecated usage in plugins");
@@ -49,6 +53,22 @@ public class Main {
 
         System.out.println("duration : " + (System.currentTimeMillis() - start) + " ms at "
                 + DateFormat.getDateTimeInstance().format(new Date()));
+    }
+
+    /**
+     * Adds hardcoded classes to analyze for usage. This is mostly designed for finding classes planned for deprecation,
+     * but can be also used to find any class usage.
+     *
+     */
+    private static void addClassesToAnalyze(DeprecatedApi deprecatedApi) throws IOException {
+        File additionalClassesFile = new File("additional-classes.txt");
+        if (additionalClassesFile.exists()) {
+            System.out.println(additionalClassesFile+" found, adding classes");
+            List<String> additionalClasses = FileUtils.readLines(additionalClassesFile, StandardCharsets.UTF_8.name());
+            deprecatedApi.addClasses(additionalClasses);
+        } else {
+            System.out.println("No "+additionalClassesFile+" file, only already deprecated class will be searched for");
+        }
     }
 
     private static List<DeprecatedUsage> analyzeDeprecatedUsage(List<JenkinsFile> plugins,

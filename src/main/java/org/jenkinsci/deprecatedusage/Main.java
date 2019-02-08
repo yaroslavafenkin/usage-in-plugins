@@ -27,17 +27,18 @@ public class Main {
     public static void main(String[] args) throws Exception {
         new Main().doMain(args);
     }
+
     public void doMain(String[] args) throws Exception {
 
         final CmdLineParser commandLineParser = new CmdLineParser(Options.get());
         try {
             commandLineParser.parseArgument(args);
-        }catch (CmdLineException e) {
+        } catch (CmdLineException e) {
             commandLineParser.printUsage(System.err);
             System.exit(1);
         }
 
-        if(Options.get().help) {
+        if (Options.get().help) {
             commandLineParser.printUsage(System.err);
             System.exit(0);
         }

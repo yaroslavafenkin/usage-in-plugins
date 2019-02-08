@@ -14,5 +14,12 @@ Simply do:
 [source]
 ----
 docker build -t jenkins/usage-in-plugins .
-docker run  -ti -v maven-repo:/root/.m2/repository -v downloaded-plugins:/project/work -v $PWD/output:/project/output -v $PWD/additional-classes.txt:/project/additional-classes.txt:ro jenkins/usage-in-plugins
+
+# Run it
+docker run -ti \
+           -v maven-repo:/root/.m2/repository \
+           -v downloaded-plugins:/project/work \
+           -v $PWD/output:/project/output \
+           -v $PWD/additional-classes.txt:/project/additional-classes.txt:ro \
+              jenkins/usage-in-plugins
 ----

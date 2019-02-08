@@ -62,19 +62,6 @@ public class DeprecatedUsage {
         } finally {
             warReader.close();
         }
-
-        // final InputStream input = new FileInputStream(pluginFile);
-        // final JarReader jarReader = new JarReader(input);
-        // try {
-        // String fileName = jarReader.nextClass();
-        // while (fileName != null) {
-        // analyze(jarReader.getInputStream(), aClassVisitor);
-        // fileName = jarReader.nextClass();
-        // }
-        // } finally {
-        // jarReader.close();
-        // input.close();
-        // }
     }
 
     private void analyze(InputStream input, ClassVisitor aClassVisitor) throws IOException {

@@ -1,12 +1,12 @@
 package org.jenkinsci.deprecatedusage;
 
-import org.apache.commons.io.FileUtils;
+import org.kohsuke.args4j.CmdLineException;
+import org.kohsuke.args4j.CmdLineParser;
 
 import java.io.EOFException;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -25,6 +25,22 @@ public class Main {
     "http://updates.jenkins-ci.org/update-center.json";
 
     public static void main(String[] args) throws Exception {
+        new Main().doMain(args);
+    }
+    public void doMain(String[] args) throws Exception {
+
+        final CmdLineParser commandLineParser = new CmdLineParser(Options.get());
+        try {
+            commandLineParser.parseArgument(args);
+        }catch (CmdLineException e) {
+            commandLineParser.printUsage(System.err);
+            System.exit(1);
+        }
+
+        if(Options.get().help) {
+            commandLineParser.printUsage(System.err);
+            System.exit(0);
+        }
         final long start = System.currentTimeMillis();
         final UpdateCenter updateCenter = new UpdateCenter(new URL(UPDATE_CENTER_URL));
         System.out.println("Downloaded update-center.json");
@@ -61,13 +77,11 @@ public class Main {
      *
      */
     private static void addClassesToAnalyze(DeprecatedApi deprecatedApi) throws IOException {
-        File additionalClassesFile = new File("additional-classes.txt");
-        if (additionalClassesFile.exists()) {
-            System.out.println(additionalClassesFile+" found, adding classes");
-            List<String> additionalClasses = FileUtils.readLines(additionalClassesFile, StandardCharsets.UTF_8.name());
+        if (Options.get().additionalClassesFile != null) {
+            List<String> additionalClasses = Options.getAdditionalClasses();
             deprecatedApi.addClasses(additionalClasses);
         } else {
-            System.out.println("No "+additionalClassesFile+" file, only already deprecated class will be searched for");
+            System.out.println("No 'additionalClassesFile' option, only already deprecated class will be searched for");
         }
     }
 

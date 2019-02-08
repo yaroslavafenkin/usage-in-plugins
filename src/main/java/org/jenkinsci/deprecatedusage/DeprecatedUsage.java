@@ -124,12 +124,9 @@ public class DeprecatedUsage {
         // if an additionalClasses file is specified, and this matches, we ignore Options' includeJavaCoreClasses or onlyIncludeJenkinsClasses
         // values, given the least surprise is most likely that if the user explicitly passed a file, s/he does want it to be analyzed
         // even if coming from java.*, javax.*, or not from Jenkins core classes itself
-        if (Options.get().additionalClassesFile != null) {
-            final boolean b = Options.getAdditionalClasses().stream()
-                    .anyMatch(className::startsWith);
-            if(b) {
-                return true;
-            }
+        if (Options.get().additionalClassesFile != null &&
+                Options.getAdditionalClasses().stream().anyMatch(className::startsWith)) {
+            return true;
         }
 
         if(Options.get().onlyAdditionalClasses) {

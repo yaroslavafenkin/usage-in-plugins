@@ -21,7 +21,7 @@ import java.util.zip.ZipException;
 
 public class Main {
     private static final String UPDATE_CENTER_URL =
-    // "http://updates.jenkins-ci.org/experimental/update-center.json";
+    // "http://updates.jenkins-ci.org/experimental/update-center.json"; // TODO: introduce new option to choose UC, see Options class
     "http://updates.jenkins-ci.org/update-center.json";
 
     public static void main(String[] args) throws Exception {

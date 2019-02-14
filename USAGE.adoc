@@ -1,0 +1,52 @@
+= How to use this tool
+
+== Direct usage
+
+[source]
+mvn clean compile exec:java
+
+== Dockerfile
+
+A Dockerfile is provided for ease of running without necessary environment (JDK, Maven, etc.)
+
+Simply do:
+
+[source]
+----
+docker build -t jenkins/usage-in-plugins .
+
+# Run it
+docker run -ti \
+           -v maven-repo:/root/.m2/repository \
+           -v downloaded-plugins:/project/work \
+           -v $PWD/output:/project/output \
+              jenkins/usage-in-plugins
+...
+
+# Run it on a subset of classes (with all sample output)
+$ cat add.txt
+javax/xml/bind/DatatypeConverterImpl
+javax/xml/bind/DatatypeConverter
+$ docker run -ti \
+           -v maven-repo:/root/.m2/repository \
+           -v downloaded-plugins:/project/work \
+           -v $PWD/output:/project/output \
+           -v $PWD/add.txt:/project/additional-classes.txt:ro \
+              jenkins/usage-in-plugins --additionalClasses additional-classes.txt --onlyAdditionalClasses
+Downloaded update-center.json
+All files are up to date (1590 plugins)
+Analyzing deprecated api in Jenkins
+additional-classes.txt found, adding 2 classes
+        adding javax/xml/bind/DatatypeConverterImpl
+        adding javax/xml/bind/DatatypeConverter
+Analyzing deprecated usage in plugins
+.......... .......... .......... .......... ..........
+.......... .......... .......... .......... ..........
+.......... .......... .......... .......... ..........
+.........Writing output/usage-by-plugin.json
+Writing output/usage-by-plugin.html
+Writing output/deprecated-and-unused.json
+Writing output/deprecated-and-unused.html
+Writing output/usage-by-api.json
+Writing output/usage-by-api.html
+----

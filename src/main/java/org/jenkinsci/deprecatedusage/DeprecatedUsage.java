@@ -62,19 +62,6 @@ public class DeprecatedUsage {
         } finally {
             warReader.close();
         }
-
-        // final InputStream input = new FileInputStream(pluginFile);
-        // final JarReader jarReader = new JarReader(input);
-        // try {
-        // String fileName = jarReader.nextClass();
-        // while (fileName != null) {
-        // analyze(jarReader.getInputStream(), aClassVisitor);
-        // fileName = jarReader.nextClass();
-        // }
-        // } finally {
-        // jarReader.close();
-        // input.close();
-        // }
     }
 
     private void analyze(InputStream input, ClassVisitor aClassVisitor) throws IOException {
@@ -101,13 +88,8 @@ public class DeprecatedUsage {
     }
 
     void methodCalled(String className, String name, String desc) {
-        // Calls to java and javax are ignored first
-        if (!isJavaClass(className)) {
-            if (className.endsWith("DefaultTypeTransformation")) {
-                // various DefaultTypeTransformation#box signatures seem false positive in plugins written in Groovy
-                return;
-            }
-            if (!className.contains("jenkins") && !className.contains("hudson") && !className.contains("org/kohsuke")) {
+
+            if (!shouldAnalyze(className)) {
                 return;
             }
             if (deprecatedApi.getClasses().contains(className)) {
@@ -125,7 +107,42 @@ public class DeprecatedUsage {
                     }
                 }
             }
+    }
+
+    /**
+     * Returns true if given class should be analyzed
+     *
+     * @see Options
+     */
+    private boolean shouldAnalyze(String className)  {
+
+        if (className.endsWith("DefaultTypeTransformation")) {
+            // various DefaultTypeTransformation#box signatures seem false positive in plugins written in Groovy
+            return false;
         }
+
+        // if an additionalClasses file is specified, and this matches, we ignore Options' includeJavaCoreClasses or onlyIncludeJenkinsClasses
+        // values, given the least surprise is most likely that if the user explicitly passed a file, s/he does want it to be analyzed
+        // even if coming from java.*, javax.*, or not from Jenkins core classes itself
+        if (Options.get().additionalClassesFile != null &&
+                Options.getAdditionalClasses().stream().anyMatch(className::startsWith)) {
+            return true;
+        }
+
+        if(Options.get().onlyAdditionalClasses) {
+            return false;
+        }
+
+        // Calls to java and javax are ignored by default if not explicitly requested
+        if(isJavaClass(className)) {
+            return Options.get().includeJavaCoreClasses;
+        }
+
+        if(!className.contains("jenkins") && !className.contains("hudson") && !className.contains("org/kohsuke")) {
+            return Options.get().onlyIncludeJenkinsClasses;
+        }
+
+        return true;
     }
 
     void fieldCalled(String className, String name, String desc) {

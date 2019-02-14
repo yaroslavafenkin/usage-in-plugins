@@ -1,18 +1,19 @@
 package org.jenkinsci.deprecatedusage;
 
+import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.ClassVisitor;
+import org.objectweb.asm.FieldVisitor;
+import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Opcodes;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
-
-import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.ClassVisitor;
-import org.objectweb.asm.FieldVisitor;
-import org.objectweb.asm.MethodVisitor;
-import org.objectweb.asm.Opcodes;
 
 public class DeprecatedApi {
     // some plugins such as job-dsl has following code without using deprecated :
@@ -33,6 +34,7 @@ public class DeprecatedApi {
     private final Set<String> fields = new LinkedHashSet<>();
     private final ClassVisitor classVisitor = new CalledClassVisitor();
 
+
     public static String getMethodKey(String className, String name, String desc) {
         return className + SEPARATOR + name + desc;
     }
@@ -44,6 +46,9 @@ public class DeprecatedApi {
     }
 
     public void analyze(File coreFile) throws IOException {
+        if(Options.get().onlyAdditionalClasses) {
+            return;
+        }
         final WarReader warReader = new WarReader(coreFile, false);
         try {
             String fileName = warReader.nextClass();
@@ -73,6 +78,10 @@ public class DeprecatedApi {
 
     public Set<String> getFields() {
         return fields;
+    }
+
+    public void addClasses(List<String> additionalClasses) {
+        classes.addAll(additionalClasses);
     }
 
     /**

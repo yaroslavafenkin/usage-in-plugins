@@ -1,5 +1,8 @@
 package org.jenkinsci.deprecatedusage;
 
+import org.kohsuke.args4j.CmdLineException;
+import org.kohsuke.args4j.CmdLineParser;
+
 import java.io.EOFException;
 import java.io.File;
 import java.io.IOException;
@@ -18,10 +21,27 @@ import java.util.zip.ZipException;
 
 public class Main {
     private static final String UPDATE_CENTER_URL =
-    // "http://updates.jenkins-ci.org/experimental/update-center.json";
+    // "http://updates.jenkins-ci.org/experimental/update-center.json"; // TODO: introduce new option to choose UC, see Options class
     "http://updates.jenkins-ci.org/update-center.json";
 
     public static void main(String[] args) throws Exception {
+        new Main().doMain(args);
+    }
+
+    public void doMain(String[] args) throws Exception {
+
+        final CmdLineParser commandLineParser = new CmdLineParser(Options.get());
+        try {
+            commandLineParser.parseArgument(args);
+        } catch (CmdLineException e) {
+            commandLineParser.printUsage(System.err);
+            System.exit(1);
+        }
+
+        if (Options.get().help) {
+            commandLineParser.printUsage(System.err);
+            System.exit(0);
+        }
         final long start = System.currentTimeMillis();
         final UpdateCenter updateCenter = new UpdateCenter(new URL(UPDATE_CENTER_URL));
         System.out.println("Downloaded update-center.json");
@@ -31,6 +51,7 @@ public class Main {
         System.out.println("Analyzing deprecated api in Jenkins");
         final File coreFile = updateCenter.getCore().getFile();
         final DeprecatedApi deprecatedApi = new DeprecatedApi();
+        addClassesToAnalyze(deprecatedApi);
         deprecatedApi.analyze(coreFile);
 
         System.out.println("Analyzing deprecated usage in plugins");
@@ -49,6 +70,20 @@ public class Main {
 
         System.out.println("duration : " + (System.currentTimeMillis() - start) + " ms at "
                 + DateFormat.getDateTimeInstance().format(new Date()));
+    }
+
+    /**
+     * Adds hardcoded classes to analyze for usage. This is mostly designed for finding classes planned for deprecation,
+     * but can be also used to find any class usage.
+     *
+     */
+    private static void addClassesToAnalyze(DeprecatedApi deprecatedApi) throws IOException {
+        if (Options.get().additionalClassesFile != null) {
+            List<String> additionalClasses = Options.getAdditionalClasses();
+            deprecatedApi.addClasses(additionalClasses);
+        } else {
+            System.out.println("No 'additionalClassesFile' option, only already deprecated class will be searched for");
+        }
     }
 
     private static List<DeprecatedUsage> analyzeDeprecatedUsage(List<JenkinsFile> plugins,

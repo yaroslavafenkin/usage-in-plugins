@@ -134,7 +134,7 @@ public class DeprecatedUsage {
         }
 
         // Calls to java and javax are ignored by default if not explicitly requested
-        if(className.startsWith("java/") || className.startsWith("javax")) {
+        if(isJavaClass(className)) {
             return Options.get().includeJavaCoreClasses;
         }
 

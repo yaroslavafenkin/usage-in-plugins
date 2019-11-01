@@ -7,7 +7,7 @@ NOTE: it will **NOT** find usages in Jelly and Groovy files, and in WEB-INF/lib/
 
 [![Build Status](https://ci.jenkins.io/job/Infra/job/deprecated-usage-in-plugins/job/master/badge/icon)](https://ci.jenkins.io/job/Infra/job/deprecated-usage-in-plugins/job/master/)
 
-See details and deprecated usages for each plugin in the [continuous integration](https://ci.jenkins.io/job/Infra/job/deprecated-usage-in-plugins/job/master/lastSuccessfulBuild/artifact/output/).
+See details and deprecated usages for each plugin in the [continuous integration](https://ci.jenkins.io/job/Infra/job/usage-in-plugins/job/master/lastSuccessfulBuild/artifact/output/).
 
 
 ## Usage

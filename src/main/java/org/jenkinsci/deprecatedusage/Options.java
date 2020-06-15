@@ -24,7 +24,8 @@ public class Options {
 
     private static final Options OPTIONS = new Options();
     private static List<String> additionalClasses;
-    private static Map<String, Set<String>> additionalMethods;
+    private static Map<String, Set<String>> additionalMethodNames;
+    private static Map<String, Set<String>> additionalFields;
 
     @Option(name = "-h", aliases = "--help", usage = "Shows help")
     public boolean help;
@@ -49,6 +50,12 @@ public class Options {
 
     @Option(name = "--onlyAdditionalMethods", depends = "-M", usage = "Only include in the report the specified methods")
     public boolean onlyAdditionalMethods;
+
+    @Option(name = "-F", aliases = "--additionalFields", metaVar = "FILENAME", usage = "File name for additional fields to scan")
+    public File additionalFieldsFile;
+
+    @Option(name = "--onlyAdditionalFields", depends = "-F", usage = "Only include in the report the specified fields")
+    public boolean onlyAdditionalFields;
 
     private Options() {
     }
@@ -87,15 +94,15 @@ public class Options {
         }
     }
 
-    static Map<String, Set<String>> getAdditionalMethods() {
-        if (additionalMethods != null) {
-            return additionalMethods;
+    static Map<String, Set<String>> getAdditionalMethodNames() {
+        if (additionalMethodNames != null) {
+            return additionalMethodNames;
         }
         Path path = get().additionalMethodsFile.toPath();
         if (Files.notExists(path)) {
             throw new IllegalArgumentException("Additional methods file option provided, but file not found: " + path);
         }
-        additionalMethods = new LinkedHashMap<>();
+        additionalMethodNames = new LinkedHashMap<>();
         try {
             for (String line : Files.readAllLines(path, StandardCharsets.UTF_8)) {
                 int hash = line.indexOf('#');
@@ -104,11 +111,36 @@ public class Options {
                 }
                 String className = line.substring(0, hash).replaceAll("\\.", "/");
                 String methodName = line.substring(hash + 1);
-                additionalMethods.computeIfAbsent(className, ignored -> new LinkedHashSet<>()).add(methodName);
+                additionalMethodNames.computeIfAbsent(className, ignored -> new LinkedHashSet<>()).add(methodName);
             }
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
-        return additionalMethods;
+        return additionalMethodNames;
+    }
+
+    static Map<String, Set<String>> getAdditionalFields() {
+        if (additionalFields != null) {
+            return additionalFields;
+        }
+        Path path = get().additionalFieldsFile.toPath();
+        if (Files.notExists(path)) {
+            throw new IllegalArgumentException("Additional fields file option provided, but file not found: " + path);
+        }
+        additionalFields = new LinkedHashMap<>();
+        try {
+            for (String line : Files.readAllLines(path, StandardCharsets.UTF_8)) {
+                int hash = line.indexOf('#');
+                if (hash == -1) {
+                    continue;
+                }
+                String className = line.substring(0, hash).replaceAll("\\.", "/");
+                String methodName = line.substring(hash + 1);
+                additionalFields.computeIfAbsent(className, ignored -> new LinkedHashSet<>()).add(methodName);
+            }
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+        return additionalFields;
     }
 }

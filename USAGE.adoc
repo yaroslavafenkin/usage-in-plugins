@@ -51,7 +51,7 @@ Writing output/usage-by-api.json
 Writing output/usage-by-api.html
 ----
 
-=== Finding Usage of Methods
+=== Finding Usage of Methods and Fields
 
 The command line flag `-M filename.txt` or `--additionalMethods filename.txt` allows specific methods to be searched for.
 The additional flag `--onlyAdditionalMethods` will filter the output report to only show usage of the methods specified.
@@ -65,3 +65,7 @@ hudson/util/Secret#toString
 Class names should be specified in their fully qualified form (i.e., inner classes should be referenced via `Outer$Inner` rather than by their canonical names).
 Method names should be specified after the hash.
 Note that you cannot specify which method overload signature, but they are included in reports.
+
+The command line flag `-F filename.txt` or `--additionalFields filename.txt` allows specific field usages to be found.
+The syntax here is the same as for specifying method names.
+The additional flag `--onlyAdditionalFields` will filter the output report to only show usages of the fields specified.

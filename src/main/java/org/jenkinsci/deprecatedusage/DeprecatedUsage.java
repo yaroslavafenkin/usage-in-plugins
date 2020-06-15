@@ -96,7 +96,7 @@ public class DeprecatedUsage {
                 final String method = DeprecatedApi.getMethodKey(className, name, desc);
                 if (deprecatedApi.getMethods().contains(method) ||
                         (Options.get().additionalMethodsFile != null &&
-                                Options.getAdditionalMethods().getOrDefault(className, Collections.emptySet()).contains(name))) {
+                                Options.getAdditionalMethodNames().getOrDefault(className, Collections.emptySet()).contains(name))) {
                     methods.add(method);
                 }
                 final List<String> superClassAndInterfaces = superClassAndInterfacesByClass
@@ -130,11 +130,15 @@ public class DeprecatedUsage {
             return true;
         }
         if (options.additionalMethodsFile != null &&
-                Options.getAdditionalMethods().keySet().stream().anyMatch(className::startsWith)) {
+                Options.getAdditionalMethodNames().keySet().stream().anyMatch(className::startsWith)) {
+            return true;
+        }
+        if (options.additionalFieldsFile != null &&
+                Options.getAdditionalFields().keySet().stream().anyMatch(className::startsWith)) {
             return true;
         }
 
-        if(options.onlyAdditionalClasses || options.onlyAdditionalMethods) {
+        if (options.onlyAdditionalClasses || options.onlyAdditionalMethods || options.onlyAdditionalFields) {
             return false;
         }
 
@@ -157,7 +161,9 @@ public class DeprecatedUsage {
                 classes.add(className);
             } else {
                 final String field = DeprecatedApi.getFieldKey(className, name, desc);
-                if (deprecatedApi.getFields().contains(field)) {
+                if (deprecatedApi.getFields().contains(field) ||
+                        (Options.get().additionalFieldsFile != null &&
+                                Options.getAdditionalFields().getOrDefault(className, Collections.emptySet()).contains(name))) {
                     fields.add(field);
                 }
                 final List<String> superClassAndInterfaces = superClassAndInterfacesByClass

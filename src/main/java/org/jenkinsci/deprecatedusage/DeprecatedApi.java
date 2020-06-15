@@ -46,7 +46,8 @@ public class DeprecatedApi {
     }
 
     public void analyze(File coreFile) throws IOException {
-        if(Options.get().onlyAdditionalClasses) {
+        Options options = Options.get();
+        if(options.onlyAdditionalClasses || options.onlyAdditionalMethods) {
             return;
         }
         try (WarReader warReader = new WarReader(coreFile, false)) {

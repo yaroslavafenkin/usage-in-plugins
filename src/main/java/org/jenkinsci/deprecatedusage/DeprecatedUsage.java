@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -93,7 +94,9 @@ public class DeprecatedUsage {
                 classes.add(className);
             } else {
                 final String method = DeprecatedApi.getMethodKey(className, name, desc);
-                if (deprecatedApi.getMethods().contains(method)) {
+                if (deprecatedApi.getMethods().contains(method) ||
+                        (Options.get().additionalMethodsFile != null &&
+                                Options.getAdditionalMethods().getOrDefault(className, Collections.emptySet()).contains(name))) {
                     methods.add(method);
                 }
                 final List<String> superClassAndInterfaces = superClassAndInterfacesByClass
@@ -126,8 +129,12 @@ public class DeprecatedUsage {
                 Options.getAdditionalClasses().stream().anyMatch(className::startsWith)) {
             return true;
         }
+        if (options.additionalMethodsFile != null &&
+                Options.getAdditionalMethods().keySet().stream().anyMatch(className::startsWith)) {
+            return true;
+        }
 
-        if(options.onlyAdditionalClasses) {
+        if(options.onlyAdditionalClasses || options.onlyAdditionalMethods) {
             return false;
         }
 

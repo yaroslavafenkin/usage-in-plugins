@@ -5,9 +5,16 @@ import org.kohsuke.args4j.Option;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Command line options for usages scan.
@@ -17,6 +24,7 @@ public class Options {
 
     private static final Options OPTIONS = new Options();
     private static List<String> additionalClasses;
+    private static Map<String, Set<String>> additionalMethods;
 
     @Option(name = "-h", aliases = "--help", usage = "Shows help")
     public boolean help;
@@ -24,17 +32,23 @@ public class Options {
     @Option(name = "-c", aliases = "--includeJavaCoreClasses", usage = "Include classes from java.* and javax.* in the report (not included by default)")
     public boolean includeJavaCoreClasses;
 
-    @Option(name = "--additionalClasses", metaVar = "FILENAME", usage = "File name for additional classes to scan")
+    @Option(name = "-C", aliases = "--additionalClasses", metaVar = "FILENAME", usage = "File name for additional classes to scan")
     public File additionalClassesFile;
 
-    @Option(name = "--onlyAdditionalClasses", depends = "--additionalClasses", usage = "Only include in the report the specified classes")
+    @Option(name = "--onlyAdditionalClasses", depends = "-C", usage = "Only include in the report the specified classes")
     public boolean onlyAdditionalClasses;
 
     @Option(name = "--onlyIncludeJenkinsClasses", usage = "Only include in the report Jenkins related classes (jenkins.*, hudson.*, etc.")
     public boolean onlyIncludeJenkinsClasses;
 
-    @Option(name = "-u", aliases = "--update-center", usage = "Specifies update center URL to fetch plugins from")
+    @Option(name = "-u", aliases = "--updateCenter", usage = "Specifies update center URL to fetch plugins from")
     public URL updateCenterUrl;
+
+    @Option(name = "-M", aliases = "--additionalMethods", metaVar = "FILENAME", usage = "File name for additional methods to scan")
+    public File additionalMethodsFile;
+
+    @Option(name = "--onlyAdditionalMethods", depends = "-M", usage = "Only include in the report the specified methods")
+    public boolean onlyAdditionalMethods;
 
     private Options() {
     }
@@ -71,5 +85,30 @@ public class Options {
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
+    }
+
+    static Map<String, Set<String>> getAdditionalMethods() {
+        if (additionalMethods != null) {
+            return additionalMethods;
+        }
+        Path path = get().additionalMethodsFile.toPath();
+        if (Files.notExists(path)) {
+            throw new IllegalArgumentException("Additional methods file option provided, but file not found: " + path);
+        }
+        additionalMethods = new LinkedHashMap<>();
+        try {
+            for (String line : Files.readAllLines(path, StandardCharsets.UTF_8)) {
+                int hash = line.indexOf('#');
+                if (hash == -1) {
+                    continue;
+                }
+                String className = line.substring(0, hash).replaceAll("\\.", "/");
+                String methodName = line.substring(hash + 1);
+                additionalMethods.computeIfAbsent(className, ignored -> new LinkedHashSet<>()).add(methodName);
+            }
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+        return additionalMethods;
     }
 }

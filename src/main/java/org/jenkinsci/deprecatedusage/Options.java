@@ -42,14 +42,14 @@ public class Options {
     /**
      * Singleton
      */
-    public static final Options get() {
+    public static Options get() {
         return OPTIONS;
     }
 
     /**
      * Returns the additional classes if the related {@link #additionalClassesFile} has been specified.
      *
-     * @throws IOException if called when {@link #additionalClassesFile} has not been specified.
+     * @throws IllegalArgumentException if called when {@link #additionalClassesFile} has not been specified.
      */
     static List<String> getAdditionalClasses() throws IllegalArgumentException {
         if (additionalClasses != null) {

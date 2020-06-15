@@ -21,13 +21,10 @@ public class JenkinsFile {
     // relative to user dir
     private static final File WORK_DIRECTORY = new File("work");
 
-    private static final ThreadFactory DAEMON_THREAD_FACTORY = new ThreadFactory() {
-        @Override
-        public Thread newThread(Runnable r) {
-            final Thread t = Executors.defaultThreadFactory().newThread(r);
-            t.setDaemon(true);
-            return t;
-        }
+    private static final ThreadFactory DAEMON_THREAD_FACTORY = r -> {
+        final Thread t = Executors.defaultThreadFactory().newThread(r);
+        t.setDaemon(true);
+        return t;
     };
     private static final ExecutorService downloadExecutorService = Executors.newFixedThreadPool(8,
             DAEMON_THREAD_FACTORY);
@@ -78,35 +75,27 @@ public class JenkinsFile {
             return;
         }
         final String tmpPrefix = getClass().getPackage().getName() + '-';
-        downloadFuture = downloadExecutorService.submit(new Callable<Object>() {
-            @Override
-            public Object call() throws IOException {
-                final File tempFile = File.createTempFile(tmpPrefix, ".tmp");
-                try {
-                    final OutputStream output = new BufferedOutputStream(
-                            new FileOutputStream(tempFile));
-                    try {
-                        new HttpGet(url).copy(output);
-                    } finally {
-                        output.close();
-                    }
-                    versionsRootDirectory.mkdirs();
-                    // delete previous version
-                    deleteRecursive(versionsRootDirectory);
-                    file.getParentFile().mkdirs();
-                    // write target file only if complete
-                    try {
-                        Files.move(tempFile.toPath(), file.toPath(),
-                                StandardCopyOption.ATOMIC_MOVE);
-                    } catch (final AtomicMoveNotSupportedException e) {
-                        Files.move(tempFile.toPath(), file.toPath());
-                    }
-                    System.out.println("Downloaded " + file.getName() + ", " + file.length() / 1024 + " Kb");
-                } finally {
-                    tempFile.delete();
+        downloadFuture = downloadExecutorService.submit(() -> {
+            final File tempFile = File.createTempFile(tmpPrefix, ".tmp");
+            try {
+                try (OutputStream output = new BufferedOutputStream(new FileOutputStream(tempFile))) {
+                    new HttpGet(url).copy(output);
                 }
-                return null;
+                versionsRootDirectory.mkdirs();
+                // delete previous version
+                deleteRecursive(versionsRootDirectory);
+                file.getParentFile().mkdirs();
+                // write target file only if complete
+                try {
+                    Files.move(tempFile.toPath(), file.toPath(), StandardCopyOption.ATOMIC_MOVE);
+                } catch (final AtomicMoveNotSupportedException e) {
+                    Files.move(tempFile.toPath(), file.toPath());
+                }
+                System.out.println("Downloaded " + file.getName() + ", " + file.length() / 1024 + " Kb");
+            } finally {
+                tempFile.delete();
             }
+            return null;
         });
     }
 

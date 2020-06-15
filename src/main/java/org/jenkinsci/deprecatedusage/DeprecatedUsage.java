@@ -52,15 +52,12 @@ public class DeprecatedUsage {
             throws IOException {
         // recent plugins package their classes as a jar file with the same name as the war file in
         // WEB-INF/lib/ while older plugins were packaging their classes in WEB-INF/classes/
-        final WarReader warReader = new WarReader(pluginFile, true);
-        try {
+        try (WarReader warReader = new WarReader(pluginFile, true)) {
             String fileName = warReader.nextClass();
             while (fileName != null) {
                 analyze(warReader.getInputStream(), aClassVisitor);
                 fileName = warReader.nextClass();
             }
-        } finally {
-            warReader.close();
         }
     }
 
@@ -124,22 +121,23 @@ public class DeprecatedUsage {
         // if an additionalClasses file is specified, and this matches, we ignore Options' includeJavaCoreClasses or onlyIncludeJenkinsClasses
         // values, given the least surprise is most likely that if the user explicitly passed a file, s/he does want it to be analyzed
         // even if coming from java.*, javax.*, or not from Jenkins core classes itself
-        if (Options.get().additionalClassesFile != null &&
+        Options options = Options.get();
+        if (options.additionalClassesFile != null &&
                 Options.getAdditionalClasses().stream().anyMatch(className::startsWith)) {
             return true;
         }
 
-        if(Options.get().onlyAdditionalClasses) {
+        if(options.onlyAdditionalClasses) {
             return false;
         }
 
         // Calls to java and javax are ignored by default if not explicitly requested
         if(isJavaClass(className)) {
-            return Options.get().includeJavaCoreClasses;
+            return options.includeJavaCoreClasses;
         }
 
         if(!className.contains("jenkins") && !className.contains("hudson") && !className.contains("org/kohsuke")) {
-            return Options.get().onlyIncludeJenkinsClasses;
+            return options.onlyIncludeJenkinsClasses;
         }
 
         return true;

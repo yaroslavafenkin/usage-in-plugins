@@ -20,9 +20,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.zip.ZipException;
 
 public class Main {
-    private static final String UPDATE_CENTER_URL =
-    // "http://updates.jenkins-ci.org/experimental/update-center.json"; // TODO: introduce new option to choose UC, see Options class
-    "http://updates.jenkins-ci.org/update-center.json";
+    private static final String DEFAULT_UPDATE_CENTER_URL = "http://updates.jenkins-ci.org/update-center.json";
 
     public static void main(String[] args) throws Exception {
         new Main().doMain(args);
@@ -30,7 +28,8 @@ public class Main {
 
     public void doMain(String[] args) throws Exception {
 
-        final CmdLineParser commandLineParser = new CmdLineParser(Options.get());
+        final Options options = Options.get();
+        final CmdLineParser commandLineParser = new CmdLineParser(options);
         try {
             commandLineParser.parseArgument(args);
         } catch (CmdLineException e) {
@@ -38,12 +37,15 @@ public class Main {
             System.exit(1);
         }
 
-        if (Options.get().help) {
+        if (options.help) {
             commandLineParser.printUsage(System.err);
             System.exit(0);
         }
         final long start = System.currentTimeMillis();
-        final UpdateCenter updateCenter = new UpdateCenter(new URL(UPDATE_CENTER_URL));
+        if (options.updateCenterUrl == null) {
+            options.updateCenterUrl = new URL(DEFAULT_UPDATE_CENTER_URL);
+        }
+        final UpdateCenter updateCenter = new UpdateCenter(options.updateCenterUrl);
         System.out.println("Downloaded update-center.json");
         updateCenter.download();
         System.out.println("All files are up to date (" + updateCenter.getPlugins().size() + " plugins)");

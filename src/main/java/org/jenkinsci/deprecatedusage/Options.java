@@ -5,6 +5,7 @@ import org.kohsuke.args4j.Option;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
@@ -31,6 +32,9 @@ public class Options {
 
     @Option(name = "--onlyIncludeJenkinsClasses", usage = "Only include in the report Jenkins related classes (jenkins.*, hudson.*, etc.")
     public boolean onlyIncludeJenkinsClasses;
+
+    @Option(name = "-u", aliases = "--update-center", usage = "Specifies update center URL to fetch plugins from")
+    public URL updateCenterUrl;
 
     private Options() {
     }

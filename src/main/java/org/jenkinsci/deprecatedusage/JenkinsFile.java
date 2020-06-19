@@ -1,52 +1,42 @@
 package org.jenkinsci.deprecatedusage;
 
-import java.io.BufferedOutputStream;
+import org.apache.hc.client5.http.async.methods.SimpleHttpRequests;
+import org.apache.hc.client5.http.async.methods.SimpleHttpResponse;
+import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
+import org.apache.hc.core5.concurrent.FutureCallback;
+
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.file.AtomicMoveNotSupportedException;
+import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.ThreadFactory;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.StandardOpenOption;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.security.DigestException;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 
 public class JenkinsFile {
-    // relative to user dir
-    private static final File WORK_DIRECTORY = new File("work");
-
-    private static final ThreadFactory DAEMON_THREAD_FACTORY = r -> {
-        final Thread t = Executors.defaultThreadFactory().newThread(r);
-        t.setDaemon(true);
-        return t;
-    };
-    private static final ExecutorService downloadExecutorService = Executors.newFixedThreadPool(8,
-            DAEMON_THREAD_FACTORY);
-
     private final String name;
     private final String version;
-    private final URL url;
+    private final String url;
     private final String wiki;
-    private File file;
-    private final File versionsRootDirectory;
-    private Future<?> downloadFuture;
+    private final Path versionsRootDirectory;
+    private Path file;
+    private final Checksum checksum;
 
-    public JenkinsFile(String name, String version, String url, String wiki)
-            throws MalformedURLException {
+    public JenkinsFile(String name, String version, String workDir, String url, String wiki, Checksum checksum) {
         super();
         this.name = name;
         this.version = version;
-        this.url = new URL(url);
+        this.url = url;
         this.wiki = wiki;
-        final String fileName = url.substring(url.lastIndexOf('/'));
-        this.versionsRootDirectory = new File(WORK_DIRECTORY, name);
-        this.file = new File(versionsRootDirectory, version + '/' + fileName);
+        this.checksum = checksum;
+        String fileName = url.substring(url.lastIndexOf('/') + 1);
+        versionsRootDirectory = Paths.get("work", workDir, name);
+        file = versionsRootDirectory.resolve(version).resolve(fileName);
     }
 
     public String getName() {
@@ -62,72 +52,92 @@ public class JenkinsFile {
     }
 
     public File getFile() {
-        return file;
+        return file.toFile();
     }
 
     public void setFile(File file) {
-        this.file = file;
+        this.file = file.toPath();
     }
 
-    public void startDownloadIfNotExists() {
-        if (file.exists()) {
-            // if file is already downloaded, do not download again
-            return;
-        }
-        final String tmpPrefix = getClass().getPackage().getName() + '-';
-        downloadFuture = downloadExecutorService.submit(() -> {
-            final File tempFile = File.createTempFile(tmpPrefix, ".tmp");
-            try {
-                try (OutputStream output = new BufferedOutputStream(new FileOutputStream(tempFile))) {
-                    new HttpGet(url).copy(output);
+    public void deleteFile() throws IOException {
+        Files.delete(file);
+    }
+
+    public CompletableFuture<Void> downloadIfNotExists(CloseableHttpAsyncClient client, Executor executor) {
+        if (Files.exists(file)) {
+            return CompletableFuture.supplyAsync(() -> {
+                if (checksum == null) {
+                    return false;
                 }
-                versionsRootDirectory.mkdirs();
-                // delete previous version
-                deleteRecursive(versionsRootDirectory);
-                file.getParentFile().mkdirs();
-                // write target file only if complete
                 try {
-                    Files.move(tempFile.toPath(), file.toPath(), StandardCopyOption.ATOMIC_MOVE);
-                } catch (final AtomicMoveNotSupportedException e) {
-                    Files.move(tempFile.toPath(), file.toPath());
+                    return checksum.matches(file);
+                } catch (IOException e) {
+                    System.out.println("Error validating checksum for " + file);
+                    System.out.println(e.toString());
+                    return false;
                 }
-                System.out.println("Downloaded " + file.getName() + ", " + file.length() / 1024 + " Kb");
-            } finally {
-                tempFile.delete();
+            }, executor).thenCompose(checksumOk -> checksumOk ? CompletableFuture.completedFuture(null) : download(client));
+        }
+        return download(client);
+    }
+
+    private CompletableFuture<Void> download(CloseableHttpAsyncClient client) {
+        CompletableFuture<Void> future = new CompletableFuture<>();
+        try {
+            if (Files.exists(versionsRootDirectory)) {
+                Files.walkFileTree(versionsRootDirectory, new SimpleFileVisitor<Path>() {
+                    @Override
+                    public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                        Files.delete(file);
+                        return FileVisitResult.CONTINUE;
+                    }
+
+                    @Override
+                    public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+                        Files.delete(dir);
+                        return FileVisitResult.CONTINUE;
+                    }
+                });
             }
-            return null;
+            Files.createDirectories(file.getParent());
+        } catch (IOException e) {
+            future.completeExceptionally(e);
+            return future;
+        }
+        client.execute(SimpleHttpRequests.get(url), new FutureCallback<SimpleHttpResponse>() {
+            @Override
+            public void completed(SimpleHttpResponse result) {
+                try {
+                    byte[] data = result.getBodyBytes();
+                    if (checksum == null || checksum.matches(data)) {
+                        Files.write(file, data, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+                    } else {
+                        future.completeExceptionally(new DigestException("Invalid checksum for downloaded file " + file));
+                        return;
+                    }
+                    System.out.printf("Downloaded %s @ %.2f kiB%n", url, (data.length / 1024.0));
+                    future.complete(null);
+                } catch (IOException e) {
+                    future.completeExceptionally(e);
+                }
+            }
+
+            @Override
+            public void failed(Exception ex) {
+                future.completeExceptionally(ex);
+            }
+
+            @Override
+            public void cancelled() {
+                System.out.println("Download cancelled for " + file);
+                future.cancel(true);
+            }
         });
-    }
-
-    private static boolean deleteRecursive(File path) {
-        boolean ret = true;
-        if (path.isDirectory()) {
-            final File[] files = path.listFiles();
-            if (files != null) {
-                for (final File f : files) {
-                    ret = ret && deleteRecursive(f);
-                }
-            }
-        }
-        return ret && path.delete();
-    }
-
-    public void waitDownload() throws Exception {
-        if (downloadFuture != null) {
-            try {
-                downloadFuture.get();
-            } catch (final ExecutionException e) {
-                if (e.getCause() instanceof Exception) {
-                    throw (Exception) e.getCause();
-                } else {
-                    throw e;
-                }
-            }
-        }
+        return future;
     }
 
     @Override
     public String toString() {
-        return file.getName();
+        return file.toString();
     }
 }

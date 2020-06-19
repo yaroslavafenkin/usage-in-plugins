@@ -138,7 +138,7 @@ public class DeprecatedUsage {
             return true;
         }
 
-        if (options.onlyAdditionalClasses || options.onlyAdditionalMethods || options.onlyAdditionalFields) {
+        if (options.onlyIncludeSpecified) {
             return false;
         }
 

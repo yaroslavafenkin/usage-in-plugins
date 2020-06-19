@@ -1,20 +1,22 @@
 package org.jenkinsci.deprecatedusage;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.kohsuke.args4j.Option;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.LinkedHashMap;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Command line options for usages scan.
@@ -22,6 +24,7 @@ import java.util.Set;
  */
 public class Options {
 
+    private static final String DEFAULT_UPDATE_CENTER_URL = "https://updates.jenkins-ci.org/update-center.json";
     private static final Options OPTIONS = new Options();
     private static List<String> additionalClasses;
     private static Map<String, Set<String>> additionalMethodNames;
@@ -36,28 +39,30 @@ public class Options {
     @Option(name = "-C", aliases = "--additionalClasses", metaVar = "FILENAME", usage = "File name for additional classes to scan")
     public File additionalClassesFile;
 
-    @Option(name = "--onlyAdditionalClasses", depends = "-C", usage = "Only include in the report the specified classes")
-    public boolean onlyAdditionalClasses;
-
-    @Option(name = "--onlyIncludeJenkinsClasses", usage = "Only include in the report Jenkins related classes (jenkins.*, hudson.*, etc.")
-    public boolean onlyIncludeJenkinsClasses;
-
-    @Option(name = "-u", aliases = "--updateCenter", usage = "Specifies update center URL to fetch plugins from")
-    public URL updateCenterUrl;
-
     @Option(name = "-M", aliases = "--additionalMethods", metaVar = "FILENAME", usage = "File name for additional methods to scan")
     public File additionalMethodsFile;
-
-    @Option(name = "--onlyAdditionalMethods", depends = "-M", usage = "Only include in the report the specified methods")
-    public boolean onlyAdditionalMethods;
 
     @Option(name = "-F", aliases = "--additionalFields", metaVar = "FILENAME", usage = "File name for additional fields to scan")
     public File additionalFieldsFile;
 
-    @Option(name = "--onlyAdditionalFields", depends = "-F", usage = "Only include in the report the specified fields")
-    public boolean onlyAdditionalFields;
+    @Option(name = "-i", aliases = "--onlyIncludeSpecified", usage = "Only include in the report the specified classes/methods/fields")
+    public boolean onlyIncludeSpecified;
+
+    @Option(name = "--onlyIncludeJenkinsClasses", usage = "Only include in the report Jenkins related classes (jenkins.*, hudson.*, etc.")
+    public boolean onlyIncludeJenkinsClasses;
+
+    @Option(name = "-u", aliases = {"--updateCenter", "--updateCenters"}, usage = "Specifies update center URL(s) to fetch plugins from")
+    public String updateCenterURLs;
+
+    @Option(name = "-D", aliases = "--downloadConcurrent", metaVar = "COUNT", usage = "Specifies number of concurrent downloads to allow")
+    public int maxConcurrentDownloads;
 
     private Options() {
+    }
+
+    public List<String> getUpdateCenterURLs() {
+        String[] urls = StringUtils.split(updateCenterURLs, ',');
+        return urls == null ? Collections.singletonList(DEFAULT_UPDATE_CENTER_URL) : Arrays.asList(urls);
     }
 
     /**
@@ -102,7 +107,7 @@ public class Options {
         if (Files.notExists(path)) {
             throw new IllegalArgumentException("Additional methods file option provided, but file not found: " + path);
         }
-        additionalMethodNames = new LinkedHashMap<>();
+        additionalMethodNames = new ConcurrentHashMap<>();
         try {
             for (String line : Files.readAllLines(path, StandardCharsets.UTF_8)) {
                 int hash = line.indexOf('#');
@@ -127,7 +132,7 @@ public class Options {
         if (Files.notExists(path)) {
             throw new IllegalArgumentException("Additional fields file option provided, but file not found: " + path);
         }
-        additionalFields = new LinkedHashMap<>();
+        additionalFields = new ConcurrentHashMap<>();
         try {
             for (String line : Files.readAllLines(path, StandardCharsets.UTF_8)) {
                 int hash = line.indexOf('#');

@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 /**
  * Command line options for usages scan.
@@ -51,7 +52,7 @@ public class Options {
     @Option(name = "--onlyIncludeJenkinsClasses", usage = "Only include in the report Jenkins related classes (jenkins.*, hudson.*, etc.")
     public boolean onlyIncludeJenkinsClasses;
 
-    @Option(name = "-u", aliases = {"--updateCenter", "--updateCenters"}, usage = "Specifies update center URL(s) to fetch plugins from")
+    @Option(name = "-u", aliases = {"--updateCenter", "--updateCenters"}, usage = "Specifies update center URL(s) to fetch plugins from; use commas to separate multiple URLs")
     public String updateCenterURLs;
 
     @Option(name = "-D", aliases = "--downloadConcurrent", metaVar = "COUNT", usage = "Specifies number of concurrent downloads to allow")
@@ -62,7 +63,10 @@ public class Options {
 
     public List<String> getUpdateCenterURLs() {
         String[] urls = StringUtils.split(updateCenterURLs, ',');
-        return urls == null ? Collections.singletonList(DEFAULT_UPDATE_CENTER_URL) : Arrays.asList(urls);
+        if (urls == null) {
+            return Collections.singletonList(DEFAULT_UPDATE_CENTER_URL);
+        }
+        return Arrays.stream(urls).map(String::trim).collect(Collectors.toList());
     }
 
     /**

@@ -54,7 +54,7 @@ Writing output/usage-by-api.html
 === Finding Usage of Methods and Fields
 
 The command line flag `-M filename.txt` or `--additionalMethods filename.txt` allows you to search for specific methods.
-Use the additional flag `-i` or `--onlyIncludeSpecified` to only show usage of the methods specified.
+Use the additional flag `-i` or `--onlyIncludeSpecified` to only show usage of specified classes, methods, and fields.
 For example, to find usage of `hudson.util.Secret.toString`, include the following line in the specified file:
 
 [source]
@@ -68,4 +68,4 @@ You cannot specify distinct method signatures. All variants are included in repo
 
 The command line flag `-F filename.txt` or `--additionalFields filename.txt` allows you to find specific field usages.
 The syntax here is the same as for specifying method names.
-The additional flag `-i` will filter the output report to only show specified fields.
+Use the additional flag `-i` or `--onlyIncludeSpecified` to only show usage of specified classes, methods, and fields.

@@ -7,26 +7,24 @@ import org.json.JSONObject;
 import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.Base64;
-import java.util.Comparator;
 import java.util.List;
 
 public class UpdateCenter {
     private final JenkinsFile core;
     private final List<JenkinsFile> plugins = new ArrayList<>();
 
-    public UpdateCenter(JSONObject metadata, String workDir) {
+    public UpdateCenter(JSONObject metadata) {
         JSONObject jsonCore = metadata.getJSONObject("core");
-        core = parse(jsonCore, workDir);
+        core = parse(jsonCore);
         JSONObject jsonPlugins = metadata.getJSONObject("plugins");
         for (Object pluginId : jsonPlugins.keySet()) {
             JSONObject jsonPlugin = jsonPlugins.getJSONObject(pluginId.toString());
-            JenkinsFile plugin = parse(jsonPlugin, workDir);
+            JenkinsFile plugin = parse(jsonPlugin);
             plugins.add(plugin);
         }
-        plugins.sort(Comparator.comparing(JenkinsFile::getName, String.CASE_INSENSITIVE_ORDER));
     }
 
-    private static JenkinsFile parse(JSONObject jsonObject, String workDir) throws JSONException {
+    private static JenkinsFile parse(JSONObject jsonObject) throws JSONException {
         final String wiki;
         if (jsonObject.has("wiki")) {
             wiki = jsonObject.getString("wiki");
@@ -44,7 +42,7 @@ public class UpdateCenter {
         } else {
             checksum = null;
         }
-        return new JenkinsFile(jsonObject.getString("name"), jsonObject.getString("version"), workDir,
+        return new JenkinsFile(jsonObject.getString("name"), jsonObject.getString("version"),
                 jsonObject.getString("url"), wiki, checksum);
     }
 

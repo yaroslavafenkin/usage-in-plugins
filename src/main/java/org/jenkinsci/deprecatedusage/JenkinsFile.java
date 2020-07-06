@@ -7,14 +7,12 @@ import org.apache.hc.core5.concurrent.FutureCallback;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.SimpleFileVisitor;
 import java.nio.file.StandardOpenOption;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.security.DigestException;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
@@ -23,11 +21,10 @@ public class JenkinsFile {
     private final String version;
     private final String url;
     private final String wiki;
-    private final Path versionsRootDirectory;
     private Path file;
     private final Checksum checksum;
 
-    public JenkinsFile(String name, String version, String workDir, String url, String wiki, Checksum checksum) {
+    public JenkinsFile(String name, String version, String url, String wiki, Checksum checksum) {
         super();
         this.name = name;
         this.version = version;
@@ -35,8 +32,7 @@ public class JenkinsFile {
         this.wiki = wiki;
         this.checksum = checksum;
         String fileName = url.substring(url.lastIndexOf('/') + 1);
-        versionsRootDirectory = Paths.get("work", workDir, name);
-        file = versionsRootDirectory.resolve(version).resolve(fileName);
+        file = Paths.get("work", name, version, fileName).toAbsolutePath();
     }
 
     public String getName() {
@@ -74,6 +70,7 @@ public class JenkinsFile {
                 } catch (IOException e) {
                     System.out.println("Error validating checksum for " + file);
                     System.out.println(e.toString());
+                    System.out.println("Re-downloading " + url);
                     return false;
                 }
             }, executor).thenCompose(checksumOk -> checksumOk ? CompletableFuture.completedFuture(null) : download(client));
@@ -84,21 +81,6 @@ public class JenkinsFile {
     private CompletableFuture<Void> download(CloseableHttpAsyncClient client) {
         CompletableFuture<Void> future = new CompletableFuture<>();
         try {
-            if (Files.exists(versionsRootDirectory)) {
-                Files.walkFileTree(versionsRootDirectory, new SimpleFileVisitor<Path>() {
-                    @Override
-                    public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                        Files.delete(file);
-                        return FileVisitResult.CONTINUE;
-                    }
-
-                    @Override
-                    public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
-                        Files.delete(dir);
-                        return FileVisitResult.CONTINUE;
-                    }
-                });
-            }
             Files.createDirectories(file.getParent());
         } catch (IOException e) {
             future.completeExceptionally(e);
@@ -129,7 +111,7 @@ public class JenkinsFile {
 
             @Override
             public void cancelled() {
-                System.out.println("Download cancelled for " + file);
+                System.out.println("Download cancelled for " + url);
                 future.cancel(true);
             }
         });
@@ -138,6 +120,19 @@ public class JenkinsFile {
 
     @Override
     public String toString() {
-        return file.toString();
+        return url + " -> " + file.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        JenkinsFile that = (JenkinsFile) o;
+        return Objects.equals(file, that.file);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(file);
     }
 }

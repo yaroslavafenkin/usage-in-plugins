@@ -1,6 +1,5 @@
 package org.jenkinsci.deprecatedusage;
 
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.hc.client5.http.async.methods.SimpleHttpRequest;
 import org.apache.hc.client5.http.async.methods.SimpleHttpRequests;
 import org.apache.hc.client5.http.async.methods.SimpleHttpResponse;
@@ -17,9 +16,12 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
@@ -58,12 +60,11 @@ public class Main {
             addClassesToAnalyze(deprecatedApi);
             List<String> updateCenterURLs = options.getUpdateCenterURLs();
             CountDownLatch metadataLoaded = new CountDownLatch(updateCenterURLs.size());
-            List<JenkinsFile> cores = Collections.synchronizedList(new ArrayList<>());
-            List<JenkinsFile> plugins = Collections.synchronizedList(new ArrayList<>());
+            Set<JenkinsFile> cores = new ConcurrentSkipListSet<>(Comparator.comparing(JenkinsFile::getFile));
+            Set<JenkinsFile> plugins = new ConcurrentSkipListSet<>(Comparator.comparing(JenkinsFile::getFile));
             client.start();
             for (String updateCenterURL : updateCenterURLs) {
                 System.out.println("Using update center URL: " + updateCenterURL);
-                String dir = DigestUtils.sha256Hex(updateCenterURL).substring(0, 8);
                 SimpleHttpRequest request = SimpleHttpRequests.get(updateCenterURL);
                 client.execute(request, new FutureCallback<SimpleHttpResponse>() {
                     @Override
@@ -82,7 +83,7 @@ public class Main {
                     private void handleBodyText(String bodyText) {
                         String json = bodyText.replace("updateCenter.post(", "");
                         JSONObject jsonRoot = new JSONObject(json);
-                        UpdateCenter updateCenter = new UpdateCenter(jsonRoot, dir);
+                        UpdateCenter updateCenter = new UpdateCenter(jsonRoot);
                         cores.add(updateCenter.getCore());
                         plugins.addAll(updateCenter.getPlugins());
                     }

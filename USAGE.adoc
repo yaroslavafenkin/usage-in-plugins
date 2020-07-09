@@ -59,7 +59,7 @@ For example, to find usage of `hudson.util.Secret.toString`, include the followi
 
 [source]
 ----
-hudson/util/Secret#toString
+hudson.util.Secret#toString
 ----
 
 Specify class names in their fully qualified form (i.e., inner classes should be referenced via `Outer$Inner` rather than by their canonical names).
@@ -69,3 +69,19 @@ You cannot specify distinct method signatures. All variants are included in repo
 The command line flag `-F filename.txt` or `--additionalFields filename.txt` allows you to find specific field usages.
 The syntax here is the same as for specifying method names.
 Use the additional flag `-i` or `--onlyIncludeSpecified` to only show usage of specified classes, methods, and fields.
+
+=== Finding Usage by Package
+
+By using just a package name instead of the fully qualified class name in any of the options above, this searches for classes that start with the same specified package.
+For example, the following snippet would search for usage of methods or fields named `toString` in any classes inside the `hudson.util` package or its descendants.
+Note the trailing `.` before the `#` separator which makes the search more specific to `hudson.util` rather than also including the hypothetical package `hudson.utils` or `hudson.utility`.
+
+[source]
+----
+hudson.util.#toString
+----
+
+=== Configuring Parallelism
+
+The default parallelism settings will allow up to 4x the number of available CPUs downloads at a time.
+This can be overridden by the `-D N` or `--downloadConcurrent=N` option for some number `N`.

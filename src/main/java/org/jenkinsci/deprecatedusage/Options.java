@@ -53,10 +53,10 @@ public class Options {
     public boolean onlyIncludeJenkinsClasses;
 
     @Option(name = "-u", aliases = {"--updateCenter", "--updateCenters"}, usage = "Specifies update center URL(s) to fetch plugins from; use commas to separate multiple URLs")
-    public String updateCenterURLs;
+    public String updateCenterURLs = DEFAULT_UPDATE_CENTER_URL;
 
     @Option(name = "-D", aliases = "--downloadConcurrent", metaVar = "COUNT", usage = "Specifies number of concurrent downloads to allow")
-    public int maxConcurrentDownloads;
+    public int maxConcurrentDownloads = Runtime.getRuntime().availableProcessors() * 4;
 
     private Options() {
     }

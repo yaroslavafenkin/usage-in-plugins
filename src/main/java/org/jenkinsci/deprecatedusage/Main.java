@@ -127,7 +127,7 @@ public class Main {
 
             System.out.println("Downloading plugin files");
             int pluginCount = plugins.size();
-            int maxConcurrent = Math.max(options.maxConcurrentDownloads, Runtime.getRuntime().availableProcessors() * 4);
+            int maxConcurrent = options.maxConcurrentDownloads;
             Semaphore concurrentDownloadsPermit = new Semaphore(maxConcurrent);
             List<JenkinsFile> downloadedPlugins = Collections.synchronizedList(new ArrayList<>(pluginCount));
             List<CompletableFuture<?>> futures = new ArrayList<>(pluginCount + 1);

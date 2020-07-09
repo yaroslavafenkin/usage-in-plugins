@@ -26,7 +26,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
@@ -54,7 +54,7 @@ public class Main {
             System.exit(0);
         }
         final long start = System.currentTimeMillis();
-        final ExecutorService threadPool = new ForkJoinPool(Runtime.getRuntime().availableProcessors());
+        final ExecutorService threadPool = Executors.newCachedThreadPool();
         try (CloseableHttpAsyncClient client = HttpAsyncClients.createDefault()) {
             final DeprecatedApi deprecatedApi = new DeprecatedApi();
             addClassesToAnalyze(deprecatedApi);

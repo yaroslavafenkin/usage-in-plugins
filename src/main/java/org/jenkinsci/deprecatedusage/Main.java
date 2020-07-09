@@ -1,11 +1,15 @@
 package org.jenkinsci.deprecatedusage;
 
+import org.apache.hc.client5.http.HttpRequestRetryStrategy;
 import org.apache.hc.client5.http.async.methods.SimpleHttpRequest;
 import org.apache.hc.client5.http.async.methods.SimpleHttpRequests;
 import org.apache.hc.client5.http.async.methods.SimpleHttpResponse;
+import org.apache.hc.client5.http.impl.DefaultHttpRequestRetryStrategy;
 import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
 import org.apache.hc.client5.http.impl.async.HttpAsyncClients;
 import org.apache.hc.core5.concurrent.FutureCallback;
+import org.apache.hc.core5.http.ConnectionClosedException;
+import org.apache.hc.core5.util.TimeValue;
 import org.json.JSONObject;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
@@ -22,6 +26,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
@@ -55,7 +60,8 @@ public class Main {
         }
         final long start = System.currentTimeMillis();
         final ExecutorService threadPool = Executors.newCachedThreadPool();
-        try (CloseableHttpAsyncClient client = HttpAsyncClients.createDefault()) {
+        HttpRequestRetryStrategy retryStrategy = new DefaultHttpRequestRetryStrategy(3, TimeValue.ofSeconds(5));
+        try (CloseableHttpAsyncClient client = HttpAsyncClients.custom().setRetryStrategy(retryStrategy).build()) {
             final DeprecatedApi deprecatedApi = new DeprecatedApi();
             addClassesToAnalyze(deprecatedApi);
             List<String> updateCenterURLs = options.getUpdateCenterURLs();
@@ -131,8 +137,12 @@ public class Main {
                 futures.add(plugin.downloadIfNotExists(client, threadPool).handle((success, failure) -> {
                     concurrentDownloadsPermit.release();
                     if (failure != null) {
-                        System.out.println("Error downloading " + plugin);
-                        System.out.println(failure.toString());
+                        if (failure instanceof ConnectionClosedException) {
+                            System.out.println("Gave up trying to download " + plugin);
+                        } else {
+                            System.out.println("Error downloading " + plugin);
+                            System.out.println(failure.toString());
+                        }
                     } else {
                         downloadedPlugins.add(plugin);
                     }

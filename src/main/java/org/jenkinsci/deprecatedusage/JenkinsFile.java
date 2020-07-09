@@ -91,12 +91,10 @@ public class JenkinsFile {
             public void completed(SimpleHttpResponse result) {
                 try {
                     byte[] data = result.getBodyBytes();
-                    if (checksum == null || checksum.matches(data)) {
-                        Files.write(file, data, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
-                    } else {
-                        future.completeExceptionally(new DigestException("Invalid checksum for downloaded file " + file));
-                        return;
+                    if (checksum != null && !checksum.matches(data)) {
+                        System.out.println("WARNING! Checksum of " + url + " does not match update center value!");
                     }
+                    Files.write(file, data, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
                     System.out.printf("Downloaded %s @ %.2f kiB%n", url, (data.length / 1024.0));
                     future.complete(null);
                 } catch (IOException e) {

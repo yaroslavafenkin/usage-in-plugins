@@ -9,16 +9,22 @@ import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
 import org.apache.hc.client5.http.impl.async.HttpAsyncClients;
 import org.apache.hc.core5.concurrent.FutureCallback;
 import org.apache.hc.core5.http.ConnectionClosedException;
+import org.apache.hc.core5.http.HttpStatus;
 import org.apache.hc.core5.util.TimeValue;
 import org.json.JSONObject;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 
+import javax.net.ssl.SSLException;
 import java.io.EOFException;
 import java.io.File;
 import java.io.IOException;
+import java.io.InterruptedIOException;
+import java.net.ConnectException;
+import java.net.UnknownHostException;
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -26,7 +32,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentSkipListSet;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
@@ -60,7 +65,7 @@ public class Main {
         }
         final long start = System.currentTimeMillis();
         final ExecutorService threadPool = Executors.newCachedThreadPool();
-        HttpRequestRetryStrategy retryStrategy = new DefaultHttpRequestRetryStrategy(3, TimeValue.ofSeconds(5));
+        HttpRequestRetryStrategy retryStrategy = new FlakyUpdateCenterRetryStrategy();
         try (CloseableHttpAsyncClient client = HttpAsyncClients.custom().setRetryStrategy(retryStrategy).build()) {
             final DeprecatedApi deprecatedApi = new DeprecatedApi();
             addClassesToAnalyze(deprecatedApi);
@@ -113,7 +118,7 @@ public class Main {
             System.out.println("Downloading core files");
             CompletableFuture<Void> coreAnalysisComplete = CompletableFuture.allOf(
                     cores.stream()
-                            .map(core -> core.downloadIfNotExists(client, threadPool).thenRun(() -> {
+                            .map(core -> core.downloadIfNotExists(client).thenRun(() -> {
                                 try {
                                     System.out.println("Analyzing deprecated APIs in " + core);
                                     deprecatedApi.analyze(core.getFile());
@@ -134,7 +139,7 @@ public class Main {
             futures.add(coreAnalysisComplete);
             for (JenkinsFile plugin : plugins) {
                 concurrentDownloadsPermit.acquire();
-                futures.add(plugin.downloadIfNotExists(client, threadPool).handle((success, failure) -> {
+                futures.add(plugin.downloadIfNotExists(client).handle((success, failure) -> {
                     concurrentDownloadsPermit.release();
                     if (failure != null) {
                         if (failure instanceof ConnectionClosedException) {
@@ -230,5 +235,19 @@ public class Main {
             }
         }
         return deprecatedUsages;
+    }
+
+    /**
+     * Customized HTTP request retry strategy to ignore connection closed by peer errors which are caused by the update
+     * center server being a little flaky on larger files. The default otherwise would be to not retry a request when the
+     * peer closes the connection prematurely.
+     */
+    private static class FlakyUpdateCenterRetryStrategy extends DefaultHttpRequestRetryStrategy {
+        private FlakyUpdateCenterRetryStrategy() {
+            super(10, TimeValue.ofSeconds(5),
+                    Arrays.asList(InterruptedIOException.class, UnknownHostException.class, ConnectException.class, SSLException.class),
+                    Arrays.asList(HttpStatus.SC_TOO_MANY_REQUESTS, HttpStatus.SC_SERVICE_UNAVAILABLE)
+            );
+        }
     }
 }

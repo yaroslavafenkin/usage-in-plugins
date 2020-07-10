@@ -1,5 +1,6 @@
 package org.jenkinsci.deprecatedusage;
 
+import org.apache.hc.client5.http.async.methods.SimpleHttpRequest;
 import org.apache.hc.client5.http.async.methods.SimpleHttpRequests;
 import org.apache.hc.client5.http.async.methods.SimpleHttpResponse;
 import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
@@ -14,7 +15,6 @@ import java.nio.file.StandardOpenOption;
 import java.security.DigestException;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
 
 public class JenkinsFile {
     private final String name;
@@ -59,21 +59,9 @@ public class JenkinsFile {
         Files.delete(file);
     }
 
-    public CompletableFuture<Void> downloadIfNotExists(CloseableHttpAsyncClient client, Executor executor) {
+    public CompletableFuture<Void> downloadIfNotExists(CloseableHttpAsyncClient client) {
         if (Files.exists(file)) {
-            return CompletableFuture.supplyAsync(() -> {
-                if (checksum == null) {
-                    return false;
-                }
-                try {
-                    return checksum.matches(file);
-                } catch (IOException e) {
-                    System.out.println("Error validating checksum for " + file);
-                    System.out.println(e.toString());
-                    System.out.println("Re-downloading " + url);
-                    return false;
-                }
-            }, executor).thenCompose(checksumOk -> checksumOk ? CompletableFuture.completedFuture(null) : download(client));
+            return CompletableFuture.completedFuture(null);
         }
         return download(client);
     }
@@ -86,17 +74,29 @@ public class JenkinsFile {
             future.completeExceptionally(e);
             return future;
         }
-        client.execute(SimpleHttpRequests.get(url), new FutureCallback<SimpleHttpResponse>() {
+        SimpleHttpRequest request = SimpleHttpRequests.get(url);
+        class Callback implements FutureCallback<SimpleHttpResponse> {
+            // TODO: figure out how to re-use the configured HttpRequestRetryStrategy instead of this workaround
+            //  (see http request/response/exec chain interceptors potentially?)
+            private int retriesRemaining = 3;
+
             @Override
             public void completed(SimpleHttpResponse result) {
                 try {
                     byte[] data = result.getBodyBytes();
                     if (checksum != null && !checksum.matches(data)) {
-                        System.out.println("WARNING! Checksum of " + url + " does not match update center value!");
+                        if (retriesRemaining > 0) {
+                            System.out.println("Retrying download of " + url + " due to invalid message digest");
+                            retriesRemaining--;
+                            client.execute(request, this);
+                        } else {
+                            future.completeExceptionally(new DigestException(url));
+                        }
+                    } else {
+                        Files.write(file, data, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+                        System.out.printf("Downloaded %s @ %.2f kiB%n", url, (data.length / 1024.0));
+                        future.complete(null);
                     }
-                    Files.write(file, data, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
-                    System.out.printf("Downloaded %s @ %.2f kiB%n", url, (data.length / 1024.0));
-                    future.complete(null);
                 } catch (IOException e) {
                     future.completeExceptionally(e);
                 }
@@ -112,7 +112,8 @@ public class JenkinsFile {
                 System.out.println("Download cancelled for " + url);
                 future.cancel(true);
             }
-        });
+        }
+        client.execute(request, new Callback());
         return future;
     }
 

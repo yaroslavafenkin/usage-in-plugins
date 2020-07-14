@@ -1,28 +1,48 @@
 package org.jenkinsci.deprecatedusage;
 
+import org.apache.hc.client5.http.HttpRequestRetryStrategy;
+import org.apache.hc.client5.http.async.methods.SimpleHttpRequest;
+import org.apache.hc.client5.http.async.methods.SimpleHttpRequests;
+import org.apache.hc.client5.http.async.methods.SimpleHttpResponse;
+import org.apache.hc.client5.http.impl.DefaultHttpRequestRetryStrategy;
+import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
+import org.apache.hc.client5.http.impl.async.HttpAsyncClients;
+import org.apache.hc.core5.concurrent.FutureCallback;
+import org.apache.hc.core5.http.ConnectionClosedException;
+import org.apache.hc.core5.http.HttpStatus;
+import org.apache.hc.core5.util.TimeValue;
+import org.json.JSONObject;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 
+import javax.net.ssl.SSLException;
 import java.io.EOFException;
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
+import java.io.InterruptedIOException;
+import java.net.ConnectException;
+import java.net.UnknownHostException;
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.Callable;
+import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.ZipException;
 
 public class Main {
-    private static final String UPDATE_CENTER_URL =
-    // "http://updates.jenkins-ci.org/experimental/update-center.json"; // TODO: introduce new option to choose UC, see Options class
-    "http://updates.jenkins-ci.org/update-center.json";
 
     public static void main(String[] args) throws Exception {
         new Main().doMain(args);
@@ -30,7 +50,8 @@ public class Main {
 
     public void doMain(String[] args) throws Exception {
 
-        final CmdLineParser commandLineParser = new CmdLineParser(Options.get());
+        final Options options = Options.get();
+        final CmdLineParser commandLineParser = new CmdLineParser(options);
         try {
             commandLineParser.parseArgument(args);
         } catch (CmdLineException e) {
@@ -38,38 +59,125 @@ public class Main {
             System.exit(1);
         }
 
-        if (Options.get().help) {
+        if (options.help) {
             commandLineParser.printUsage(System.err);
             System.exit(0);
         }
         final long start = System.currentTimeMillis();
-        final UpdateCenter updateCenter = new UpdateCenter(new URL(UPDATE_CENTER_URL));
-        System.out.println("Downloaded update-center.json");
-        updateCenter.download();
-        System.out.println("All files are up to date (" + updateCenter.getPlugins().size() + " plugins)");
+        final ExecutorService threadPool = Executors.newCachedThreadPool();
+        HttpRequestRetryStrategy retryStrategy = new FlakyUpdateCenterRetryStrategy();
+        try (CloseableHttpAsyncClient client = HttpAsyncClients.custom().setRetryStrategy(retryStrategy).build()) {
+            final DeprecatedApi deprecatedApi = new DeprecatedApi();
+            addClassesToAnalyze(deprecatedApi);
+            List<String> updateCenterURLs = options.getUpdateCenterURLs();
+            CountDownLatch metadataLoaded = new CountDownLatch(updateCenterURLs.size());
+            Set<JenkinsFile> cores = new ConcurrentSkipListSet<>(Comparator.comparing(JenkinsFile::getFile));
+            Set<JenkinsFile> plugins = new ConcurrentSkipListSet<>(Comparator.comparing(JenkinsFile::getFile));
+            client.start();
+            for (String updateCenterURL : updateCenterURLs) {
+                System.out.println("Using update center URL: " + updateCenterURL);
+                SimpleHttpRequest request = SimpleHttpRequests.get(updateCenterURL);
+                client.execute(request, new FutureCallback<SimpleHttpResponse>() {
+                    @Override
+                    public void completed(SimpleHttpResponse result) {
+                        System.out.println("Downloaded " + updateCenterURL);
+                        try {
+                            handleBodyText(result.getBodyText());
+                        } catch (RuntimeException e) {
+                            System.out.println("Error downloading " + updateCenterURL);
+                            System.out.println(e.toString());
+                        } finally {
+                            metadataLoaded.countDown();
+                        }
+                    }
 
-        System.out.println("Analyzing deprecated api in Jenkins");
-        final File coreFile = updateCenter.getCore().getFile();
-        final DeprecatedApi deprecatedApi = new DeprecatedApi();
-        addClassesToAnalyze(deprecatedApi);
-        deprecatedApi.analyze(coreFile);
+                    private void handleBodyText(String bodyText) {
+                        String json = bodyText.replace("updateCenter.post(", "");
+                        JSONObject jsonRoot = new JSONObject(json);
+                        UpdateCenter updateCenter = new UpdateCenter(jsonRoot);
+                        cores.add(updateCenter.getCore());
+                        plugins.addAll(updateCenter.getPlugins());
+                    }
 
-        System.out.println("Analyzing deprecated usage in plugins");
-        final List<DeprecatedUsage> deprecatedUsages = analyzeDeprecatedUsage(updateCenter.getPlugins(), deprecatedApi);
+                    @Override
+                    public void failed(Exception ex) {
+                        System.out.println("Error downloading update center metadata for " + updateCenterURL);
+                        System.out.println(ex.toString());
+                        metadataLoaded.countDown();
+                    }
 
-        Report[] reports = new Report[] {
-                new DeprecatedUsageByPluginReport(deprecatedApi, deprecatedUsages, new File("output"), "usage-by-plugin"),
-                new DeprecatedUnusedApiReport(deprecatedApi, deprecatedUsages, new File("output"), "deprecated-and-unused"),
-                new DeprecatedUsageByApiReport(deprecatedApi, deprecatedUsages, new File("output"), "usage-by-api")
-        };
+                    @Override
+                    public void cancelled() {
+                        System.out.println("Cancelled download of " + updateCenterURL);
+                    }
+                });
+            }
 
-        for (Report report : reports) {
-            report.generateJsonReport();
-            report.generateHtmlReport();
+            // wait for async code to finish submitting
+            metadataLoaded.await(15, TimeUnit.SECONDS);
+            System.out.println("Downloading core files");
+            CompletableFuture<Void> coreAnalysisComplete = CompletableFuture.allOf(
+                    cores.stream()
+                            .map(core -> core.downloadIfNotExists(client).thenRun(() -> {
+                                try {
+                                    System.out.println("Analyzing deprecated APIs in " + core);
+                                    deprecatedApi.analyze(core.getFile());
+                                    System.out.println("Finished deprecated API analysis in " + core);
+                                } catch (IOException e) {
+                                    System.out.println("Error analyzing deprecated APIs in " + core);
+                                    System.out.println(e.toString());
+                                }
+                            }))
+                            .toArray(CompletableFuture[]::new));
+
+            System.out.println("Downloading plugin files");
+            int pluginCount = plugins.size();
+            int maxConcurrent = options.maxConcurrentDownloads;
+            Semaphore concurrentDownloadsPermit = new Semaphore(maxConcurrent);
+            List<JenkinsFile> downloadedPlugins = Collections.synchronizedList(new ArrayList<>(pluginCount));
+            List<CompletableFuture<?>> futures = new ArrayList<>(pluginCount + 1);
+            futures.add(coreAnalysisComplete);
+            for (JenkinsFile plugin : plugins) {
+                concurrentDownloadsPermit.acquire();
+                futures.add(plugin.downloadIfNotExists(client).handle((success, failure) -> {
+                    concurrentDownloadsPermit.release();
+                    if (failure != null) {
+                        if (failure instanceof ConnectionClosedException) {
+                            System.out.println("Gave up trying to download " + plugin);
+                        } else {
+                            System.out.println("Error downloading " + plugin);
+                            System.out.println(failure.toString());
+                        }
+                    } else {
+                        downloadedPlugins.add(plugin);
+                    }
+                    return null;
+                }));
+            }
+            CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
+
+            System.out.println("Analyzing usage in plugins");
+            final List<DeprecatedUsage> deprecatedUsages = analyzeDeprecatedUsage(downloadedPlugins, deprecatedApi, threadPool);
+
+            Report[] reports = new Report[]{
+                    new DeprecatedUsageByPluginReport(deprecatedApi, deprecatedUsages, new File("output"), "usage-by-plugin"),
+                    new DeprecatedUnusedApiReport(deprecatedApi, deprecatedUsages, new File("output"), "deprecated-and-unused"),
+                    new DeprecatedUsageByApiReport(deprecatedApi, deprecatedUsages, new File("output"), "usage-by-api")
+            };
+
+            for (Report report : reports) {
+                report.generateJsonReport();
+                report.generateHtmlReport();
+            }
+
+            System.out.println("duration : " + (System.currentTimeMillis() - start) + " ms at "
+                    + DateFormat.getDateTimeInstance().format(new Date()));
+        } finally {
+            threadPool.shutdown();
+            if (!threadPool.awaitTermination(30, TimeUnit.SECONDS)) {
+                System.out.println("Timed out waiting for thread pool to cleanly exit");
+            }
         }
-
-        System.out.println("duration : " + (System.currentTimeMillis() - start) + " ms at "
-                + DateFormat.getDateTimeInstance().format(new Date()));
     }
 
     /**
@@ -86,31 +194,28 @@ public class Main {
         }
     }
 
-    private static List<DeprecatedUsage> analyzeDeprecatedUsage(List<JenkinsFile> plugins,
-            final DeprecatedApi deprecatedApi) throws InterruptedException, ExecutionException {
-        final ExecutorService executorService = Executors
-                .newFixedThreadPool(Runtime.getRuntime().availableProcessors());
-        final List<Future<DeprecatedUsage>> futures = new ArrayList<>(plugins.size());
-        for (final JenkinsFile plugin : plugins) {
-            final Callable<DeprecatedUsage> task = new Callable<DeprecatedUsage>() {
-                @Override
-                public DeprecatedUsage call() throws IOException {
-                    final DeprecatedUsage deprecatedUsage = new DeprecatedUsage(plugin.getName(),
-                            plugin.getVersion(), deprecatedApi);
+    private static List<DeprecatedUsage> analyzeDeprecatedUsage(List<JenkinsFile> plugins, DeprecatedApi deprecatedApi,
+                                                                Executor executor)
+            throws InterruptedException, ExecutionException {
+        List<CompletableFuture<DeprecatedUsage>> futures = new ArrayList<>();
+        for (JenkinsFile plugin : plugins) {
+            futures.add(CompletableFuture.supplyAsync(() -> {
+                DeprecatedUsage deprecatedUsage = new DeprecatedUsage(plugin.getName(), plugin.getVersion(), deprecatedApi);
+                try {
+                    deprecatedUsage.analyze(plugin.getFile());
+                } catch (final EOFException | ZipException e) {
+                    System.out.println("deleting " + plugin + " and skipping, because " + e.toString());
                     try {
-                        deprecatedUsage.analyze(plugin.getFile());
-                    } catch (final EOFException | ZipException e) {
-                        System.out.println("deleting " + plugin.getFile().getName() + " and skipping, because "
-                                + e.toString());
-                        plugin.getFile().delete();
-                    } catch (final Exception e) {
-                        System.out.println(e.toString() + " on " + plugin.getFile().getName());
-                        e.printStackTrace();
+                        plugin.deleteFile();
+                    } catch (IOException ioException) {
+                        ioException.printStackTrace();
                     }
-                    return deprecatedUsage;
+                } catch (final Exception e) {
+                    System.out.println(e.toString() + " on " + plugin.getFile().getName());
+                    e.printStackTrace();
                 }
-            };
-            futures.add(executorService.submit(task));
+                return deprecatedUsage;
+            }, executor));
         }
 
         final List<DeprecatedUsage> deprecatedUsages = new ArrayList<>();
@@ -129,10 +234,20 @@ public class Main {
                 System.out.print("\n");
             }
         }
-        executorService.shutdown();
-        executorService.awaitTermination(5, TimeUnit.SECONDS);
-        // wait for threads to stop
-        Thread.sleep(100);
         return deprecatedUsages;
+    }
+
+    /**
+     * Customized HTTP request retry strategy to ignore connection closed by peer errors which are caused by the update
+     * center server being a little flaky on larger files. The default otherwise would be to not retry a request when the
+     * peer closes the connection prematurely.
+     */
+    private static class FlakyUpdateCenterRetryStrategy extends DefaultHttpRequestRetryStrategy {
+        private FlakyUpdateCenterRetryStrategy() {
+            super(10, TimeValue.ofSeconds(5),
+                    Arrays.asList(InterruptedIOException.class, UnknownHostException.class, ConnectException.class, SSLException.class),
+                    Arrays.asList(HttpStatus.SC_TOO_MANY_REQUESTS, HttpStatus.SC_SERVICE_UNAVAILABLE)
+            );
+        }
     }
 }

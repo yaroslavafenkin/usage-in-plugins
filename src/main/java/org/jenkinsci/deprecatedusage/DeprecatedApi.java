@@ -11,9 +11,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 public class DeprecatedApi {
     // some plugins such as job-dsl has following code without using deprecated :
@@ -29,9 +29,9 @@ public class DeprecatedApi {
 
     private static final char SEPARATOR = '#';
 
-    private final Set<String> classes = new LinkedHashSet<>();
-    private final Set<String> methods = new LinkedHashSet<>();
-    private final Set<String> fields = new LinkedHashSet<>();
+    private final Set<String> classes = new ConcurrentSkipListSet<>();
+    private final Set<String> methods = new ConcurrentSkipListSet<>();
+    private final Set<String> fields = new ConcurrentSkipListSet<>();
     private final ClassVisitor classVisitor = new CalledClassVisitor();
 
 
@@ -46,18 +46,16 @@ public class DeprecatedApi {
     }
 
     public void analyze(File coreFile) throws IOException {
-        if(Options.get().onlyAdditionalClasses) {
+        Options options = Options.get();
+        if(options.onlyIncludeSpecified) {
             return;
         }
-        final WarReader warReader = new WarReader(coreFile, false);
-        try {
+        try (WarReader warReader = new WarReader(coreFile, false)) {
             String fileName = warReader.nextClass();
             while (fileName != null) {
                 analyze(warReader.getInputStream());
                 fileName = warReader.nextClass();
             }
-        } finally {
-            warReader.close();
         }
         classes.removeAll(IGNORED_DEPRECATED_CLASSES);
     }

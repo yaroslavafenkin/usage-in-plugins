@@ -18,6 +18,7 @@ import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.Type;
 
 public class DeprecatedUsage {
     // python-wrapper has wrappers for all extension points and descriptors,
@@ -64,6 +65,22 @@ public class DeprecatedUsage {
 
     private void analyze(InputStream input, ClassVisitor aClassVisitor) throws IOException {
         final ClassReader classReader = new ClassReader(input);
+        for (int i = 0; i < classReader.getItemCount(); i++) {
+            try {
+                Object c = classReader.readConst(i, new char[9999]);
+                if (c instanceof Type) {
+                    Type t = (Type) c;
+                    if (t.getSort() == Type.OBJECT) { // TODO check ARRAY, METHOD
+                        String className = t.getInternalName();
+                        if (deprecatedApi.getClasses().contains(className)) {
+                            classes.add(className);
+                        }
+                    }
+                }
+            } catch (ArrayIndexOutOfBoundsException x) {
+                // ignore; have not figured out how to detect whether this is safe or not before actually calling it
+            }
+        }
         classReader.accept(aClassVisitor, ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
     }
 

@@ -8,3 +8,6 @@ output
 # IntelliJ
 *.iml
 .idea/
+
+# NetBeans
+nbactions.xml

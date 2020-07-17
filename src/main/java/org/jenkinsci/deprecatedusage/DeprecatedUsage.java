@@ -63,11 +63,14 @@ public class DeprecatedUsage {
         }
     }
 
+    private static final ThreadLocal<char[]> bufs = ThreadLocal.withInitial(() -> new char[99999]);
+
     private void analyze(InputStream input, ClassVisitor aClassVisitor) throws IOException {
         final ClassReader classReader = new ClassReader(input);
+        char[] buf = bufs.get();
         for (int i = 0; i < classReader.getItemCount(); i++) {
             try {
-                Object c = classReader.readConst(i, new char[9999]);
+                Object c = classReader.readConst(i, buf);
                 if (c instanceof Type) {
                     Type t = (Type) c;
                     if (t.getSort() == Type.OBJECT) { // TODO check ARRAY, METHOD

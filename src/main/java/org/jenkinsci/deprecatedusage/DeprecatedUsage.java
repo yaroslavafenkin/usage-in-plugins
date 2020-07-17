@@ -13,12 +13,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import org.apache.commons.io.IOUtils;
 
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.Type;
 
 public class DeprecatedUsage {
     // python-wrapper has wrappers for all extension points and descriptors,
@@ -66,22 +66,41 @@ public class DeprecatedUsage {
     private static final ThreadLocal<char[]> bufs = ThreadLocal.withInitial(() -> new char[99999]);
 
     private void analyze(InputStream input, ClassVisitor aClassVisitor) throws IOException {
-        final ClassReader classReader = new ClassReader(input);
+        byte[] data = IOUtils.toByteArray(input);
+        final ClassReader classReader = new ClassReader(data);
         char[] buf = bufs.get();
         for (int i = 0; i < classReader.getItemCount(); i++) {
-            try {
-                Object c = classReader.readConst(i, buf);
-                if (c instanceof Type) {
-                    Type t = (Type) c;
-                    if (t.getSort() == Type.OBJECT) { // TODO check ARRAY, METHOD
-                        String className = t.getInternalName();
-                        if (deprecatedApi.getClasses().contains(className)) {
-                            classes.add(className);
-                        }
+            int offset = classReader.getItem(i);
+            if (offset == 0) {
+                continue;
+            }
+            int kind = data[offset - 1];
+            if (kind == 1) {
+                int length = classReader.readUnsignedShort(offset);
+                // Adapted from ClassReader.readUtf, which is private:
+                int currentOffset = offset + 2;
+                int endOffset = currentOffset + length;
+                int strLength = 0;
+                while (currentOffset < endOffset) {
+                    int currentByte = data[currentOffset++];
+                    if ((currentByte & 0x80) == 0) {
+                        buf[strLength++] = (char) (currentByte & 0x7F);
+                    } else if ((currentByte & 0xE0) == 0xC0) {
+                        buf[strLength++] = (char) (((currentByte & 0x1F) << 6) + (data[currentOffset++] & 0x3F));
+                    } else {
+                        buf[strLength++] = (char) (((currentByte & 0xF) << 12) + ((data[currentOffset++] & 0x3F) << 6) + (data[currentOffset++] & 0x3F));
                     }
                 }
-            } catch (ArrayIndexOutOfBoundsException x) {
-                // ignore; have not figured out how to detect whether this is safe or not before actually calling it
+                String s = new String(buf, 0, strLength);
+                if (deprecatedApi.getClasses().contains(s)) {
+                    classes.add(s);
+                } else if (s.length() > 2 && s.charAt(0) == 'L' && s.charAt(s.length() - 1) == ';') {
+                    String name = s.substring(1, s.length() - 1);
+                    if (deprecatedApi.getClasses().contains(name)) {
+                        classes.add(name);
+                    }
+                }
+                continue;
             }
         }
         classReader.accept(aClassVisitor, ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);

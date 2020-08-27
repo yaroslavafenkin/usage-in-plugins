@@ -58,6 +58,9 @@ public class Options {
     @Option(name = "-D", aliases = "--downloadConcurrent", metaVar = "COUNT", usage = "Specifies number of concurrent downloads to allow")
     public int maxConcurrentDownloads = Runtime.getRuntime().availableProcessors() * 4;
 
+    @Option(name = "-v", aliases = "--verbose", usage = "Add verbose logging about downloads")
+    public boolean verbose;
+
     private Options() {
     }
 

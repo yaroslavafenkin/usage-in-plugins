@@ -40,6 +40,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.zip.ZipException;
 
 public class Main {
@@ -63,6 +66,19 @@ public class Main {
             commandLineParser.printUsage(System.err);
             System.exit(0);
         }
+
+        if (options.verbose) {
+            // https://hc.apache.org/httpcomponents-client-5.0.x/logging.html
+            Logger l = Logger.getLogger("org.apache.hc.client5.http.headers");
+            l.setLevel(Level.ALL);
+            ConsoleHandler h = new ConsoleHandler();
+            h.setLevel(Level.ALL);
+            l.addHandler(h);
+            /* or turn on all of org.apache.hc.client5.http but exclude:
+            Logger.getLogger("org.apache.hc.client5.http.wire").setLevel(Level.INFO);
+            */
+        }
+
         final long start = System.currentTimeMillis();
         final ExecutorService threadPool = Executors.newCachedThreadPool();
         HttpRequestRetryStrategy retryStrategy = new FlakyUpdateCenterRetryStrategy();

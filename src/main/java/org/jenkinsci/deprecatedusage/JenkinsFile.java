@@ -8,6 +8,7 @@ import org.apache.hc.core5.concurrent.FutureCallback;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -84,6 +85,9 @@ public class JenkinsFile {
             public void completed(SimpleHttpResponse result) {
                 try {
                     byte[] data = result.getBodyBytes();
+                    if (result.getCode() > 399) {
+                        future.completeExceptionally(new IOException(url + " failed : " + result.getCode() + new String(data, StandardCharsets.ISO_8859_1)));
+                    }
                     if (checksum != null) {
                         try {
                             checksum.check(data, url);

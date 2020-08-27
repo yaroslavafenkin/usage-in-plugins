@@ -84,18 +84,21 @@ public class JenkinsFile {
             public void completed(SimpleHttpResponse result) {
                 try {
                     byte[] data = result.getBodyBytes();
-                    if (checksum != null && !checksum.matches(data)) {
-                        if (retriesRemaining > 0) {
-                            System.out.println("Retrying download of " + url + " due to invalid message digest");
-                            retriesRemaining--;
-                            client.execute(request, this);
-                        } else {
-                            future.completeExceptionally(new DigestException(url));
+                    if (checksum != null) {
+                        try {
+                            checksum.check(data, url);
+                            Files.write(file, data, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+                            System.out.printf("Downloaded %s @ %.2f kiB%n", url, (data.length / 1024.0));
+                            future.complete(null);
+                        } catch (DigestException x) {
+                            if (retriesRemaining > 0) {
+                                System.out.println("Retrying download of " + url + " due to invalid message digest");
+                                retriesRemaining--;
+                                client.execute(request, this);
+                            } else {
+                                future.completeExceptionally(x);
+                            }
                         }
-                    } else {
-                        Files.write(file, data, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
-                        System.out.printf("Downloaded %s @ %.2f kiB%n", url, (data.length / 1024.0));
-                        future.complete(null);
                     }
                 } catch (IOException e) {
                     future.completeExceptionally(e);

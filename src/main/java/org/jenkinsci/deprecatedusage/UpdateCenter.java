@@ -35,10 +35,10 @@ public class UpdateCenter {
         final Checksum checksum;
         if (jsonObject.has("sha256")) {
             byte[] digest = decoder.decode(jsonObject.getString("sha256"));
-            checksum = data -> MessageDigest.isEqual(digest, DigestUtils.sha256(data));
+            checksum = Checksum.fromDigest("SHA-256", digest, DigestUtils::sha256);
         } else if (jsonObject.has("sha1")) {
             byte[] digest = decoder.decode(jsonObject.getString("sha1"));
-            checksum = data -> MessageDigest.isEqual(digest, DigestUtils.sha1(data));
+            checksum = Checksum.fromDigest("SHA-1", digest, DigestUtils::sha1);
         } else {
             checksum = null;
         }

@@ -86,7 +86,7 @@ public class JenkinsFile {
                 try {
                     byte[] data = result.getBodyBytes();
                     if (result.getCode() > 399) {
-                        future.completeExceptionally(new IOException(url + " failed : " + result.getCode() + new String(data, StandardCharsets.ISO_8859_1)));
+                        future.completeExceptionally(new IOException(url + " failed: " + result.getCode() + " " + new String(data, StandardCharsets.ISO_8859_1)));
                     }
                     if (checksum != null) {
                         try {

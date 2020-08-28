@@ -83,7 +83,10 @@ public class Main {
         final long start = System.currentTimeMillis();
         final ExecutorService threadPool = Executors.newCachedThreadPool();
         HttpRequestRetryStrategy retryStrategy = new FlakyUpdateCenterRetryStrategy();
-        try (CloseableHttpAsyncClient client = HttpAsyncClients.custom().setRetryStrategy(retryStrategy).setVersionPolicy(HttpVersionPolicy.FORCE_HTTP_1).build()) {
+        try (CloseableHttpAsyncClient client = HttpAsyncClients.custom().
+                setRetryStrategy(retryStrategy).
+                setVersionPolicy(HttpVersionPolicy.FORCE_HTTP_1). // pending HTTPCLIENT-2113
+                build()) {
             final DeprecatedApi deprecatedApi = new DeprecatedApi();
             addClassesToAnalyze(deprecatedApi);
             List<String> updateCenterURLs = options.getUpdateCenterURLs();

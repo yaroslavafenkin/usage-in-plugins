@@ -10,6 +10,7 @@ import org.apache.hc.client5.http.impl.async.HttpAsyncClients;
 import org.apache.hc.core5.concurrent.FutureCallback;
 import org.apache.hc.core5.http.ConnectionClosedException;
 import org.apache.hc.core5.http.HttpStatus;
+import org.apache.hc.core5.http2.HttpVersionPolicy;
 import org.apache.hc.core5.util.TimeValue;
 import org.json.JSONObject;
 import org.kohsuke.args4j.CmdLineException;
@@ -82,7 +83,7 @@ public class Main {
         final long start = System.currentTimeMillis();
         final ExecutorService threadPool = Executors.newCachedThreadPool();
         HttpRequestRetryStrategy retryStrategy = new FlakyUpdateCenterRetryStrategy();
-        try (CloseableHttpAsyncClient client = HttpAsyncClients.custom().setRetryStrategy(retryStrategy).build()) {
+        try (CloseableHttpAsyncClient client = HttpAsyncClients.custom().setRetryStrategy(retryStrategy).setVersionPolicy(HttpVersionPolicy.FORCE_HTTP_1).build()) {
             final DeprecatedApi deprecatedApi = new DeprecatedApi();
             addClassesToAnalyze(deprecatedApi);
             List<String> updateCenterURLs = options.getUpdateCenterURLs();

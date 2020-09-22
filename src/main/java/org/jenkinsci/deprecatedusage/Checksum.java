@@ -1,18 +1,28 @@
 package org.jenkinsci.deprecatedusage;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.nio.charset.StandardCharsets;
+import java.security.DigestException;
+import java.security.MessageDigest;
+import java.util.function.Function;
+import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.lang3.StringUtils;
 
 @FunctionalInterface
 public interface Checksum {
 
-    boolean matches(byte[] data);
+    void check(byte[] data, String url) throws DigestException;
 
-    default boolean matches(Path file) throws IOException {
-        if (Files.notExists(file) || !Files.isRegularFile(file)) {
-            return false;
-        }
-        return matches(Files.readAllBytes(file));
+    static Checksum fromDigest(String kind, byte[] expectedDigest, Function<byte[], byte[]> digester) {
+        return (data, url) -> {
+            byte[] actualDigest = digester.apply(data);
+            if (!MessageDigest.isEqual(expectedDigest, actualDigest)) {
+                StringBuilder message = new StringBuilder(new StringBuilder().append("Wrong ").append(kind).append(" digest for ").append(url).append(" of length ").append(data.length).append(": expected ").append(Hex.encodeHexString(expectedDigest)).append(" but got ").append(Hex.encodeHexString(actualDigest)));
+                if (data.length < 1000) {
+                    message.append(" body: `").append(new String(data, StandardCharsets.ISO_8859_1)).append('`');
+                }
+                throw new DigestException(message.toString());
+            }
+        };
     }
+
 }

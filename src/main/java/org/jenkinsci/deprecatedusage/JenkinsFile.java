@@ -8,6 +8,7 @@ import org.apache.hc.core5.concurrent.FutureCallback;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -84,18 +85,24 @@ public class JenkinsFile {
             public void completed(SimpleHttpResponse result) {
                 try {
                     byte[] data = result.getBodyBytes();
-                    if (checksum != null && !checksum.matches(data)) {
-                        if (retriesRemaining > 0) {
-                            System.out.println("Retrying download of " + url + " due to invalid message digest");
-                            retriesRemaining--;
-                            client.execute(request, this);
-                        } else {
-                            future.completeExceptionally(new DigestException(url));
+                    if (result.getCode() > 399) {
+                        future.completeExceptionally(new IOException(url + " failed: " + result.getCode() + " " + new String(data, StandardCharsets.ISO_8859_1)));
+                    }
+                    if (checksum != null) {
+                        try {
+                            checksum.check(data, url);
+                            Files.write(file, data, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+                            System.out.printf("Downloaded %s @ %.2f kiB%n", url, (data.length / 1024.0));
+                            future.complete(null);
+                        } catch (DigestException x) {
+                            if (retriesRemaining > 0) {
+                                System.out.println("Retrying download of " + url + " due to invalid message digest");
+                                retriesRemaining--;
+                                client.execute(request, this);
+                            } else {
+                                future.completeExceptionally(x);
+                            }
                         }
-                    } else {
-                        Files.write(file, data, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
-                        System.out.printf("Downloaded %s @ %.2f kiB%n", url, (data.length / 1024.0));
-                        future.complete(null);
                     }
                 } catch (IOException e) {
                     future.completeExceptionally(e);

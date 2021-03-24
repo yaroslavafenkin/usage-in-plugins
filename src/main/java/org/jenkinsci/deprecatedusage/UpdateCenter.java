@@ -32,18 +32,20 @@ public class UpdateCenter {
             wiki = null;
         }
         final Base64.Decoder decoder = Base64.getDecoder();
-        final Checksum checksum;
+        final MessageDigest messageDigest;
+        final byte[] digest;
         if (jsonObject.has("sha256")) {
-            byte[] digest = decoder.decode(jsonObject.getString("sha256"));
-            checksum = Checksum.fromDigest("SHA-256", digest, DigestUtils::sha256);
+            digest = decoder.decode(jsonObject.getString("sha256"));
+            messageDigest = DigestUtils.getSha256Digest();
         } else if (jsonObject.has("sha1")) {
-            byte[] digest = decoder.decode(jsonObject.getString("sha1"));
-            checksum = Checksum.fromDigest("SHA-1", digest, DigestUtils::sha1);
+            digest = decoder.decode(jsonObject.getString("sha1"));
+            messageDigest = DigestUtils.getSha1Digest();
         } else {
-            checksum = null;
+            messageDigest = null;
+            digest = null;
         }
         return new JenkinsFile(jsonObject.getString("name"), jsonObject.getString("version"),
-                jsonObject.getString("url"), wiki, checksum);
+                jsonObject.getString("url"), wiki, messageDigest, digest);
     }
 
     public JenkinsFile getCore() {

@@ -28,6 +28,7 @@ public class DeprecatedUsage {
 
     private final Plugin plugin;
     private final DeprecatedApi deprecatedApi;
+    private final boolean includePluginLibraries;
 
     private final Set<String> classes = new LinkedHashSet<>();
     private final Set<String> methods = new LinkedHashSet<>();
@@ -36,10 +37,11 @@ public class DeprecatedUsage {
     private final ClassVisitor classVisitor = new CallersClassVisitor();
     private final Map<String, List<String>> superClassAndInterfacesByClass = new HashMap<>();
 
-    public DeprecatedUsage(String pluginName, String pluginVersion, DeprecatedApi deprecatedApi) {
+    public DeprecatedUsage(String pluginName, String pluginVersion, DeprecatedApi deprecatedApi, boolean includePluginLibraries) {
         super();
         this.plugin = new Plugin(pluginName, pluginVersion);
         this.deprecatedApi = deprecatedApi;
+        this.includePluginLibraries = includePluginLibraries;
     }
 
     public void analyze(File pluginFile) throws IOException {
@@ -50,14 +52,22 @@ public class DeprecatedUsage {
         analyzeWithClassVisitor(pluginFile, classVisitor);
     }
 
+    
     public void analyzeWithClassVisitor(File pluginFile, ClassVisitor aClassVisitor)
             throws IOException {
         // recent plugins package their classes as a jar file with the same name as the war file in
         // WEB-INF/lib/ while older plugins were packaging their classes in WEB-INF/classes/
-        try (WarReader warReader = new WarReader(pluginFile, true)) {
+        try (WarReader warReader = new WarReader(pluginFile, !includePluginLibraries)) {
             String fileName = warReader.nextClass();
             while (fileName != null) {
-                analyze(warReader.getInputStream(), aClassVisitor);
+                try {
+                    @SuppressWarnings("resource") // handled by warReader.nextClass()
+                    InputStream is = warReader.getInputStream();
+                    analyze(is, aClassVisitor);
+                } catch (Exception e) {
+                    System.err.println("Failed to fully analyze " + pluginFile + ".  " + fileName + " not scanned due to -> ");
+                    e.printStackTrace();
+                }
                 fileName = warReader.nextClass();
             }
         }
@@ -226,15 +236,18 @@ public class DeprecatedUsage {
      */
     private class IndexerClassVisitor extends ClassVisitor {
         IndexerClassVisitor() {
-            super(Opcodes.ASM5);
+            super(Opcodes.ASM9);
         }
 
         @Override
         public void visit(int version, int access, String name, String signature, String superName,
                 String[] interfaces) {
             // log(name + " extends " + superName + " {");
+            
             final List<String> superClassAndInterfaces = new ArrayList<>();
-            if (!isJavaClass(superName)) {
+            // superClass may be null for java.lang.Object and module-info.class
+            // Object would have been filtered but we see lots of module-info classes
+            if (superName != null && !isJavaClass(superName)) {
                 superClassAndInterfaces.add(superName);
             }
             if (interfaces != null) {
@@ -255,7 +268,7 @@ public class DeprecatedUsage {
      */
     private class CallersClassVisitor extends ClassVisitor {
         CallersClassVisitor() {
-            super(Opcodes.ASM5);
+            super(Opcodes.ASM9);
         }
 
         @Override
@@ -271,9 +284,10 @@ public class DeprecatedUsage {
      */
     private class CallersMethodVisitor extends MethodVisitor {
         CallersMethodVisitor() {
-            super(Opcodes.ASM5);
+            super(Opcodes.ASM9);
         }
 
+        @Deprecated
         @Override
         public void visitMethodInsn(int opcode, String owner, String name, String desc) {
             // log("\t" + owner + " " + name + " " + desc);

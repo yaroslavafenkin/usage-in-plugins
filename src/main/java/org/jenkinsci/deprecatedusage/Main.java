@@ -1,5 +1,6 @@
 package org.jenkinsci.deprecatedusage;
 
+import java.util.stream.Collectors;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONObject;
 import org.kohsuke.args4j.CmdLineException;
@@ -81,7 +82,7 @@ public class Main {
                         String json = IOUtils.toString(url, StandardCharsets.UTF_8).replace("updateCenter.post(", "");
                         UpdateCenter updateCenter = new UpdateCenter(new JSONObject(json));
                         cores.add(updateCenter.getCore());
-                        plugins.addAll(updateCenter.getPlugins());
+                        plugins.addAll(updateCenter.getPlugins().stream().filter(f -> Options.get().shouldScanPlugin(f.getName())).collect(Collectors.toSet()));
                         metadataLoaded.countDown();
                     } catch (IOException e) {
                         throw new UncheckedIOException(e);

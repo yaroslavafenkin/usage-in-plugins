@@ -80,7 +80,9 @@ public class Main {
                     try {
                         String json = IOUtils.toString(url, StandardCharsets.UTF_8).replace("updateCenter.post(", "");
                         UpdateCenter updateCenter = new UpdateCenter(new JSONObject(json));
-                        cores.add(updateCenter.getCore());
+                        if (updateCenter.getCore() != null) {
+                            cores.add(updateCenter.getCore());
+                        }
                         plugins.addAll(updateCenter.getPlugins());
                         metadataLoaded.countDown();
                     } catch (IOException e) {

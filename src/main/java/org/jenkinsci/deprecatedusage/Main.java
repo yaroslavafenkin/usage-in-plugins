@@ -1,5 +1,6 @@
 package org.jenkinsci.deprecatedusage;
 
+import java.util.stream.Collectors;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONObject;
 import org.kohsuke.args4j.CmdLineException;
@@ -83,7 +84,7 @@ public class Main {
                         if (updateCenter.getCore() != null) {
                             cores.add(updateCenter.getCore());
                         }
-                        plugins.addAll(updateCenter.getPlugins());
+                        plugins.addAll(updateCenter.getPlugins().stream().filter(f -> Options.get().shouldScanPlugin(f.getName())).collect(Collectors.toSet()));
                         metadataLoaded.countDown();
                     } catch (IOException e) {
                         throw new UncheckedIOException(e);

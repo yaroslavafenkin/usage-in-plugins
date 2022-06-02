@@ -49,7 +49,7 @@ public class DeprecatedUsageByApiReport extends Report {
                 }
             }
             for (String methodName : deprecatedMethodsUsed) {
-                if (usageClasses.contains(methodName)) {
+                if (usageMethods.contains(methodName)) {
                     deprecatedMethodsToPlugins.computeIfAbsent(methodName, s -> new TreeSet<>(String.CASE_INSENSITIVE_ORDER)).add(usage.getPlugin().artifactId);
                 }
             }

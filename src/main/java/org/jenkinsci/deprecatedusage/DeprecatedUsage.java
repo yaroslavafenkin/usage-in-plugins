@@ -17,6 +17,7 @@ import org.apache.commons.io.IOUtils;
 import org.jenkinsci.deprecatedusage.search.SearchCriteria;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
+import org.objectweb.asm.Handle;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 
@@ -339,6 +340,14 @@ public class DeprecatedUsage {
         public void visitMethodInsn(int opcode, String owner, String name, String desc,
                 boolean itf) {
             methodCalled(owner, name, desc, this.className, this.name, this.desc);
+        }
+
+        @Override
+        public void visitInvokeDynamicInsn(String name, String descriptor, Handle bootstrapMethodHandle, 
+                                           Object... bootstrapMethodArguments) {
+            Handle methodArgument = (Handle) bootstrapMethodArguments[1];
+            methodCalled(methodArgument.getOwner(), methodArgument.getName(), methodArgument.getDesc(), 
+                    this.className, this.name, this.desc);
         }
 
         @Override

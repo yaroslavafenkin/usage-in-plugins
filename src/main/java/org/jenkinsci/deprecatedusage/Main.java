@@ -273,8 +273,6 @@ public class Main {
     private static void addClassesToAnalyze(DeprecatedApi deprecatedApi) {
         if (Options.get().additionalClassesFile != null) {
             deprecatedApi.addClasses(Options.getAdditionalClasses());
-        } else {
-            System.out.println("No 'additionalClassesFile' option, only already deprecated class will be searched for");
         }
     }
 

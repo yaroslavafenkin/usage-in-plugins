@@ -121,7 +121,7 @@ public class Main {
                 downloadedCores = downloader.synchronize(cores).get();
             }
 
-            if (!options.ignoreDeprecated) {
+            if (!options.onlyIncludeSpecified) {
                 for (JenkinsFile core : downloadedCores) {
                     try {
                         System.out.println("Analyzing deprecated APIs in " + core);

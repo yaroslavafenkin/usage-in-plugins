@@ -345,9 +345,11 @@ public class DeprecatedUsage {
         @Override
         public void visitInvokeDynamicInsn(String name, String descriptor, Handle bootstrapMethodHandle, 
                                            Object... bootstrapMethodArguments) {
-            Handle methodArgument = (Handle) bootstrapMethodArguments[1];
-            methodCalled(methodArgument.getOwner(), methodArgument.getName(), methodArgument.getDesc(), 
-                    this.className, this.name, this.desc);
+            if (bootstrapMethodArguments.length > 1 && bootstrapMethodArguments[1] instanceof Handle) {
+                Handle methodArgument = (Handle) bootstrapMethodArguments[1];
+                methodCalled(methodArgument.getOwner(), methodArgument.getName(), methodArgument.getDesc(),
+                        this.className, this.name, this.desc);
+            }
         }
 
         @Override

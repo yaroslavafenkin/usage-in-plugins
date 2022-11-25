@@ -50,9 +50,6 @@ public class Options {
     @Option(name = "-l", aliases = "--limitPlugins", metaVar = "FILENAME", usage = "File name for the limitation of the scope of plugins to scan")
     public File limitPluginsFile;
 
-    @Option(name = "--ignoreDeprecated", usage = "Remove the deprecation part of the search criteria")
-    public boolean ignoreDeprecated;
-
     @Option(name = "-i", aliases = "--onlyIncludeSpecified", usage = "Only include in the report the specified classes/methods/fields")
     public boolean onlyIncludeSpecified;
 

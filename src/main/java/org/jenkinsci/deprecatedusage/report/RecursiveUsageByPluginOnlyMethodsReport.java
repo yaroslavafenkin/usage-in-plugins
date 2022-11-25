@@ -20,6 +20,7 @@ public class RecursiveUsageByPluginOnlyMethodsReport extends Report {
 
     @Override
     protected void generateHtmlReport(Writer writer) throws IOException {
+        writer.append("This report is only available as JSON.");
     }
 
     @Override

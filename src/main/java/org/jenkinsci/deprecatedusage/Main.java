@@ -121,7 +121,7 @@ public class Main {
                 downloadedCores = downloader.synchronize(cores).get();
             }
 
-            if (!options.ignoreDeprecated) {
+            if (!options.onlyIncludeSpecified) {
                 for (JenkinsFile core : downloadedCores) {
                     try {
                         System.out.println("Analyzing deprecated APIs in " + core);
@@ -273,8 +273,6 @@ public class Main {
     private static void addClassesToAnalyze(DeprecatedApi deprecatedApi) {
         if (Options.get().additionalClassesFile != null) {
             deprecatedApi.addClasses(Options.getAdditionalClasses());
-        } else {
-            System.out.println("No 'additionalClassesFile' option, only already deprecated class will be searched for");
         }
     }
 

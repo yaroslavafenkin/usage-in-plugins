@@ -39,7 +39,7 @@ public class DeprecatedApiSearchCriteria implements SearchCriteria {
 
     @Override 
     public boolean isLookingForMethod(String methodKey, String className, String methodName) {
-        return deprecatedApi.getMethods().contains(methodKey);
+        return deprecatedApi.getMethods().contains(methodKey) || methodName.equals("getDescriptor") || methodName.startsWith("do");
     }
 
     @Override 

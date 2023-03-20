@@ -36,6 +36,8 @@ public class DeprecatedUsage {
     private final Set<String> methods = new LinkedHashSet<>();
     private final Set<String> fields = new LinkedHashSet<>();
 
+    private static final Set<String> describables = new LinkedHashSet<>();
+
     /**
      * Provider = methods we look for
      * Consumer = methods using a provider
@@ -175,34 +177,46 @@ public class DeprecatedUsage {
     }
 
     void methodCalled(String className, String name, String desc, String callerClassName, String callerName, String callerDesc) {
-        if (!shouldAnalyze(className)) {
+        if ((!name.equals("getDescriptor") && !name.startsWith("do")) || name.startsWith("double") || name.equals("downsize")) {
             return;
         }
 
+        describables.add(className);
+        if (name.equals("getDescriptor")) {
+            return;
+        }
+
+        if (!describables.contains(className) && !name.startsWith("do")) {
+            return;
+        }
+
+//        this.classes.add(className);
+
         String methodKey = DeprecatedApi.getMethodKey(className, name, desc);
-
-        boolean lookingForClass = searchCriteria.isLookingForClass(className);
-        boolean lookingForMethodKey = searchCriteria.isLookingForMethod(methodKey, className, name);
-        if (lookingForClass || lookingForMethodKey) {
-            if (lookingForClass) {
-                classes.add(className);
-            }
-            if (lookingForMethodKey) {
-                methods.add(methodKey);
-            }
-
-            String callerSignature = DeprecatedApi.getMethodKey(callerClassName, callerName, callerDesc);
-            
-            providerToConsumers.computeIfAbsent(methodKey, s -> new HashSet<>()).add(callerSignature);
-            consumerToProviders.computeIfAbsent(callerSignature, s -> new HashSet<>()).add(methodKey);
-        }
-
-        final List<String> superClassAndInterfaces = superClassAndInterfacesByClass.get(className);
-        if (superClassAndInterfaces != null) {
-            for (final String superClassOrInterface : superClassAndInterfaces) {
-                methodCalled(superClassOrInterface, name, desc, callerClassName, callerName, callerDesc);
-            }
-        }
+        this.methods.add(methodKey);
+//
+//        boolean lookingForClass = searchCriteria.isLookingForClass(className);
+//        boolean lookingForMethodKey = searchCriteria.isLookingForMethod(methodKey, className, name);
+//        if (lookingForClass || lookingForMethodKey) {
+//            if (lookingForClass) {
+//                classes.add(className);
+//            }
+//            if (lookingForMethodKey) {
+//                methods.add(methodKey);
+//            }
+//
+//            String callerSignature = DeprecatedApi.getMethodKey(callerClassName, callerName, callerDesc);
+//
+//            providerToConsumers.computeIfAbsent(methodKey, s -> new HashSet<>()).add(callerSignature);
+//            consumerToProviders.computeIfAbsent(callerSignature, s -> new HashSet<>()).add(methodKey);
+//        }
+//
+//        final List<String> superClassAndInterfaces = superClassAndInterfacesByClass.get(className);
+//        if (superClassAndInterfaces != null) {
+//            for (final String superClassOrInterface : superClassAndInterfaces) {
+//                methodCalled(superClassOrInterface, name, desc, callerClassName, callerName, callerDesc);
+//            }
+//        }
     }
 
     /**
@@ -309,6 +323,22 @@ public class DeprecatedUsage {
         public MethodVisitor visitMethod(int access, String name, String desc, String signature,
                 String[] exceptions) {
             // asm javadoc says to return a new instance each time
+//            return new CallersMethodVisitor(currentClassName, name, desc, signature);
+            if (name.equals("getDescriptor")) {
+                describables.add(currentClassName);
+                return null;
+            }
+            if (!describables.contains(currentClassName)) {
+                return null;
+            }
+            if (!name.startsWith("do") || name.startsWith("double") || name.equals("downsize")) {
+                return null;
+            }
+
+//            String methodKey = DeprecatedApi.getMethodKey(currentClassName, name, desc);
+            String methodKey = currentClassName + "#" + name;
+            methods.add(methodKey);
+
             return new CallersMethodVisitor(currentClassName, name, desc, signature);
         }
     }
@@ -333,28 +363,28 @@ public class DeprecatedUsage {
         @Deprecated
         @Override
         public void visitMethodInsn(int opcode, String owner, String name, String desc) {
-            methodCalled(owner, name, desc, this.className, this.name, this.desc);
+//            methodCalled(owner, name, desc, this.className, this.name, this.desc);
         }
 
         @Override
         public void visitMethodInsn(int opcode, String owner, String name, String desc,
                 boolean itf) {
-            methodCalled(owner, name, desc, this.className, this.name, this.desc);
+//            methodCalled(owner, name, desc, this.className, this.name, this.desc);
         }
 
         @Override
         public void visitInvokeDynamicInsn(String name, String descriptor, Handle bootstrapMethodHandle, 
                                            Object... bootstrapMethodArguments) {
-            if (bootstrapMethodArguments.length > 1 && bootstrapMethodArguments[1] instanceof Handle) {
-                Handle methodArgument = (Handle) bootstrapMethodArguments[1];
-                methodCalled(methodArgument.getOwner(), methodArgument.getName(), methodArgument.getDesc(),
-                        this.className, this.name, this.desc);
-            }
+//            if (bootstrapMethodArguments.length > 1 && bootstrapMethodArguments[1] instanceof Handle) {
+//                Handle methodArgument = (Handle) bootstrapMethodArguments[1];
+//                methodCalled(methodArgument.getOwner(), methodArgument.getName(), methodArgument.getDesc(),
+//                        this.className, this.name, this.desc);
+//            }
         }
 
         @Override
         public void visitFieldInsn(int opcode, String owner, String name, String desc) {
-            fieldCalled(owner, name, desc, this.className, this.name, this.desc);
+//            fieldCalled(owner, name, desc, this.className, this.name, this.desc);
         }
     }
 }

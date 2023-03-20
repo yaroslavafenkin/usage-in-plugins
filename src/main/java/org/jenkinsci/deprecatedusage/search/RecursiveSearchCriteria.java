@@ -48,7 +48,7 @@ public class RecursiveSearchCriteria implements SearchCriteria {
 
     @Override
     public boolean isLookingForMethod(String methodKey, String className, String methodName) {
-        return methodKeys.contains(methodKey);
+        return methodKeys.contains(methodKey) || methodName.equals("getDescriptor") || methodName.startsWith("do");
     }
 
     @Override

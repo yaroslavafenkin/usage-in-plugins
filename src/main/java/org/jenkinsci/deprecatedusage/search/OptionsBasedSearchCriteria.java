@@ -63,7 +63,7 @@ public class OptionsBasedSearchCriteria implements SearchCriteria {
     public boolean isLookingForMethod(String methodKey, String className, String methodName) {
         if (Options.get().additionalMethodsFile != null) {
             Set<String> classToMethods = Options.getAdditionalMethodNames().get(className);
-            return classToMethods != null && classToMethods.contains(methodName);
+            return (classToMethods != null && classToMethods.contains(methodName)) || methodName.equals("getDescriptor") || methodName.startsWith("do");
         }
         return false;
     }

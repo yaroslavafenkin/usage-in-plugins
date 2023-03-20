@@ -159,9 +159,11 @@ public class Main {
             if (options.includeCore) {
                 List<DeprecatedUsage> fromCores = analyzeDeprecatedUsage(downloadedCores, deprecatedAndOptionCriteria, executor, options.includeCoreLibraries);
                 List<DeprecatedUsage> fromPlugins = analyzeDeprecatedUsage(downloadedPlugins, deprecatedAndOptionCriteria, executor, options.includePluginLibraries);
+                List<DeprecatedUsage> fromPlugins2 = analyzeDeprecatedUsage(downloadedPlugins, deprecatedAndOptionCriteria, executor, options.includePluginLibraries);
 
                 List<DeprecatedUsage> all = new ArrayList<>(fromPlugins);
                 all.addAll(fromCores);
+                all.addAll(fromPlugins2);
                 deprecatedUsages = all;
             } else {
                 deprecatedUsages = analyzeDeprecatedUsage(downloadedPlugins, deprecatedAndOptionCriteria, executor, options.includePluginLibraries);
